@@ -17,7 +17,7 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# Render Web Service-এর জন্য ব্যাকগ্রাউন্ড পোর্ট সার্ভার
+# Render Web Service-er jonno background port server
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -55,8 +55,8 @@ def get_tiktok_direct_url(tiktok_url):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
-        "⚡ সুপার ফাস্ট অল-ইন-ওয়ান ডাউনলোডার বট প্রস্তুত!\n\n"
-        "যেকোনো প্ল্যাটফর্মের ভিডিও লিঙ্ক পাঠান (TikTok, YouTube, Facebook, Insta ইত্যাদি)।"
+        "⚡ Super Fast All-in-One Downloader Bot Ready!\n\n"
+        "Send any video link from YouTube, TikTok, Facebook, Instagram etc."
     )
     await update.message.reply_text(welcome_text)
 
@@ -75,7 +75,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("কোন ফরম্যাটে ডাউনলোড করতে চান বেছে নিন:", reply_markup=reply_markup)
+    await update.message.reply_text("Kon formate download korte chan select korun:", reply_markup=reply_markup)
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -85,17 +85,18 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ Link expired. Please send the link again.")
         return
 
     data = query.data
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
 
-    status_msg = await query.edit_message_text("⚡ ফাইল ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
+    status_msg = await query.edit_message_text("⚡ Processing and downloading file, please wait...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
+    # TikTok Direct API Engine
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
@@ -117,7 +118,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     with open(thumb_path, "wb") as tf:
                         tf.write(tr.content)
 
-                await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
+                await status_msg.edit_text("🚀 Uploading to Telegram...")
 
                 with open(file_path, "rb") as f:
                     if req_type == "vid":
@@ -153,14 +154,25 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"TikTok download error: {str(e)[:100]}")
                 return
 
+    # yt-dlp Settings with Cookies & Bot-Bypass
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
     common_opts = {
         'outtmpl': output_template,
         'quiet': True,
         'no_warnings': True,
+        'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
+        },
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
     }
 
     if req_type == "vid":
@@ -215,7 +227,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         pass
                     break
 
-        await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
+        await status_msg.edit_text("🚀 Uploading to Telegram...")
 
         with open(file_path, 'rb') as f:
             if req_type == "vid":
@@ -248,7 +260,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await status_msg.delete()
 
     except Exception as e:
-        await context.bot.send_message(chat_id=user_id, text=f"ত্রুটি হয়েছে: {str(e)[:150]}")
+        await context.bot.send_message(chat_id=user_id, text=f"Error: {str(e)[:150]}")
 
     finally:
         if file_path and os.path.exists(file_path):
@@ -263,7 +275,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 pass
 
 def main():
-    # Flask ওয়েব সার্ভার চালু
     web_thread = threading.Thread(target=run_web, daemon=True)
     web_thread.start()
 
@@ -277,7 +288,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("সুপার ফাস্ট বট চালু হয়েছে...")
+    print("Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
