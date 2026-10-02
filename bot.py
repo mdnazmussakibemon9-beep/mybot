@@ -21,7 +21,7 @@ from PIL import Image
 # FFmpeg সক্রিয় করা
 static_ffmpeg.add_paths()
 
-# Render Web Service-এর পোর্ট চালু রাখা
+# Render Web Service Live রাখার ব্যাকগ্রাউন্ড পোর্ট
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -162,29 +162,29 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return
 
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
-    
-    # yt-dlp Settings
+
+    # খাঁটি Android Client যাতে কোনো Reload / Cookies এরর না আসে
     common_opts = {
         'outtmpl': output_template,
         'quiet': True,
         'no_warnings': True,
-        'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android'],
+                'player_skip': ['webpage', 'configs']
+            }
+        },
     }
 
     if req_type == "vid":
         ydl_opts = {
             **common_opts,
-            'format': 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b',
-            'merge_output_format': 'mp4',
+            'format': 'best[ext=mp4]/best',
         }
     else:
         ydl_opts = {
             **common_opts,
-            'format': 'ba/b',
+            'format': 'bestaudio/best',
             'writethumbnail': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
