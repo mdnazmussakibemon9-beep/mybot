@@ -3,6 +3,7 @@ import threading
 import uuid
 import logging
 import requests
+import re
 import static_ffmpeg
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -18,9 +19,10 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
+# FFmpeg সচল করা
 static_ffmpeg.add_paths()
 
-# Render Web Service Live রাখার ব্যাকগ্রাউন্ড পোর্ট
+# Render Web Service 24/7 সচল রাখার পোর্ট বাইন্ডার
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -56,33 +58,69 @@ def get_tiktok_direct_url(tiktok_url):
         pass
     return None
 
-def get_cobalt_stream(media_url, is_audio=False):
-    instances = [
+def extract_yt_id(url):
+    match = re.search(r"(?:v=|\/|youtu\.be\/)([0-9A-Za-z_-]{11})", url)
+    return match.group(1) if match else None
+
+def get_youtube_fallback_stream(yt_url, is_audio=False):
+    video_id = extract_yt_id(yt_url)
+    if not video_id:
+        return None, None
+
+    # ১. Piped / Invidious API
+    invidious_apis = [
+        f"https://pipedapi.kavin.rocks/streams/{video_id}",
+        f"https://api.piped.privacydev.net/streams/{video_id}",
+        f"https://vid.puffyan.us/api/v1/videos/{video_id}",
+        f"https://inv.riverside.rocks/api/v1/videos/{video_id}"
+    ]
+    for endpoint in invidious_apis:
+        try:
+            r = requests.get(endpoint, timeout=8)
+            if r.status_code == 200:
+                data = r.json()
+                title = data.get("title", "YouTube Media")
+                if is_audio:
+                    audio_streams = data.get("audioStreams", [])
+                    if audio_streams:
+                        # সেরা অডিও কোয়ালিটি নির্বাচন
+                        best_aud = max(audio_streams, key=lambda x: x.get("bitrate", 0))
+                        return best_aud.get("url"), title
+                else:
+                    video_streams = data.get("videoStreams", [])
+                    if video_streams:
+                        # 720p/360p সহ সাউন্ড সহ প্রোগ্রেসিভ স্ট্রিম অগ্রাধিকার
+                        sound_vids = [v for v in video_streams if not v.get("videoOnly")]
+                        if sound_vids:
+                            return sound_vids[0].get("url"), title
+                        return video_streams[0].get("url"), title
+        except Exception:
+            continue
+
+    # ২. Cobalt API గేটওয়ে
+    cobalt_instances = [
         "https://api.cobalt.tools/api/json",
-        "https://cobalt.kwiatekm.pl/api/json"
+        "https://cobalt.kwiatekm.pl/api/json",
+        "https://co.wuk.sh/api/json"
     ]
     payload = {
-        "url": media_url,
+        "url": yt_url,
         "isAudioOnly": is_audio,
         "aFormat": "mp3" if is_audio else "best",
         "vQuality": "720"
     }
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0"
-    }
-    for api in instances:
+    headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+    for api in cobalt_instances:
         try:
-            r = requests.post(api, json=payload, headers=headers, timeout=12)
-            data = r.json()
-            if data.get("url"):
-                return data.get("url")
-            if data.get("stream"):
-                return data.get("stream")
+            res = requests.post(api, json=payload, headers=headers, timeout=10)
+            res_data = res.json()
+            if res_data.get("url"):
+                return res_data.get("url"), "YouTube Media"
         except Exception:
             continue
-    return None
+
+    return None, None
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
@@ -116,7 +154,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। লিঙ্কটি আবার পাঠান।")
         return
 
     data = query.data
@@ -127,7 +165,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # ১. টিকটক
+    # ১. টিকটক ইঞ্জিন
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
@@ -185,12 +223,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"ত্রুটি: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
                 return
 
-    # ২. ইউটিউব বাইপাস ইঞ্জিন
+    # ২. ইউটিউব মাল্টি-এপিআই ইঞ্জিন (ডাটা সেন্টার ব্লক বাইপাস)
     if "youtube.com" in url or "youtu.be" in url:
-        direct_stream = get_cobalt_stream(url, is_audio=(req_type == "aud"))
+        direct_stream, yt_title = get_youtube_fallback_stream(url, is_audio=(req_type == "aud"))
         if direct_stream:
             try:
                 ext = "mp4" if req_type == "vid" else "mp3"
@@ -210,13 +248,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             chat_id=user_id,
                             video=f,
                             supports_streaming=True,
-                            caption="✅ YouTube Video"
+                            caption=f"✅ {yt_title[:60]}"
                         )
                     else:
                         await context.bot.send_audio(
                             chat_id=user_id,
                             audio=f,
-                            title="YouTube Audio",
+                            title=yt_title[:40],
                             performer="YouTube"
                         )
 
@@ -227,70 +265,33 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except Exception:
                 pass
 
-    # ৩. অন্যান্য সাইট (Facebook, Instagram ইত্যাদি) এর জন্য yt-dlp
+    # ৩. ফেসবুক ও ইনস্টাগ্রাম (yt-dlp ইঞ্জিন)
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
-    common_opts = {
+    ydl_opts = {
         'outtmpl': output_template,
         'quiet': True,
         'no_warnings': True,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['ios', 'android']
-            }
-        }
+        'format': 'best' if req_type == "vid" else 'bestaudio/best',
     }
-
-    if req_type == "vid":
-        ydl_opts = {
-            **common_opts,
-            'format': 'bestvideo+bestaudio/best',
-            'merge_output_format': 'mp4',
-        }
-    else:
-        ydl_opts = {
-            **common_opts,
-            'format': 'bestaudio/best',
-            'writethumbnail': True,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
+    if req_type == "aud":
+        ydl_opts['postprocessors'] = [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }]
 
     file_path = None
-    thumb_jpg = None
-
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             video_title = info.get('title', 'Media')
-            channel_name = info.get('uploader', 'Unknown Artist')
-            duration = info.get('duration', 0)
+            channel_name = info.get('uploader', 'Artist')
             file_path = ydl.prepare_filename(info)
 
-            if req_type == "vid":
-                base_name = os.path.splitext(file_path)[0]
-                if os.path.exists(base_name + ".mp4"):
-                    file_path = base_name + ".mp4"
-            else:
-                base_name = os.path.splitext(file_path)[0]
-                if os.path.exists(base_name + ".mp3"):
-                    file_path = base_name + ".mp3"
-
-        if req_type == "aud":
-            base_path = os.path.splitext(file_path)[0]
-            for ext in ['.webp', '.jpg', '.jpeg', '.png']:
-                potential_thumb = base_path + ext
-                if os.path.exists(potential_thumb):
-                    try:
-                        im = Image.open(potential_thumb).convert("RGB")
-                        thumb_jpg = base_path + "_thumb.jpg"
-                        im.save(thumb_jpg, "JPEG")
-                        os.remove(potential_thumb)
-                    except Exception:
-                        pass
-                    break
+            base_name = os.path.splitext(file_path)[0]
+            ext = ".mp4" if req_type == "vid" else ".mp3"
+            if os.path.exists(base_name + ext):
+                file_path = base_name + ext
 
         await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
 
@@ -303,39 +304,20 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     caption=f"✅ {video_title}"
                 )
             else:
-                if thumb_jpg and os.path.exists(thumb_jpg):
-                    with open(thumb_jpg, 'rb') as t:
-                        await context.bot.send_audio(
-                            chat_id=user_id,
-                            audio=f,
-                            thumbnail=t,
-                            title=video_title,
-                            performer=channel_name,
-                            duration=duration
-                        )
-                else:
-                    await context.bot.send_audio(
-                        chat_id=user_id,
-                        audio=f,
-                        title=video_title,
-                        performer=channel_name,
-                        duration=duration
-                    )
+                await context.bot.send_audio(
+                    chat_id=user_id,
+                    audio=f,
+                    title=video_title,
+                    performer=channel_name
+                )
 
         await status_msg.delete()
-
     except Exception as e:
-        await context.bot.send_message(chat_id=user_id, text=f"Error: {str(e)[:150]}")
-
+        await context.bot.send_message(chat_id=user_id, text=f"ত্রুটি: {str(e)[:150]}")
     finally:
         if file_path and os.path.exists(file_path):
             try:
                 os.remove(file_path)
-            except Exception:
-                pass
-        if thumb_jpg and os.path.exists(thumb_jpg):
-            try:
-                os.remove(thumb_jpg)
             except Exception:
                 pass
 
