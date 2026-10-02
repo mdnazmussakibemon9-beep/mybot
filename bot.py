@@ -1,7 +1,6 @@
 import os
-import static_ffmpeg
-static_ffmpeg.add_paths()
-
+import threading
+from flask import Flask
 import uuid
 import logging
 import requests
@@ -18,12 +17,22 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
+# ডামি ওয়েব সার্ভার (Render Web Service Free-তে Live রাখার জন্য)
+web_app = Flask(__name__)
+
+@web_app.route('/')
+def home():
+    return "Telegram Bot is Running 24/7!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 8080))
+    web_app.run(host="0.0.0.0", port=port)
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
 BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
-
 user_urls = {}
 
 def get_tiktok_direct_url(tiktok_url):
@@ -84,7 +93,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unique_id = str(uuid.uuid4())[:6]
 
     status_msg = await query.edit_message_text("⚡ ফাইল ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
-
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -255,6 +263,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 pass
 
 def main():
+    # ওয়েব সার্ভার ব্যাকগ্রাউন্ডে চালু
+    web_thread = threading.Thread(target=run_web, daemon=True)
+    web_thread.start()
+
     custom_request = HTTPXRequest(
         connect_timeout=60.0,
         read_timeout=300.0,
