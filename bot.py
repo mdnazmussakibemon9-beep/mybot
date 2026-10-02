@@ -21,7 +21,7 @@ from PIL import Image
 
 static_ffmpeg.add_paths()
 
-# Render Web Service Live রাখার ব্যাকগ্রাউন্ড পোর্ট
+# Render Web Service 24/7 চালু রাখার পোর্ট
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -84,6 +84,7 @@ def get_youtube_rapidapi(yt_url, is_audio=False):
         if is_audio:
             audios = data.get("audios", {}).get("items", [])
             if audios:
+                # হাই কোয়ালিটি অডিও স্ট্রিম
                 return audios[0].get("url"), title
         else:
             videos = data.get("videos", {}).get("items", [])
@@ -111,10 +112,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [
             InlineKeyboardButton("🎬 Best Video", callback_data="vid_best"),
-            InlineKeyboardButton("📱 Fast Video", callback_data="vid_fast")
-        ],
-        [
-            InlineKeyboardButton("🎵 MP3 Audio (With Cover & Title)", callback_data="aud_best")
+            InlineKeyboardButton("🎵 MP3 Audio", callback_data="aud_best")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -128,14 +126,15 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। লিঙ্কটি আবার পাঠান।")
         return
 
     data = query.data
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
 
-    status_msg = await query.edit_message_text("⚡ লিঙ্ক প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
+    file_label = "অডিও" if req_type == "aud" else "ভিডিও"
+    status_msg = await query.edit_message_text(f"⚡ {file_label} প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -202,25 +201,26 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ত্রুটি: {str(e)[:100]}")
                 return
 
-    # ২. ইউটিউব RapidAPI ইঞ্জিন (ডিরেক্ট ডাউনলোড বাটন সহ)
+    # ২. ইউটিউব RapidAPI ইঞ্জিন (ভিডিও ও অডিও উভয়ই সাপোর্ট করে)
     if "youtube.com" in url or "youtu.be" in url:
         direct_stream, yt_title = get_youtube_rapidapi(url, is_audio=(req_type == "aud"))
         if direct_stream:
-            # ইনস্ট্যান্ট ডিরেক্ট ডাউনলোড লিংক বাটন
+            btn_text = "⬇️ অডিও সরাসরি ডাউনলোড করুন" if req_type == "aud" else "⬇️ ভিডিও সরাসরি ডাউনলোড করুন"
             download_markup = InlineKeyboardMarkup([
-                [InlineKeyboardButton("⬇️ ক্লিক করে সরাসরি ডাউনলোড করুন", url=direct_stream)]
+                [InlineKeyboardButton(btn_text, url=direct_stream)]
             ])
             await status_msg.edit_text(
-                f"✅ **{yt_title[:50]}**\n\nফাইল তৈরি হয়েছে! নিচের বাটনে ক্লিক করলেই সরাসরি ডাউনলোড শুরু হবে:",
+                f"✅ **{yt_title[:50]}**\n\nলিঙ্ক প্রস্তুত! সরাসরি ডাউনলোড করতে নিচের বাটনে চাপ দিন:",
                 reply_markup=download_markup,
                 parse_mode="Markdown"
             )
 
             # ব্যাকগ্রাউন্ডে টেলিগ্রাম চ্যাটেও ফাইল পাঠানোর চেষ্টা
-            file_path = f"{output_dir}/yt_{unique_id}.{'mp4' if req_type == 'vid' else 'mp3'}"
+            ext = "mp3" if req_type == "aud" else "mp4"
+            file_path = f"{output_dir}/yt_{unique_id}.{ext}"
             try:
                 with requests.get(direct_stream, stream=True, headers=browser_headers, timeout=120) as r:
                     if r.status_code == 200:
@@ -228,7 +228,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             for chunk in r.iter_content(chunk_size=1024*1024):
                                 if chunk:
                                     f.write(chunk)
-                        
+
                         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
                             with open(file_path, "rb") as f:
                                 if req_type == "vid":
@@ -242,7 +242,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(file_path)
             return
         else:
-            await status_msg.edit_text("❌ ভিডিও স্ট্রিম লিংক পাওয়া যায়নি। দয়া করে অন্য ভিডিও লিঙ্ক দিয়ে দেখুন।")
+            await status_msg.edit_text(f"❌ {file_label} লিংক পাওয়া যায়নি। অন্য ভিডিও লিঙ্ক দিয়ে দেখুন।")
             return
 
     # ৩. অন্যান্য সাইট (Facebook, Instagram)
