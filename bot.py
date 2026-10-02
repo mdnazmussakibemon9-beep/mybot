@@ -2,6 +2,7 @@ import os
 import threading
 import uuid
 import logging
+import subprocess
 import requests
 import static_ffmpeg
 from flask import Flask
@@ -18,7 +19,7 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# FFmpeg যুক্ত করা
+# FFmpeg সচল করা
 static_ffmpeg.add_paths()
 
 # Render Web Service 24/7 লাইভ রাখার ব্যাকগ্রাউন্ড পোর্ট
@@ -38,6 +39,7 @@ logging.basicConfig(
 
 BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
 user_urls = {}
+user_waiting_custom_time = {}
 
 def get_tiktok_direct_url(tiktok_url):
     try:
@@ -59,20 +61,86 @@ def get_tiktok_direct_url(tiktok_url):
         pass
     return None
 
+def extract_frame_ffmpeg(video_source, timestamp_sec, output_img_path):
+    cmd = [
+        "ffmpeg",
+        "-ss", str(timestamp_sec),
+        "-i", video_source,
+        "-frames:v", "1",
+        "-q:v", "2",
+        "-y",
+        output_img_path
+    ]
+    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return os.path.exists(output_img_path) and os.path.getsize(output_img_path) > 1024
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
-        "⚡ **আল্টিমেট অল-ইন-ওয়ান ডাউনলোডার বট!**\n\n"
+        "⚡ **আল্টিমেট অল-ইন-ওয়ান সোশ্যাল ডাউনলোডার বট!**\n\n"
         "Facebook, Instagram, TikTok ইত্যাদির যেকোনো ভিডিও লিঙ্ক পাঠান।\n\n"
-        "🎥 **ভিডিও:** 1080p, 720p, 480p, 360p, 240p, 144p\n"
+        "🎥 **ভিডিও:** 1080p, 720p, 480p, 360p, 240p, 144p, Fast\n"
         "🎵 **অডিও:** 320k, 192k, 128k (MP3 with Cover)\n"
-        "🖼️ **থাম্বনেইল:** HD ও Standard কোয়ালিটি"
+        "🖼️ **থাম্বনেইল ও ফ্রেম:** ডিফল্ট কভার, মাঝখানের ফ্রেম ও কাস্টম যেকোনো সেকেন্ডের স্ক্রিনশট!"
     )
     await update.message.reply_text(welcome_text, parse_mode="Markdown")
 
 async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = update.message.text.strip()
+    text = update.message.text.strip()
     user_id = update.effective_user.id
 
+    # ব্যবহারকারী কি কাস্টম সেকেন্ডের ইনপুট পাঠাচ্ছেন?
+    if user_id in user_waiting_custom_time:
+        saved_url = user_waiting_custom_time.pop(user_id)
+        time_input = text.replace("s", "").replace("sec", "").strip()
+
+        # সময় বের করা (যেমন 00:15 অথবা শুধু 15)
+        try:
+            if ":" in time_input:
+                parts = time_input.split(":")
+                if len(parts) == 2:
+                    sec = int(parts[0]) * 60 + int(parts[1])
+                elif len(parts) == 3:
+                    sec = int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+                else:
+                    sec = int(parts[0])
+            else:
+                sec = int(time_input)
+        except Exception:
+            sec = 5
+
+        status_msg = await update.message.reply_text(f"⚡ ভিডিওর {sec} সেকেন্ডের ফ্রেম প্রস্তুত করা হচ্ছে...")
+        output_dir = "temp_downloads"
+        os.makedirs(output_dir, exist_ok=True)
+        unique_id = str(uuid.uuid4())[:6]
+        output_img = f"{output_dir}/custom_frame_{unique_id}.jpg"
+
+        video_stream_url = None
+        if "tiktok.com" in saved_url:
+            tk = get_tiktok_direct_url(saved_url)
+            if tk:
+                video_stream_url = tk.get("video_hd") or tk.get("video_sd")
+        else:
+            try:
+                with yt_dlp.YoutubeDL({'quiet': True, 'format': 'best[ext=mp4]/best'}) as ydl:
+                    info = ydl.extract_info(saved_url, download=False)
+                    video_stream_url = info.get("url")
+            except Exception:
+                pass
+
+        if video_stream_url and extract_frame_ffmpeg(video_stream_url, sec, output_img):
+            with open(output_img, "rb") as f:
+                await update.message.reply_photo(
+                    photo=f,
+                    caption=f"✅ সফলভাবে ক্যাপচার করা হয়েছে: {sec} সেকেন্ডের ফ্রেম"
+                )
+            await status_msg.delete()
+            if os.path.exists(output_img):
+                os.remove(output_img)
+        else:
+            await status_msg.edit_text("❌ ফ্রেম ক্যাপচার করতে সমস্যা হয়েছে। ভিডিওটি খুব ছোট বা লিঙ্কটি সক্রিয় নয়।")
+        return
+
+    url = text
     if "youtube.com" in url or "youtu.be" in url:
         await update.message.reply_text(
             "⚠️ দুঃখিত! ইউটিউব ডাউনলোডের জন্য আলাদা বট নির্ধারিত রয়েছে।\n"
@@ -82,7 +150,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    # সব কোয়ালিটি ও কাস্টম রেজোলিউশনের সম্পূর্ণ বাটন প্যানেল
+    # সব অপশন বাটন মেনু
     keyboard = [
         # কুইক ভিডিও অপশন
         [
@@ -90,7 +158,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("🎬 Normal (Balanced)", callback_data="vid_normal"),
             InlineKeyboardButton("🚀 Fast (Low Size)", callback_data="vid_fast")
         ],
-        # কাস্টম রেজোলিউশন অপশন
+        # কাস্টম রেজোলিউশন
         [
             InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
             InlineKeyboardButton("📺 720p", callback_data="vid_720"),
@@ -110,11 +178,16 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # থাম্বনেইল অপশন
         [
             InlineKeyboardButton("🖼️ Thumbnail HD", callback_data="thumb_hd"),
-            InlineKeyboardButton("🖼️ Thumbnail Standard", callback_data="thumb_sd")
+            InlineKeyboardButton("🖼️ Thumbnail Std", callback_data="thumb_sd")
+        ],
+        # নতুন ফ্রেম অপশন
+        [
+            InlineKeyboardButton("⏱️ Frame Mid (মাঝের ফ্রেম)", callback_data="frame_mid"),
+            InlineKeyboardButton("⏳ Custom Frame (পছন্দের সেকেন্ড)", callback_data="frame_custom")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("📥 আপনার পছন্দের কোয়ালিটি বা রেজোলিউশন বেছে নিন:", reply_markup=reply_markup)
+    await update.message.reply_text("📥 আপনার পছন্দের অপশন বেছে নিন:", reply_markup=reply_markup)
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -130,6 +203,58 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = query.data
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
+    output_dir = "temp_downloads"
+    os.makedirs(output_dir, exist_ok=True)
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+
+    # কাস্টম ফ্রেম অপশন নির্বাচিত হলে
+    if req_type == "frame" and quality == "custom":
+        user_waiting_custom_time[user_id] = url
+        await query.edit_message_text(
+            "⏳ আপনি ভিডিওটির কোন সময়ের দৃশ্য/ফ্রেম চান?\n\n"
+            "সেকেন্ড বা মিনিট লিখে রিপ্লাই দিন:\n"
+            "উদাহরণ: `15` (১৫ সেকেন্ড) অথবা `01:20` (১ মিনিট ২০ সেকেন্ড)"
+        )
+        return
+
+    # মাঝের ফ্রেম (Mid-Frame) অপশন
+    if req_type == "frame" and quality == "mid":
+        status_msg = await query.edit_message_text("⏱️ ভিডিওর মাঝখানের দৃশ্য ফ্রেম বের করা হচ্ছে...")
+        output_img = f"{output_dir}/mid_frame_{unique_id}.jpg"
+        target_stream = None
+        duration = 10
+
+        if "tiktok.com" in url:
+            tk = get_tiktok_direct_url(url)
+            if tk:
+                target_stream = tk.get("video_hd") or tk.get("video_sd")
+                duration = tk.get("duration", 10)
+        else:
+            try:
+                with yt_dlp.YoutubeDL({'quiet': True, 'format': 'best[ext=mp4]/best'}) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                    target_stream = info.get("url")
+                    duration = info.get("duration", 10)
+            except Exception:
+                pass
+
+        mid_point = max(1, int(duration // 2))
+        if target_stream and extract_frame_ffmpeg(target_stream, mid_point, output_img):
+            with open(output_img, "rb") as f:
+                await context.bot.send_photo(
+                    chat_id=user_id,
+                    photo=f,
+                    caption=f"✅ ভিডিওর ঠিক মাঝখানের দৃশ্য ({mid_point}s)"
+                )
+            await status_msg.delete()
+            if os.path.exists(output_img):
+                os.remove(output_img)
+        else:
+            await status_msg.edit_text("❌ ফ্রেম তৈরি করা সম্ভব হয়নি। সাধারণ থাম্বনেইল চেষ্টা করুন।")
+        return
 
     quality_display = {
         "highest": "🌟 Highest Quality",
@@ -149,12 +274,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }.get(quality, quality)
 
     status_msg = await query.edit_message_text(f"⚡ {quality_display} প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
-    output_dir = "temp_downloads"
-    os.makedirs(output_dir, exist_ok=True)
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-    }
 
     # ১. টিকটক ইঞ্জিন
     if "tiktok.com" in url:
@@ -163,7 +282,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             file_path = None
             thumb_path = None
             try:
-                # থাম্বনেইল ডাউনলোড
                 if req_type == "thumb":
                     target_url = tk_data["cover_hd"] if quality == "hd" else tk_data["cover_sd"]
                     file_path = f"{output_dir}/tk_thumb_{unique_id}.jpg"
@@ -181,9 +299,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await status_msg.delete()
                     return
 
-                # ভিডিও বা অডিও
                 if req_type == "vid":
-                    # হাই কোয়ালিটি অথবা লো কোয়ালিটি নির্বাচন
                     target_url = tk_data["video_hd"] if quality in ["highest", "1080", "720"] else tk_data["video_sd"]
                     ext = "mp4"
                 else:
@@ -248,7 +364,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ২. Facebook, Instagram এবং অন্যান্য সাইটের ইঞ্জিন
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
-    # থাম্বনেইল ডাউনলোড হ্যান্ডলার
     if req_type == "thumb":
         ydl_opts = {
             'skip_download': True,
@@ -293,7 +408,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # ভিডিও ও অডিও কনফিগারেশন
     if req_type == "vid":
-        # কাস্টম রেজোলিউশন ফিল্টার
         if quality == "highest":
             format_opt = "bestvideo+bestaudio/best"
         elif quality == "normal":
@@ -314,7 +428,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'merge_output_format': 'mp4',
         }
     else:
-        # নির্দিষ্ট অডিও বিটরেট
         bitrate = quality if quality in ["320", "192", "128"] else "192"
         ydl_opts = {
             'outtmpl': output_template,
@@ -348,7 +461,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(base_name + ".mp3"):
                     file_path = base_name + ".mp3"
 
-        # অডিও থাম্বনেইল সংরক্ষণ
         if req_type == "aud":
             base_path = os.path.splitext(file_path)[0]
             for ext in ['.webp', '.jpg', '.jpeg', '.png']:
@@ -424,7 +536,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Custom Resolutions Bot is running...")
+    print("Social Multi-Quality Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
