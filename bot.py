@@ -21,7 +21,7 @@ from PIL import Image
 
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 চালু রাখার পোর্ট
+# Render Web Service 24/7 সচল রাখার জন্য
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -84,7 +84,6 @@ def get_youtube_rapidapi(yt_url, is_audio=False):
         if is_audio:
             audios = data.get("audios", {}).get("items", [])
             if audios:
-                # হাই কোয়ালিটি অডিও স্ট্রিম
                 return audios[0].get("url"), title
         else:
             videos = data.get("videos", {}).get("items", [])
@@ -96,6 +95,20 @@ def get_youtube_rapidapi(yt_url, is_audio=False):
     except Exception:
         pass
     return None, None
+
+def download_stream_to_file(stream_url, target_path):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept": "*/*",
+        "Connection": "keep-alive"
+    }
+    with requests.get(stream_url, headers=headers, stream=True, timeout=120) as r:
+        r.raise_for_status()
+        with open(target_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024 * 1024):
+                if chunk:
+                    f.write(chunk)
+    return os.path.exists(target_path) and os.path.getsize(target_path) > 1024
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
@@ -126,7 +139,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
         return
 
     data = query.data
@@ -134,13 +147,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unique_id = str(uuid.uuid4())[:6]
 
     file_label = "অডিও" if req_type == "aud" else "ভিডিও"
-    status_msg = await query.edit_message_text(f"⚡ {file_label} প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
+    status_msg = await query.edit_message_text(f"⚡ {file_label} ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
-
-    browser_headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
-    }
 
     # ১. টিকটক
     if "tiktok.com" in url:
@@ -151,21 +160,16 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ext = "mp4" if req_type == "vid" else "mp3"
                 file_path = f"{output_dir}/tk_{unique_id}.{ext}"
 
-                with requests.get(target_url, stream=True, headers=browser_headers, timeout=60) as r:
-                    r.raise_for_status()
-                    with open(file_path, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=1024*1024):
-                            if chunk:
-                                f.write(chunk)
+                download_stream_to_file(target_url, file_path)
 
                 thumb_path = None
                 if tk_data.get("cover"):
                     thumb_path = f"{output_dir}/thumb_{unique_id}.jpg"
-                    tr = requests.get(tk_data["cover"], headers=browser_headers, timeout=15)
+                    tr = requests.get(tk_data["cover"], timeout=15)
                     with open(thumb_path, "wb") as tf:
                         tf.write(tr.content)
 
-                await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
+                await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল আপলোড হচ্ছে...")
 
                 with open(file_path, "rb") as f:
                     if req_type == "vid":
@@ -204,45 +208,42 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(chat_id=user_id, text=f"টিকটক ত্রুটি: {str(e)[:100]}")
                 return
 
-    # ২. ইউটিউব RapidAPI ইঞ্জিন (ভিডিও ও অডিও উভয়ই সাপোর্ট করে)
+    # ২. ইউটিউব RapidAPI ইঞ্জিন (সরাসরি ফাইল ডাউনলোড ও টেলিগ্রামে সেন্ড)
     if "youtube.com" in url or "youtu.be" in url:
         direct_stream, yt_title = get_youtube_rapidapi(url, is_audio=(req_type == "aud"))
         if direct_stream:
-            btn_text = "⬇️ অডিও সরাসরি ডাউনলোড করুন" if req_type == "aud" else "⬇️ ভিডিও সরাসরি ডাউনলোড করুন"
-            download_markup = InlineKeyboardMarkup([
-                [InlineKeyboardButton(btn_text, url=direct_stream)]
-            ])
-            await status_msg.edit_text(
-                f"✅ **{yt_title[:50]}**\n\nলিঙ্ক প্রস্তুত! সরাসরি ডাউনলোড করতে নিচের বাটনে চাপ দিন:",
-                reply_markup=download_markup,
-                parse_mode="Markdown"
-            )
-
-            # ব্যাকগ্রাউন্ডে টেলিগ্রাম চ্যাটেও ফাইল পাঠানোর চেষ্টা
             ext = "mp3" if req_type == "aud" else "mp4"
             file_path = f"{output_dir}/yt_{unique_id}.{ext}"
             try:
-                with requests.get(direct_stream, stream=True, headers=browser_headers, timeout=120) as r:
-                    if r.status_code == 200:
-                        with open(file_path, "wb") as f:
-                            for chunk in r.iter_content(chunk_size=1024*1024):
-                                if chunk:
-                                    f.write(chunk)
-
-                        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-                            with open(file_path, "rb") as f:
-                                if req_type == "vid":
-                                    await context.bot.send_video(chat_id=user_id, video=f, caption=f"✅ {yt_title[:60]}")
-                                else:
-                                    await context.bot.send_audio(chat_id=user_id, audio=f, title=yt_title[:40], performer="YouTube")
-            except Exception:
-                pass
+                success = download_stream_to_file(direct_stream, file_path)
+                if success:
+                    await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল আপলোড হচ্ছে...")
+                    with open(file_path, "rb") as f:
+                        if req_type == "vid":
+                            await context.bot.send_video(
+                                chat_id=user_id,
+                                video=f,
+                                supports_streaming=True,
+                                caption=f"✅ {yt_title[:60]}"
+                            )
+                        else:
+                            await context.bot.send_audio(
+                                chat_id=user_id,
+                                audio=f,
+                                title=yt_title[:40],
+                                performer="YouTube"
+                            )
+                    await status_msg.delete()
+                else:
+                    await status_msg.edit_text("❌ ফাইলটি খালি পাওয়া গেছে। অন্য ভিডিও লিংক দিয়ে চেষ্টা করুন।")
+            except Exception as e:
+                await context.bot.send_message(chat_id=user_id, text=f"ইউটিউব ফাইলে ত্রুটি: {str(e)[:100]}")
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
             return
         else:
-            await status_msg.edit_text(f"❌ {file_label} লিংক পাওয়া যায়নি। অন্য ভিডিও লিঙ্ক দিয়ে দেখুন।")
+            await status_msg.edit_text(f"❌ {file_label} লিংক পাওয়া যায়নি। অন্য লিঙ্ক দিয়ে দেখুন।")
             return
 
     # ৩. অন্যান্য সাইট (Facebook, Instagram)
@@ -273,7 +274,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if os.path.exists(base_name + ext):
                 file_path = base_name + ext
 
-        await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
+        await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল আপলোড হচ্ছে...")
 
         with open(file_path, 'rb') as f:
             if req_type == "vid":
