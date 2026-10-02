@@ -3,6 +3,7 @@ import threading
 import uuid
 import logging
 import requests
+import static_ffmpeg
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -17,7 +18,10 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# Render Web Service-er jonno background port server
+# FFmpeg সক্রিয় করা
+static_ffmpeg.add_paths()
+
+# Render Web Service-এর পোর্ট চালু রাখা
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -55,8 +59,8 @@ def get_tiktok_direct_url(tiktok_url):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
-        "⚡ Super Fast All-in-One Downloader Bot Ready!\n\n"
-        "Send any video link from YouTube, TikTok, Facebook, Instagram etc."
+        "⚡ সুপার ফাস্ট অল-ইন-ওয়ান ডাউনলোডার বট প্রস্তুত!\n\n"
+        "যেকোনো প্ল্যাটফর্মের ভিডিও লিঙ্ক পাঠান (YouTube, TikTok, Facebook, Insta ইত্যাদি)।"
     )
     await update.message.reply_text(welcome_text)
 
@@ -75,7 +79,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Kon formate download korte chan select korun:", reply_markup=reply_markup)
+    await update.message.reply_text("কোন ফরম্যাটে ডাউনলোড করতে চান বেছে নিন:", reply_markup=reply_markup)
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -85,18 +89,18 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ Link expired. Please send the link again.")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
         return
 
     data = query.data
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
 
-    status_msg = await query.edit_message_text("⚡ Processing and downloading file, please wait...")
+    status_msg = await query.edit_message_text("⚡ ফাইল ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # TikTok Direct API Engine
+    # TikTok Direct API
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
@@ -118,7 +122,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     with open(thumb_path, "wb") as tf:
                         tf.write(tr.content)
 
-                await status_msg.edit_text("🚀 Uploading to Telegram...")
+                await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
 
                 with open(file_path, "rb") as f:
                     if req_type == "vid":
@@ -154,21 +158,17 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"TikTok download error: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
                 return
 
-    # yt-dlp Settings with Cookies & Bot-Bypass
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
+    
+    # yt-dlp Settings
     common_opts = {
         'outtmpl': output_template,
         'quiet': True,
         'no_warnings': True,
         'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web']
-            }
-        },
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept-Language': 'en-US,en;q=0.9',
@@ -178,13 +178,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if req_type == "vid":
         ydl_opts = {
             **common_opts,
-            'format': 'bestvideo+bestaudio/best',
+            'format': 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b',
             'merge_output_format': 'mp4',
         }
     else:
         ydl_opts = {
             **common_opts,
-            'format': 'bestaudio/best',
+            'format': 'ba/b',
             'writethumbnail': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
@@ -227,7 +227,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         pass
                     break
 
-        await status_msg.edit_text("🚀 Uploading to Telegram...")
+        await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
 
         with open(file_path, 'rb') as f:
             if req_type == "vid":
