@@ -19,10 +19,9 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# FFmpeg সচল করা
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 সচল রাখার পোর্ট বাইন্ডার
+# Render Web Service Live রাখার ব্যাকগ্রাউন্ড পোর্ট
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -38,6 +37,9 @@ logging.basicConfig(
 )
 
 BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
+RAPIDAPI_KEY = "56530a173fmsh8e9c96b676755abp148422jsnf768ba7c0228"
+RAPIDAPI_HOST = "youtube-media-downloader.p.rapidapi.com"
+
 user_urls = {}
 
 def get_tiktok_direct_url(tiktok_url):
@@ -62,64 +64,37 @@ def extract_yt_id(url):
     match = re.search(r"(?:v=|\/|youtu\.be\/)([0-9A-Za-z_-]{11})", url)
     return match.group(1) if match else None
 
-def get_youtube_fallback_stream(yt_url, is_audio=False):
-    video_id = extract_yt_id(yt_url)
-    if not video_id:
+def get_youtube_rapidapi(yt_url, is_audio=False):
+    vid_id = extract_yt_id(yt_url)
+    if not vid_id:
         return None, None
 
-    # ১. Piped / Invidious API
-    invidious_apis = [
-        f"https://pipedapi.kavin.rocks/streams/{video_id}",
-        f"https://api.piped.privacydev.net/streams/{video_id}",
-        f"https://vid.puffyan.us/api/v1/videos/{video_id}",
-        f"https://inv.riverside.rocks/api/v1/videos/{video_id}"
-    ]
-    for endpoint in invidious_apis:
-        try:
-            r = requests.get(endpoint, timeout=8)
-            if r.status_code == 200:
-                data = r.json()
-                title = data.get("title", "YouTube Media")
-                if is_audio:
-                    audio_streams = data.get("audioStreams", [])
-                    if audio_streams:
-                        # সেরা অডিও কোয়ালিটি নির্বাচন
-                        best_aud = max(audio_streams, key=lambda x: x.get("bitrate", 0))
-                        return best_aud.get("url"), title
-                else:
-                    video_streams = data.get("videoStreams", [])
-                    if video_streams:
-                        # 720p/360p সহ সাউন্ড সহ প্রোগ্রেসিভ স্ট্রিম অগ্রাধিকার
-                        sound_vids = [v for v in video_streams if not v.get("videoOnly")]
-                        if sound_vids:
-                            return sound_vids[0].get("url"), title
-                        return video_streams[0].get("url"), title
-        except Exception:
-            continue
-
-    # ২. Cobalt API గేটওয়ে
-    cobalt_instances = [
-        "https://api.cobalt.tools/api/json",
-        "https://cobalt.kwiatekm.pl/api/json",
-        "https://co.wuk.sh/api/json"
-    ]
-    payload = {
-        "url": yt_url,
-        "isAudioOnly": is_audio,
-        "aFormat": "mp3" if is_audio else "best",
-        "vQuality": "720"
+    url = "https://youtube-media-downloader.p.rapidapi.com/v2/video/details"
+    querystring = {"videoId": vid_id}
+    headers = {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": RAPIDAPI_HOST
     }
-    headers = {"Accept": "application/json", "Content-Type": "application/json"}
 
-    for api in cobalt_instances:
-        try:
-            res = requests.post(api, json=payload, headers=headers, timeout=10)
-            res_data = res.json()
-            if res_data.get("url"):
-                return res_data.get("url"), "YouTube Media"
-        except Exception:
-            continue
+    try:
+        response = requests.get(url, headers=headers, params=querystring, timeout=20)
+        data = response.json()
+        title = data.get("title", "YouTube Media")
 
+        if is_audio:
+            audios = data.get("audios", {}).get("items", [])
+            if audios:
+                return audios[0].get("url"), title
+        else:
+            videos = data.get("videos", {}).get("items", [])
+            if videos:
+                # সাউন্ড সহ ভিডিও নির্বাচন
+                with_audio = [v for v in videos if v.get("hasAudio")]
+                if with_audio:
+                    return with_audio[0].get("url"), title
+                return videos[0].get("url"), title
+    except Exception:
+        pass
     return None, None
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -154,7 +129,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। দয়া করে লিঙ্কটি আবার পাঠান।")
         return
 
     data = query.data
@@ -165,7 +140,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # ১. টিকটক ইঞ্জিন
+    # ১. টিকটক
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
@@ -226,9 +201,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
                 return
 
-    # ২. ইউটিউব মাল্টি-এপিআই ইঞ্জিন (ডাটা সেন্টার ব্লক বাইপাস)
+    # ২. ইউটিউব RapidAPI ইঞ্জিন (Render IP ব্লকিং পুরোপুরি বাইপাস)
     if "youtube.com" in url or "youtu.be" in url:
-        direct_stream, yt_title = get_youtube_fallback_stream(url, is_audio=(req_type == "aud"))
+        direct_stream, yt_title = get_youtube_rapidapi(url, is_audio=(req_type == "aud"))
         if direct_stream:
             try:
                 ext = "mp4" if req_type == "vid" else "mp3"
@@ -262,10 +237,14 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(file_path):
                     os.remove(file_path)
                 return
-            except Exception:
-                pass
+            except Exception as e:
+                await context.bot.send_message(chat_id=user_id, text=f"ইউটিউব ডাউনলোডে ত্রুটি: {str(e)[:100]}")
+                return
+        else:
+            await status_msg.edit_text("❌ এপিআই থেকে সরাসরি স্ট্রিম পাওয়া যায়নি। অন্য ভিডিও লিংক দিয়ে দেখুন।")
+            return
 
-    # ৩. ফেসবুক ও ইনস্টাগ্রাম (yt-dlp ইঞ্জিন)
+    # ৩. অন্যান্য সাইট (Facebook, Instagram)
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
     ydl_opts = {
         'outtmpl': output_template,
