@@ -18,7 +18,6 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# FFmpeg সক্রিয় করা
 static_ffmpeg.add_paths()
 
 # Render Web Service Live রাখার ব্যাকগ্রাউন্ড পোর্ট
@@ -55,6 +54,34 @@ def get_tiktok_direct_url(tiktok_url):
             }
     except Exception:
         pass
+    return None
+
+def get_cobalt_stream(media_url, is_audio=False):
+    instances = [
+        "https://api.cobalt.tools/api/json",
+        "https://cobalt.kwiatekm.pl/api/json"
+    ]
+    payload = {
+        "url": media_url,
+        "isAudioOnly": is_audio,
+        "aFormat": "mp3" if is_audio else "best",
+        "vQuality": "720"
+    }
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0"
+    }
+    for api in instances:
+        try:
+            r = requests.post(api, json=payload, headers=headers, timeout=12)
+            data = r.json()
+            if data.get("url"):
+                return data.get("url")
+            if data.get("stream"):
+                return data.get("stream")
+        except Exception:
+            continue
     return None
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -100,7 +127,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # TikTok Direct API
+    # ১. টিকটক
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
@@ -158,28 +185,66 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"ত্রুটি: {str(e)[:100]}")
                 return
 
-    output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
+    # ২. ইউটিউব বাইপাস ইঞ্জিন
+    if "youtube.com" in url or "youtu.be" in url:
+        direct_stream = get_cobalt_stream(url, is_audio=(req_type == "aud"))
+        if direct_stream:
+            try:
+                ext = "mp4" if req_type == "vid" else "mp3"
+                file_path = f"{output_dir}/yt_{unique_id}.{ext}"
 
-    # খাঁটি Android Client যাতে কোনো Reload / Cookies এরর না আসে
+                r = requests.get(direct_stream, stream=True, timeout=120)
+                with open(file_path, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=1024*1024):
+                        if chunk:
+                            f.write(chunk)
+
+                await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
+
+                with open(file_path, "rb") as f:
+                    if req_type == "vid":
+                        await context.bot.send_video(
+                            chat_id=user_id,
+                            video=f,
+                            supports_streaming=True,
+                            caption="✅ YouTube Video"
+                        )
+                    else:
+                        await context.bot.send_audio(
+                            chat_id=user_id,
+                            audio=f,
+                            title="YouTube Audio",
+                            performer="YouTube"
+                        )
+
+                await status_msg.delete()
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                return
+            except Exception:
+                pass
+
+    # ৩. অন্যান্য সাইট (Facebook, Instagram ইত্যাদি) এর জন্য yt-dlp
+    output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
     common_opts = {
         'outtmpl': output_template,
         'quiet': True,
         'no_warnings': True,
         'extractor_args': {
             'youtube': {
-                'player_client': ['android'],
-                'player_skip': ['webpage', 'configs']
+                'player_client': ['ios', 'android']
             }
-        },
+        }
     }
 
     if req_type == "vid":
         ydl_opts = {
             **common_opts,
-            'format': 'best[ext=mp4]/best',
+            'format': 'bestvideo+bestaudio/best',
+            'merge_output_format': 'mp4',
         }
     else:
         ydl_opts = {
