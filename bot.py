@@ -1,9 +1,9 @@
 import os
 import threading
-from flask import Flask
 import uuid
 import logging
 import requests
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -17,15 +17,15 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
-# ডামি ওয়েব সার্ভার (Render Web Service Free-তে Live রাখার জন্য)
+# Render Web Service-এর জন্য ব্যাকগ্রাউন্ড পোর্ট সার্ভার
 web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Telegram Bot is Running 24/7!"
+    return "Telegram Media Downloader Bot is Running 24/7!"
 
 def run_web():
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 10000))
     web_app.run(host="0.0.0.0", port=port)
 
 logging.basicConfig(
@@ -263,7 +263,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 pass
 
 def main():
-    # ওয়েব সার্ভার ব্যাকগ্রাউন্ডে চালু
+    # Flask ওয়েব সার্ভার চালু
     web_thread = threading.Thread(target=run_web, daemon=True)
     web_thread.start()
 
