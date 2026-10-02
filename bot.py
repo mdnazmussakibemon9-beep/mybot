@@ -3,7 +3,6 @@ import threading
 import uuid
 import logging
 import requests
-import re
 import static_ffmpeg
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -19,14 +18,15 @@ from telegram.request import HTTPXRequest
 import yt_dlp
 from PIL import Image
 
+# FFmpeg যুক্ত করা
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 চালু রাখার ব্যাকগ্রাউন্ড পোর্ট
+# Render Web Service 24/7 লাইভ রাখার ব্যাকগ্রাউন্ড পোর্ট
 web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Telegram Media Downloader Bot is Running 24/7!"
+    return "Social Downloader Bot is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -37,9 +37,6 @@ logging.basicConfig(
 )
 
 BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
-RAPIDAPI_KEY = "56530a173fmsh8e9c96b676755abp148422jsnf768ba7c0228"
-RAPIDAPI_HOST = "youtube-media-downloader.p.rapidapi.com"
-
 user_urls = {}
 
 def get_tiktok_direct_url(tiktok_url):
@@ -50,78 +47,74 @@ def get_tiktok_direct_url(tiktok_url):
             data = res.get("data", {})
             return {
                 "title": data.get("title", "TikTok Video"),
-                "video_url": data.get("play"),
+                "video_hd": data.get("hdplay") or data.get("play"),
+                "video_sd": data.get("play"),
                 "audio_url": data.get("music"),
-                "cover": data.get("cover"),
-                "author": data.get("author", {}).get("nickname", "TikTok User"),
+                "cover_hd": data.get("origin_cover") or data.get("cover"),
+                "cover_sd": data.get("cover"),
+                "author": data.get("author", {}).get("nickname", "TikTok Creator"),
                 "duration": data.get("duration", 0)
             }
     except Exception:
         pass
     return None
 
-def extract_yt_id(url):
-    match = re.search(r"(?:v=|\/|youtu\.be\/)([0-9A-Za-z_-]{11})", url)
-    return match.group(1) if match else None
-
-def get_youtube_rapidapi(yt_url, is_audio=False):
-    vid_id = extract_yt_id(yt_url)
-    if not vid_id:
-        return None, None, None, None
-
-    url = "https://youtube-media-downloader.p.rapidapi.com/v2/video/details"
-    querystring = {"videoId": vid_id}
-    headers = {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST
-    }
-
-    try:
-        response = requests.get(url, headers=headers, params=querystring, timeout=20)
-        data = response.json()
-        title = data.get("title", "YouTube Media")
-        channel = data.get("channelTitle", "YouTube")
-        duration = data.get("lengthSeconds", 0)
-        thumbnails = data.get("thumbnails", [])
-        thumb_url = thumbnails[-1].get("url") if thumbnails else None
-
-        if is_audio:
-            audios = data.get("audios", {}).get("items", [])
-            if audios:
-                return audios[0].get("url"), title, channel, thumb_url
-        else:
-            videos = data.get("videos", {}).get("items", [])
-            if videos:
-                with_audio = [v for v in videos if v.get("hasAudio")]
-                target_list = with_audio if with_audio else videos
-                return target_list[0].get("url"), title, channel, thumb_url
-    except Exception:
-        pass
-    return None, None, None, None
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
-        "⚡ সুপার ফাস্ট অল-ইন-ওয়ান ডাউনলোডার বট প্রস্তুত!\n\n"
-        "যেকোনো প্ল্যাটফর্মের ভিডিও লিঙ্ক পাঠান (YouTube, TikTok, Facebook, Insta ইত্যাদি)।"
+        "⚡ **আল্টিমেট অল-ইন-ওয়ান ডাউনলোডার বট!**\n\n"
+        "Facebook, Instagram, TikTok ইত্যাদির যেকোনো ভিডিও লিঙ্ক পাঠান।\n\n"
+        "🎥 **ভিডিও:** 1080p, 720p, 480p, 360p, 240p, 144p\n"
+        "🎵 **অডিও:** 320k, 192k, 128k (MP3 with Cover)\n"
+        "🖼️ **থাম্বনেইল:** HD ও Standard কোয়ালিটি"
     )
-    await update.message.reply_text(welcome_text)
+    await update.message.reply_text(welcome_text, parse_mode="Markdown")
 
 async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     user_id = update.effective_user.id
+
+    if "youtube.com" in url or "youtu.be" in url:
+        await update.message.reply_text(
+            "⚠️ দুঃখিত! ইউটিউব ডাউনলোডের জন্য আলাদা বট নির্ধারিত রয়েছে।\n"
+            "এখানে শুধুমাত্র TikTok, Facebook, Instagram ইত্যাদির লিঙ্ক পাঠান।"
+        )
+        return
+
     user_urls[user_id] = url
 
+    # সব কোয়ালিটি ও কাস্টম রেজোলিউশনের সম্পূর্ণ বাটন প্যানেল
     keyboard = [
+        # কুইক ভিডিও অপশন
         [
-            InlineKeyboardButton("🎬 Best Video", callback_data="vid_best"),
-            InlineKeyboardButton("📱 Fast Video", callback_data="vid_fast")
+            InlineKeyboardButton("🌟 Highest (Max)", callback_data="vid_highest"),
+            InlineKeyboardButton("🎬 Normal (Balanced)", callback_data="vid_normal"),
+            InlineKeyboardButton("🚀 Fast (Low Size)", callback_data="vid_fast")
+        ],
+        # কাস্টম রেজোলিউশন অপশন
+        [
+            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
+            InlineKeyboardButton("📺 720p", callback_data="vid_720"),
+            InlineKeyboardButton("📱 480p", callback_data="vid_480")
         ],
         [
-            InlineKeyboardButton("🎵 MP3 Audio (With Cover & Title)", callback_data="aud_best")
+            InlineKeyboardButton("📱 360p", callback_data="vid_360"),
+            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
+            InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
+        ],
+        # অডিও অপশন
+        [
+            InlineKeyboardButton("🎵 Audio High (320k)", callback_data="aud_320"),
+            InlineKeyboardButton("🎶 Mid (192k)", callback_data="aud_192"),
+            InlineKeyboardButton("📻 Low (128k)", callback_data="aud_128")
+        ],
+        # থাম্বনেইল অপশন
+        [
+            InlineKeyboardButton("🖼️ Thumbnail HD", callback_data="thumb_hd"),
+            InlineKeyboardButton("🖼️ Thumbnail Standard", callback_data="thumb_sd")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("কোন ফরম্যাটে ডাউনলোড করতে চান বেছে নিন:", reply_markup=reply_markup)
+    await update.message.reply_text("📥 আপনার পছন্দের কোয়ালিটি বা রেজোলিউশন বেছে নিন:", reply_markup=reply_markup)
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -131,30 +124,72 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = user_urls.get(user_id)
 
     if not url:
-        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ। লিঙ্কটি আবার পাঠান।")
+        await query.edit_message_text("❌ লিঙ্কের মেয়াদ শেষ হয়ে গেছে। লিঙ্কটি পুনরায় পাঠান।")
         return
 
     data = query.data
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
 
-    file_label = "অডিও" if req_type == "aud" else "ভিডিও"
-    status_msg = await query.edit_message_text(f"⚡ {file_label} ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
+    quality_display = {
+        "highest": "🌟 Highest Quality",
+        "normal": "🎬 Normal Quality",
+        "fast": "🚀 Fast Download",
+        "1080": "📺 1080p Full HD",
+        "720": "📺 720p HD",
+        "480": "📱 480p",
+        "360": "📱 360p",
+        "240": "⚡ 240p Low",
+        "144": "⚡ 144p Ultra Low",
+        "320": "🎵 Audio High (320 kbps)",
+        "192": "🎶 Audio Medium (192 kbps)",
+        "128": "📻 Audio Low (128 kbps)",
+        "hd": "🖼️ High Definition Thumbnail",
+        "sd": "🖼️ Standard Thumbnail"
+    }.get(quality, quality)
+
+    status_msg = await query.edit_message_text(f"⚡ {quality_display} প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Referer": "https://www.youtube.com/"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
-    # ১. টিকটক
+    # ১. টিকটক ইঞ্জিন
     if "tiktok.com" in url:
         tk_data = get_tiktok_direct_url(url)
         if tk_data:
+            file_path = None
+            thumb_path = None
             try:
-                target_url = tk_data["video_url"] if req_type == "vid" else tk_data["audio_url"]
-                ext = "mp4" if req_type == "vid" else "mp3"
+                # থাম্বনেইল ডাউনলোড
+                if req_type == "thumb":
+                    target_url = tk_data["cover_hd"] if quality == "hd" else tk_data["cover_sd"]
+                    file_path = f"{output_dir}/tk_thumb_{unique_id}.jpg"
+                    r = requests.get(target_url, headers=headers, timeout=20)
+                    with open(file_path, "wb") as f:
+                        f.write(r.content)
+                    
+                    await status_msg.edit_text("🚀 থাম্বনেইল পাঠানো হচ্ছে...")
+                    with open(file_path, "rb") as f:
+                        await context.bot.send_photo(
+                            chat_id=user_id,
+                            photo=f,
+                            caption=f"✅ {tk_data['title'][:60]}\n🎯 {quality_display}"
+                        )
+                    await status_msg.delete()
+                    return
+
+                # ভিডিও বা অডিও
+                if req_type == "vid":
+                    # হাই কোয়ালিটি অথবা লো কোয়ালিটি নির্বাচন
+                    target_url = tk_data["video_hd"] if quality in ["highest", "1080", "720"] else tk_data["video_sd"]
+                    ext = "mp4"
+                else:
+                    target_url = tk_data["audio_url"]
+                    ext = "mp3"
+
                 file_path = f"{output_dir}/tk_{unique_id}.{ext}"
 
                 with requests.get(target_url, stream=True, headers=headers, timeout=60) as r:
@@ -164,14 +199,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             if chunk:
                                 f.write(chunk)
 
-                thumb_path = None
-                if tk_data.get("cover"):
+                if tk_data.get("cover_sd"):
                     thumb_path = f"{output_dir}/thumb_{unique_id}.jpg"
-                    tr = requests.get(tk_data["cover"], headers=headers, timeout=15)
+                    tr = requests.get(tk_data["cover_sd"], headers=headers, timeout=15)
                     with open(thumb_path, "wb") as tf:
                         tf.write(tr.content)
 
-                await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল পাঠানো হচ্ছে...")
+                await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
 
                 with open(file_path, "rb") as f:
                     if req_type == "vid":
@@ -179,7 +213,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             chat_id=user_id,
                             video=f,
                             supports_streaming=True,
-                            caption=f"✅ {tk_data['title'][:60]}"
+                            caption=f"✅ {tk_data['title'][:60]}\n🎯 {quality_display}"
                         )
                     else:
                         if thumb_path and os.path.exists(thumb_path):
@@ -201,115 +235,135 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             )
 
                 await status_msg.delete()
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                if thumb_path and os.path.exists(thumb_path):
-                    os.remove(thumb_path)
                 return
             except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
+                await context.bot.send_message(chat_id=user_id, text=f"টিকটক ত্রুটি: {str(e)[:100]}")
                 return
-
-    # ২. ইউটিউব ইঞ্জিন (সরাসরি ফাইল ডাউনলোড ও সেন্ড)
-    if "youtube.com" in url or "youtu.be" in url:
-        is_audio = (req_type == "aud")
-        stream_url, yt_title, yt_artist, yt_thumb = get_youtube_rapidapi(url, is_audio=is_audio)
-
-        if stream_url:
-            ext = "mp3" if is_audio else "mp4"
-            file_path = f"{output_dir}/yt_{unique_id}.{ext}"
-            thumb_path = f"{output_dir}/thumb_{unique_id}.jpg" if yt_thumb else None
-
-            try:
-                # থাম্বনেইল সংরক্ষণ
-                if yt_thumb:
-                    try:
-                        tr = requests.get(yt_thumb, timeout=10)
-                        if tr.status_code == 200:
-                            with open(thumb_path, "wb") as tf:
-                                tf.write(tr.content)
-                    except Exception:
-                        thumb_path = None
-
-                # ভিডিও/অডিও স্ট্রিম ডাউনলোড
-                with requests.get(stream_url, stream=True, headers=headers, timeout=120) as r:
-                    r.raise_for_status()
-                    with open(file_path, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=1024*1024):
-                            if chunk:
-                                f.write(chunk)
-
-                if os.path.exists(file_path) and os.path.getsize(file_path) > 1024:
-                    await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল আপলোড হচ্ছে...")
-                    with open(file_path, "rb") as f:
-                        if is_audio:
-                            if thumb_path and os.path.exists(thumb_path):
-                                with open(thumb_path, "rb") as t:
-                                    await context.bot.send_audio(
-                                        chat_id=user_id,
-                                        audio=f,
-                                        thumbnail=t,
-                                        title=yt_title[:40],
-                                        performer=yt_artist[:30]
-                                    )
-                            else:
-                                await context.bot.send_audio(
-                                    chat_id=user_id,
-                                    audio=f,
-                                    title=yt_title[:40],
-                                    performer=yt_artist[:30]
-                                )
-                        else:
-                            await context.bot.send_video(
-                                chat_id=user_id,
-                                video=f,
-                                supports_streaming=True,
-                                caption=f"✅ {yt_title[:60]}"
-                            )
-                    await status_msg.delete()
-                else:
-                    await status_msg.edit_text("❌ ফাইল ডাউনলোড করা সম্ভব হয়নি। অন্য লিঙ্ক দিয়ে চেষ্টা করুন।")
-            except Exception as e:
-                await context.bot.send_message(chat_id=user_id, text=f"ইউটিউব ফাইলে ত্রুটি: {str(e)[:100]}")
             finally:
-                if os.path.exists(file_path):
+                if file_path and os.path.exists(file_path):
                     os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path):
                     os.remove(thumb_path)
-            return
-        else:
-            await status_msg.edit_text("❌ লিঙ্ক পাওয়া যায়নি। অন্য ভিডিও লিঙ্ক দিয়ে চেষ্টা করুন।")
-            return
 
-    # ৩. অন্যান্য সাইট (Facebook, Instagram)
+    # ২. Facebook, Instagram এবং অন্যান্য সাইটের ইঞ্জিন
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
-    ydl_opts = {
-        'outtmpl': output_template,
-        'quiet': True,
-        'no_warnings': True,
-        'format': 'best' if req_type == "vid" else 'bestaudio/best',
-    }
-    if req_type == "aud":
-        ydl_opts['postprocessors'] = [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }]
+
+    # থাম্বনেইল ডাউনলোড হ্যান্ডলার
+    if req_type == "thumb":
+        ydl_opts = {
+            'skip_download': True,
+            'writethumbnail': True,
+            'outtmpl': output_template,
+            'quiet': True,
+            'no_warnings': True,
+        }
+        file_path = None
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+                video_title = info.get('title', 'Media')
+                thumb_url = info.get('thumbnail')
+
+                if quality == "hd" and info.get('thumbnails'):
+                    thumb_url = info['thumbnails'][-1].get('url', thumb_url)
+
+                if thumb_url:
+                    file_path = f"{output_dir}/thumb_{unique_id}.jpg"
+                    r = requests.get(thumb_url, headers=headers, timeout=20)
+                    with open(file_path, "wb") as f:
+                        f.write(r.content)
+
+            if file_path and os.path.exists(file_path):
+                await status_msg.edit_text("🚀 থাম্বনেইল পাঠানো হচ্ছে...")
+                with open(file_path, "rb") as f:
+                    await context.bot.send_photo(
+                        chat_id=user_id,
+                        photo=f,
+                        caption=f"✅ {video_title[:60]}\n🎯 {quality_display}"
+                    )
+                await status_msg.delete()
+            else:
+                await status_msg.edit_text("❌ থাম্বনেইল পাওয়া যায়নি।")
+        except Exception as e:
+            await context.bot.send_message(chat_id=user_id, text=f"থাম্বনেইল ত্রুটি: {str(e)[:150]}")
+        finally:
+            if file_path and os.path.exists(file_path):
+                os.remove(file_path)
+        return
+
+    # ভিডিও ও অডিও কনফিগারেশন
+    if req_type == "vid":
+        # কাস্টম রেজোলিউশন ফিল্টার
+        if quality == "highest":
+            format_opt = "bestvideo+bestaudio/best"
+        elif quality == "normal":
+            format_opt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
+        elif quality == "fast":
+            format_opt = "worstvideo[height<=480]+worstaudio/worst"
+        elif quality.isdigit():
+            h = int(quality)
+            format_opt = f"bestvideo[height<={h}]+bestaudio/best[height<={h}]/best"
+        else:
+            format_opt = "bestvideo+bestaudio/best"
+
+        ydl_opts = {
+            'outtmpl': output_template,
+            'quiet': True,
+            'no_warnings': True,
+            'format': format_opt,
+            'merge_output_format': 'mp4',
+        }
+    else:
+        # নির্দিষ্ট অডিও বিটরেট
+        bitrate = quality if quality in ["320", "192", "128"] else "192"
+        ydl_opts = {
+            'outtmpl': output_template,
+            'quiet': True,
+            'no_warnings': True,
+            'format': 'bestaudio/best',
+            'writethumbnail': True,
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': bitrate,
+            }],
+        }
 
     file_path = None
+    thumb_jpg = None
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             video_title = info.get('title', 'Media')
             channel_name = info.get('uploader', 'Artist')
+            duration = info.get('duration', 0)
             file_path = ydl.prepare_filename(info)
 
             base_name = os.path.splitext(file_path)[0]
-            ext = ".mp4" if req_type == "vid" else ".mp3"
-            if os.path.exists(base_name + ext):
-                file_path = base_name + ext
+            if req_type == "vid":
+                if os.path.exists(base_name + ".mp4"):
+                    file_path = base_name + ".mp4"
+            else:
+                if os.path.exists(base_name + ".mp3"):
+                    file_path = base_name + ".mp3"
 
-        await status_msg.edit_text("🚀 টেলিগ্রামে ফাইল আপলোড হচ্ছে...")
+        # অডিও থাম্বনেইল সংরক্ষণ
+        if req_type == "aud":
+            base_path = os.path.splitext(file_path)[0]
+            for ext in ['.webp', '.jpg', '.jpeg', '.png']:
+                potential_thumb = base_path + ext
+                if os.path.exists(potential_thumb):
+                    try:
+                        im = Image.open(potential_thumb).convert("RGB")
+                        thumb_jpg = base_path + "_thumb.jpg"
+                        im.save(thumb_jpg, "JPEG")
+                        os.remove(potential_thumb)
+                    except Exception:
+                        pass
+                    break
+
+        await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
 
         with open(file_path, 'rb') as f:
             if req_type == "vid":
@@ -317,23 +371,42 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     chat_id=user_id,
                     video=f,
                     supports_streaming=True,
-                    caption=f"✅ {video_title}"
+                    caption=f"✅ {video_title[:60]}\n🎯 কোয়ালিটি: {quality_display}"
                 )
             else:
-                await context.bot.send_audio(
-                    chat_id=user_id,
-                    audio=f,
-                    title=video_title,
-                    performer=channel_name
-                )
+                if thumb_jpg and os.path.exists(thumb_jpg):
+                    with open(thumb_jpg, 'rb') as t:
+                        await context.bot.send_audio(
+                            chat_id=user_id,
+                            audio=f,
+                            thumbnail=t,
+                            title=video_title[:40],
+                            performer=channel_name[:30],
+                            duration=duration
+                        )
+                else:
+                    await context.bot.send_audio(
+                        chat_id=user_id,
+                        audio=f,
+                        title=video_title[:40],
+                        performer=channel_name[:30],
+                        duration=duration
+                    )
 
         await status_msg.delete()
+
     except Exception as e:
-        await context.bot.send_message(chat_id=user_id, text=f"ত্রুটি: {str(e)[:150]}")
+        await context.bot.send_message(chat_id=user_id, text=f"ডাউনলোডে ত্রুটি: {str(e)[:150]}")
+
     finally:
         if file_path and os.path.exists(file_path):
             try:
                 os.remove(file_path)
+            except Exception:
+                pass
+        if thumb_jpg and os.path.exists(thumb_jpg):
+            try:
+                os.remove(thumb_jpg)
             except Exception:
                 pass
 
@@ -351,7 +424,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Bot is running...")
+    print("Custom Resolutions Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
