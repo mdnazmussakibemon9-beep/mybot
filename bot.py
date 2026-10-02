@@ -88,7 +88,6 @@ def get_youtube_rapidapi(yt_url, is_audio=False):
         else:
             videos = data.get("videos", {}).get("items", [])
             if videos:
-                # সাউন্ড সহ এমপি৪ ফরম্যাট
                 with_audio = [v for v in videos if v.get("hasAudio")]
                 if with_audio:
                     return with_audio[0].get("url"), title
@@ -136,15 +135,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     req_type, quality = data.split("_")
     unique_id = str(uuid.uuid4())[:6]
 
-    status_msg = await query.edit_message_text("⚡ ফাইল ডাউনলোড ও প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
+    status_msg = await query.edit_message_text("⚡ লিঙ্ক প্রসেসিং হচ্ছে, অপেক্ষা করুন...")
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
     browser_headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Accept": "*/*",
-        "Accept-Encoding": "identity;q=1, *;q=0",
-        "Range": "bytes=0-"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
     # ১. টিকটক
@@ -209,52 +205,42 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(chat_id=user_id, text=f"টিকটক ডাউনলোডে ত্রুটি: {str(e)[:100]}")
                 return
 
-    # ২. ইউটিউব RapidAPI ইঞ্জিন (নিরাপদ লোকাল স্ট্রিমিং ও আপলোড)
+    # ২. ইউটিউব RapidAPI ইঞ্জিন (ডিরেক্ট ডাউনলোড বাটন সহ)
     if "youtube.com" in url or "youtu.be" in url:
         direct_stream, yt_title = get_youtube_rapidapi(url, is_audio=(req_type == "aud"))
         if direct_stream:
-            file_path = None
+            # ইনস্ট্যান্ট ডিরেক্ট ডাউনলোড লিংক বাটন
+            download_markup = InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬇️ ক্লিক করে সরাসরি ডাউনলোড করুন", url=direct_stream)]
+            ])
+            await status_msg.edit_text(
+                f"✅ **{yt_title[:50]}**\n\nফাইল তৈরি হয়েছে! নিচের বাটনে ক্লিক করলেই সরাসরি ডাউনলোড শুরু হবে:",
+                reply_markup=download_markup,
+                parse_mode="Markdown"
+            )
+
+            # ব্যাকগ্রাউন্ডে টেলিগ্রাম চ্যাটেও ফাইল পাঠানোর চেষ্টা
+            file_path = f"{output_dir}/yt_{unique_id}.{'mp4' if req_type == 'vid' else 'mp3'}"
             try:
-                ext = "mp4" if req_type == "vid" else "mp3"
-                file_path = f"{output_dir}/yt_{unique_id}.{ext}"
-
-                # সার্ভারে নির্ভরযোগ্যভাবে ভিডিও/অডিও স্ট্রিম সংরক্ষণ
                 with requests.get(direct_stream, stream=True, headers=browser_headers, timeout=120) as r:
-                    r.raise_for_status()
-                    with open(file_path, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=1024*1024):
-                            if chunk:
-                                f.write(chunk)
-
-                if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-                    await status_msg.edit_text("🚀 টেলিগ্রামে আপলোড হচ্ছে...")
-                    with open(file_path, "rb") as f:
-                        if req_type == "vid":
-                            await context.bot.send_video(
-                                chat_id=user_id,
-                                video=f,
-                                supports_streaming=True,
-                                caption=f"✅ {yt_title[:60]}"
-                            )
-                        else:
-                            await context.bot.send_audio(
-                                chat_id=user_id,
-                                audio=f,
-                                title=yt_title[:40],
-                                performer="YouTube"
-                            )
-                    await status_msg.delete()
-                else:
-                    await status_msg.edit_text("❌ ফাইলটি খালি পাওয়া গেছে। অন্য লিঙ্ক চেষ্টা করুন।")
-
-                if file_path and os.path.exists(file_path):
+                    if r.status_code == 200:
+                        with open(file_path, "wb") as f:
+                            for chunk in r.iter_content(chunk_size=1024*1024):
+                                if chunk:
+                                    f.write(chunk)
+                        
+                        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+                            with open(file_path, "rb") as f:
+                                if req_type == "vid":
+                                    await context.bot.send_video(chat_id=user_id, video=f, caption=f"✅ {yt_title[:60]}")
+                                else:
+                                    await context.bot.send_audio(chat_id=user_id, audio=f, title=yt_title[:40], performer="YouTube")
+            except Exception:
+                pass
+            finally:
+                if os.path.exists(file_path):
                     os.remove(file_path)
-                return
-            except Exception as e:
-                if file_path and os.path.exists(file_path):
-                    os.remove(file_path)
-                await context.bot.send_message(chat_id=user_id, text=f"ইউটিউব ডাউনলোডে ত্রুটি: {str(e)[:100]}")
-                return
+            return
         else:
             await status_msg.edit_text("❌ ভিডিও স্ট্রিম লিংক পাওয়া যায়নি। দয়া করে অন্য ভিডিও লিঙ্ক দিয়ে দেখুন।")
             return
