@@ -30,7 +30,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot with Guaranteed Photo Fix is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot (No Watermark Fixed) is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -40,7 +40,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
-# আপনার নতুন বটের API টোকেন
+# আপনার বটের API টোকেন
 BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 
 # ডাটা ডিকশনারি
@@ -84,7 +84,7 @@ TEXTS = {
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
-        "help_size_resp": "ℹ️️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
+        "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 আপনার পছন্দের ভিডিও মোড বেছে নিন:",
         "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন (4K থেকে 144p):",
@@ -96,7 +96,7 @@ TEXTS = {
         "compressing": "🗜️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
+        "gif_prompt": "🎞️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
         "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় লিখে পাঠান (উদা: 0-30 বা 00:20-00:50, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF তৈরির রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে (যেমন: 5-12)। আবার চেষ্টা করুন।",
         "audio_limit_error": "⚠️ রিংটোনের রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে (যেমন: 0-30)। আবার চেষ্টা করুন।",
@@ -127,12 +127,12 @@ TEXTS = {
         "gif_custom": "⏳ Custom GIF (টাইম ট্রিম)",
         "ringtone": "✂️ Audio Trim / Ringtone",
         "thumb_hd": "🖼️ HD Cover Photo",
-        "thumb_sd": "🖼️️ Standard Cover",
+        "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 সব ছবি একসাথে নামান (All Photos)",
         "multi_all": "📦 সব ছবি ও ভিডিও একসাথে (Album)",
-        "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
+        "multi_first": "🖼️️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
     },
     "en": {
         "guide": (
@@ -180,7 +180,7 @@ TEXTS = {
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
-        "btn_thumb": "🖼️️ Photos & Thumbnails",
+        "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back to Main Menu",
@@ -366,6 +366,22 @@ def change_video_speed_ffmpeg(input_video, output_video, speed=1.5):
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return os.path.exists(output_video) and os.path.getsize(output_video) > 1024
 
+def scale_video_resolution(input_video, output_video, target_height):
+    cmd = [
+        "ffmpeg",
+        "-i", input_video,
+        "-vf", f"scale=-2:{target_height}",
+        "-c:v", "libx264",
+        "-preset", "ultrafast",
+        "-crf", "28",
+        "-c:a", "aac",
+        "-b:a", "96k",
+        "-y",
+        output_video
+    ]
+    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return os.path.exists(output_video)
+
 def compress_video_under_50mb(input_video, output_video, duration=None):
     try:
         if not duration or duration <= 0:
@@ -405,7 +421,6 @@ def compress_video_under_50mb(input_video, output_video, duration=None):
     return False
 
 def format_caption(title, author, platform, quality, size_mb=None, was_compressed=False):
-    # কোনো ধরনের এরর ছাড়া ক্লিন ক্যাপশন
     safe_title = title.replace("\n", " ").strip()[:65]
     safe_author = author.replace("\n", " ").strip()[:30]
     caption = (
@@ -649,6 +664,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
+    # কাস্টম GIF ফিক্স (নো-ওয়াটারমার্ক স্ট্রিমিং)
     if user_id in user_waiting_gif_time:
         saved_url = user_waiting_gif_time.pop(user_id)
         start_sec, end_sec = 0, 7
@@ -675,16 +691,28 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         gif_mp4_path = f"{output_dir}/custom_gif_{unique_id}.mp4"
 
         try:
-            ydl_opts = {
-                'outtmpl': raw_video,
-                'format': 'worstvideo[ext=mp4]/worst[ext=mp4]/worst',
-                'quiet': True
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(saved_url, download=True)
-                title = info.get('title', 'GIF Animation')
-                if not os.path.exists(raw_video):
-                    raw_video = ydl.prepare_filename(info)
+            # টিকটক হলে ওয়াটারমার্ক ছাড়া সোর্স আনবে
+            if "tiktok.com" in saved_url:
+                tk = get_tiktok_details(saved_url)
+                if tk and tk.get("video_sd"):
+                    r = requests.get(tk["video_sd"], stream=True, timeout=30)
+                    with open(raw_video, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1024*1024):
+                            if chunk: f.write(chunk)
+                    title = tk.get('title', 'GIF Animation')
+                else:
+                    raise Exception("TikTok API Failed")
+            else:
+                ydl_opts = {
+                    'outtmpl': raw_video,
+                    'format': 'worstvideo[ext=mp4]/worst[ext=mp4]/worst',
+                    'quiet': True
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(saved_url, download=True)
+                    title = info.get('title', 'GIF Animation')
+                    if not os.path.exists(raw_video):
+                        raw_video = ydl.prepare_filename(info)
 
             if convert_to_gif_mp4(raw_video, gif_mp4_path, start_sec=start_sec, duration=duration):
                 with open(gif_mp4_path, "rb") as gf:
@@ -763,22 +791,34 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
+    # কুইক ডাউনলোড
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
         file_path = f"{output_dir}/quick_{unique_id}.mp4"
         try:
-            ydl_opts = {
-                'outtmpl': file_path,
-                'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',
-                'merge_output_format': 'mp4',
-                'quiet': True
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                title = info.get('title', 'Video')
-                uploader = info.get('uploader', 'Creator')
-                duration = info.get('duration', 0)
+            if "tiktok.com" in url:
+                tk = get_tiktok_details(url)
+                if tk and tk.get("video_sd"):
+                    r = requests.get(tk["video_sd"], stream=True, timeout=40)
+                    with open(file_path, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1024*1024):
+                            if chunk: f.write(chunk)
+                    title = tk.get('title', 'Video')
+                    uploader = tk.get('author', 'Creator')
+                    duration = tk.get('duration', 0)
+            else:
+                ydl_opts = {
+                    'outtmpl': file_path,
+                    'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',
+                    'merge_output_format': 'mp4',
+                    'quiet': True
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    title = info.get('title', 'Video')
+                    uploader = info.get('uploader', 'Creator')
+                    duration = info.get('duration', 0)
 
             if os.path.exists(file_path):
                 size_mb = os.path.getsize(file_path) / (1024 * 1024)
@@ -869,21 +909,33 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 
+    # ১-ক্লিক অটো GIF ফিক্স (নো-ওয়াটারমার্ক সহ)
     if data == "tool_gifauto":
         status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
         gif_mp4_path = f"{output_dir}/autogif_{unique_id}.mp4"
         try:
-            ydl_opts = {
-                'outtmpl': raw_video,
-                'format': 'worstvideo[ext=mp4]/worst[ext=mp4]/worst',
-                'quiet': True
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                title = info.get('title', 'Auto GIF')
-                if not os.path.exists(raw_video):
-                    raw_video = ydl.prepare_filename(info)
+            if "tiktok.com" in url:
+                tk = get_tiktok_details(url)
+                if tk and tk.get("video_sd"):
+                    r = requests.get(tk["video_sd"], stream=True, timeout=30)
+                    with open(raw_video, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1024*1024):
+                            if chunk: f.write(chunk)
+                    title = tk.get('title', 'Auto GIF')
+                else:
+                    raise Exception("TikTok Fetch Failed")
+            else:
+                ydl_opts = {
+                    'outtmpl': raw_video,
+                    'format': 'worstvideo[ext=mp4]/worst[ext=mp4]/worst',
+                    'quiet': True
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    title = info.get('title', 'Auto GIF')
+                    if not os.path.exists(raw_video):
+                        raw_video = ydl.prepare_filename(info)
 
             if convert_to_gif_mp4(raw_video, gif_mp4_path, start_sec=0, duration=7):
                 with open(gif_mp4_path, "rb") as gf:
@@ -902,6 +954,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
+    # একাধিক ছবি/ভিডিও অ্যালবাম
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         media_group = []
@@ -930,6 +983,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
         return
 
+    # TikTok সব ছবি একসাথে
     if data == "all_photos_dl":
         status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
         tk_data = get_tiktok_details(url)
@@ -967,6 +1021,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
+    # ভিডিও স্পিড চেঞ্জার
     if data.startswith("spd_"):
         speed_factor = float(data.split("_")[1])
         status_msg = await query.edit_message_text(f"⏩ ভিডিওর গতি {speed_factor}x করা হচ্ছে, অপেক্ষা করুন...")
@@ -974,16 +1029,26 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         spd_vid = f"{output_dir}/speed_{speed_factor}x_{unique_id}.mp4"
 
         try:
-            ydl_opts = {
-                'outtmpl': raw_vid,
-                'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',
-                'merge_output_format': 'mp4',
-                'quiet': True
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                title = info.get('title', 'Speed Video')
-                uploader = info.get('uploader', 'Creator')
+            if "tiktok.com" in url:
+                tk = get_tiktok_details(url)
+                if tk and tk.get("video_sd"):
+                    r = requests.get(tk["video_sd"], stream=True, timeout=40)
+                    with open(raw_vid, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1024*1024):
+                            if chunk: f.write(chunk)
+                    title = tk.get('title', 'Speed Video')
+                    uploader = tk.get('author', 'Creator')
+            else:
+                ydl_opts = {
+                    'outtmpl': raw_vid,
+                    'format': 'bestvideo[height<=720]+bestaudio/best[height<=720]/best',
+                    'merge_output_format': 'mp4',
+                    'quiet': True
+                }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+                    title = info.get('title', 'Speed Video')
+                    uploader = info.get('uploader', 'Creator')
 
             if change_video_speed_ffmpeg(raw_vid, spd_vid, speed=speed_factor):
                 size_mb = os.path.getsize(spd_vid) / (1024 * 1024)
@@ -1066,6 +1131,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "reddit.com" in url: platform_name = "Reddit"
     elif "pinterest.com" in url or "pin.it" in url: platform_name = "Pinterest"
 
+    # ১. টিকটক ইঞ্জিন (১০০% কোনো অবস্থাতেই ওয়াটারমার্ক আসবে না)
     if "tiktok.com" in url and req_type not in ["tool"]:
         tk_data = get_tiktok_details(url)
         if tk_data:
@@ -1090,7 +1156,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
 
                 if req_type == "vid":
-                    target_url = tk_data["video_hd"] if quality in ["2160", "1440", "1080", "720", "highest", "doc"] else tk_data["video_sd"]
+                    # হাইয়েস্ট কোয়ালিটি নো-ওয়াটারমার্ক সোর্স
+                    target_url = tk_data["video_hd"] if quality in ["2160", "1440", "1080", "highest", "doc"] else tk_data["video_sd"]
                     ext = "mp4"
                 else:
                     target_url = tk_data["audio_url"]
@@ -1102,6 +1169,14 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     with open(file_path, "wb") as f:
                         for chunk in r.iter_content(chunk_size=1024*1024):
                             if chunk: f.write(chunk)
+
+                # Lowest বা স্পেসিফিক লো-রেজোলিউশন স্কেলিং (ওয়াটারমার্ক ছাড়া)
+                if req_type == "vid" and quality in ["lowest", "144", "240", "360", "480"]:
+                    scaled_video = f"{output_dir}/tk_scaled_{unique_id}.mp4"
+                    t_height = 240 if quality in ["lowest", "240"] else (144 if quality == "144" else (360 if quality == "360" else 480))
+                    if scale_video_resolution(file_path, scaled_video, t_height):
+                        os.remove(file_path)
+                        file_path = scaled_video
 
                 file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
                 was_compressed = False
@@ -1182,6 +1257,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
+    # ২. অন্যান্য সোশ্যাল মিডিয়া
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1395,7 +1471,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra 4K/2K Social Media Bot with Guaranteed Photo Fix is Running...")
+    print("Ultra 4K/2K Social Media Bot (No Watermark Fixed) is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
