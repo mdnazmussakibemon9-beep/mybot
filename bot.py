@@ -23,10 +23,10 @@ import yt_dlp
 import instaloader
 from PIL import Image
 
-# FFmpeg shochol kora
+# FFmpeg সচল করা
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 live rakhar Flask server
+# Render Web Service 24/7 লাইভ রাখার Flask সার্ভার
 web_app = Flask(__name__)
 
 @web_app.route('/')
@@ -45,8 +45,9 @@ BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
-# Sundor aesthetic modern digital card image
-WELCOME_BANNER_URL = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop"
+# বাংলা এবং ইংরেজি ব্যানার ফাইলের নাম
+LOCAL_BANNER_BN = "welcome_bn.png"
+LOCAL_BANNER_EN = "welcome_en.png"
 
 user_urls = {}
 user_waiting_custom_time = {}
@@ -67,10 +68,21 @@ L = instaloader.Instaloader(
 
 TEXTS = {
     "bn": {
+        "welcome_caption": (
+            "🌸 স্বাগতম NSE NEXORA DOWNLOADER-এ 🤍\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "আপনাকে পেয়ে আমরা অত্যন্ত আনন্দিত! আপনার দৈনন্দিন প্রিয় মুহূর্ত, ভিডিও আর সুন্দর স্মৃতিগুলো এক ক্লিকে সহজে ডাউনলোড করতে আমরা প্রস্তুত।\n\n"
+            "✦ TikTok : ওয়াটারমার্ক ছাড়া ফুল এইচডি\n"
+            "✦ Instagram : রিলস, পোস্ট ও সম্পূর্ণ অ্যালবাম\n"
+            "✦ Facebook, X, Pinterest ও Reddit\n\n"
+            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে একটু ভালোবাসা ও সাপোর্ট দিতে পারেন 🌸"
+        ),
+        "btn_follow": "🔗 ইনস্টাগ্রামে ফলো করুন 🤍",
+        "btn_continue": "✨ শুরু করুন / স্কিপ 🤍",
         "guide": (
             "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 ব্যবহার করার নিয়মাবলী:\n"
+            "📌 ব্যবহারের নিয়মাবলী:\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
             "🎥 ভিডিও কোয়ালিটি: Highest, Medium, Lowest, Fast ও কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
             "🖼️ ছবি ও স্লাইড: Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে ডাউনলোড!\n"
@@ -98,7 +110,7 @@ TEXTS = {
         "compressing": "🗜️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
+        "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
         "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
         "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
@@ -137,6 +149,17 @@ TEXTS = {
         "multi_first": "🖼️ শুধুমাত্র ১ম মিডিয়া"
     },
     "en": {
+        "welcome_caption": (
+            "🌸 Welcome to NSE NEXORA DOWNLOADER 🤍\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "We're truly glad to have you here! Save your favorite memories, videos, and music effortlessly with seamless speed.\n\n"
+            "✦ TikTok : Pure Crystal HD (No Watermark)\n"
+            "✦ Instagram : Seamless Reels, Posts & Full Carousels\n"
+            "✦ Facebook, X, Pinterest & Reddit\n\n"
+            "🌱 Support our creator on Instagram to keep this space free for everyone 🌸"
+        ),
+        "btn_follow": "🔗 Follow on Instagram 🤍",
+        "btn_continue": "✨ Continue / Skip 🤍",
         "guide": (
             "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
@@ -146,7 +169,7 @@ TEXTS = {
             "🖼️ Photos: Full-resolution album download for Instagram & TikTok!\n"
             "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer\n"
             "🎵 Audio: MP3 (320k, 192k, 128k), Ringtone Maker & Voice Notes\n"
-            "🗜️ Smart Compression: Large files over 50 MB are automatically optimized!"
+            "🗜️️ Smart Compression: Large files over 50 MB are automatically optimized!"
         ),
         "help_text": (
             "📖 Commands & Instructions:\n\n"
@@ -168,7 +191,7 @@ TEXTS = {
         "compressing": "🗜️ Optimizing file under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
         "custom_prompt": "⏳ Enter frame timestamp (e.g. 10 or 01:15):",
-        "gif_prompt": "🎞️ Enter start and end time (e.g. 5-10, max 10s):",
+        "gif_prompt": "🎞️️ Enter start and end time (e.g. 5-10, max 10s):",
         "audio_trim_prompt": "✂️ Enter start and end time (e.g. 0-30, max 60s):",
         "gif_limit_error": "⚠️ GIF range must be 10 seconds or less.",
         "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less.",
@@ -209,8 +232,8 @@ TEXTS = {
 }
 
 def get_text(user_id, key, **kwargs):
-    lang = user_languages.get(user_id, "en")
-    text = TEXTS.get(lang, TEXTS["en"]).get(key, TEXTS["en"].get(key, ""))
+    lang = user_languages.get(user_id, "bn")
+    text = TEXTS.get(lang, TEXTS["bn"]).get(key, TEXTS["bn"].get(key, ""))
     return text.format(**kwargs)
 
 def parse_time_str(t_str):
@@ -442,40 +465,18 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     )
     return caption
 
-# Notun stylish welcome card & message
+# ১. /start দিলে সবার আগে ভাষা নির্বাচন
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome_caption = (
-        "🌸 ✨ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐍𝐒𝐄 𝐍𝐄𝐗𝐎𝐑𝐀 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑 ✨ 🌸\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "🤍 ʏᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ, ꜱᴡɪꜰᴛ & ᴇꜰꜰᴏʀᴛʟᴇꜱꜱ ᴍᴇᴅɪᴀ ᴄᴏᴍᴘᴀɴɪᴏɴ 🤍\n\n"
-        "✨ Experience effortless high-speed downloads from your favorite platforms:\n"
-        "✦ 𝗧𝗶𝗸𝗧𝗼𝗸 : Pure Crystal HD (No Watermark)\n"
-        "✦ 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 : Seamless Reels, Posts & Full Carousels\n"
-        "✦ 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 & 𝗫 : Full HD Videos & Crisp Animations\n"
-        "✦ 𝗣𝗶𝗻𝘁𝗲𝗿𝗲𝘀𝘁 & 𝗥𝗲𝗱𝗱𝗶𝘁 : High-Res Media & Studio Audio\n\n"
-        "🌱 Crafted with care to give you the cleanest experience.\n"
-        "🤍 Please support our creator by following on Instagram below! 🌸"
-    )
-    keyboard = InlineKeyboardMarkup([
+    lang_kb = InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("🔗 𝗙𝗼𝗹𝗹𝗼𝘄 𝗼𝗻 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 🤍", url=INSTAGRAM_PROFILE_URL)
-        ],
-        [
-            InlineKeyboardButton("✨ 𝗖𝗼𝗻𝘁𝗶𝗻𝘂𝗲 / 𝗦𝗸𝗶𝗽 🤍", callback_data="welcome_next")
+            InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="firstlang_bn"),
+            InlineKeyboardButton("🇺🇸 English", callback_data="firstlang_en")
         ]
     ])
-
-    try:
-        await update.message.reply_photo(
-            photo=WELCOME_BANNER_URL,
-            caption=welcome_caption,
-            reply_markup=keyboard
-        )
-    except Exception:
-        await update.message.reply_text(
-            welcome_caption,
-            reply_markup=keyboard
-        )
+    await update.message.reply_text(
+        "🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
+        reply_markup=lang_kb
+    )
 
 async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -768,27 +769,59 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    if data == "welcome_next":
-        lang_kb = InlineKeyboardMarkup([
+    # ২. ভাষা সিলেক্ট করার পর নিজ নিজ ব্যানার ইমেজ ও বার্তা পাঠানো
+    if data.startswith("firstlang_"):
+        lang_code = data.split("_")[1]
+        user_languages[user_id] = lang_code
+        
+        banner_file = LOCAL_BANNER_BN if lang_code == "bn" else LOCAL_BANNER_EN
+
+        card_kb = InlineKeyboardMarkup([
             [
-                InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
-                InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
+                InlineKeyboardButton(get_text(user_id, "btn_follow"), url=INSTAGRAM_PROFILE_URL)
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_continue"), callback_data="welcome_continue")
             ]
         ])
+
+        try:
+            await query.message.delete()
+            if os.path.exists(banner_file):
+                with open(banner_file, "rb") as bf:
+                    await context.bot.send_photo(
+                        chat_id=user_id,
+                        photo=bf,
+                        caption=get_text(user_id, "welcome_caption"),
+                        reply_markup=card_kb
+                    )
+            else:
+                await context.bot.send_message(
+                    chat_id=user_id,
+                    text=get_text(user_id, "welcome_caption"),
+                    reply_markup=card_kb
+                )
+        except Exception:
+            await context.bot.send_message(
+                chat_id=user_id,
+                text=get_text(user_id, "welcome_caption"),
+                reply_markup=card_kb
+            )
+        return
+
+    # ৩. ওয়েলকাম কার্ডে Continue চাপলে গাইডলাইন আসবে
+    if data == "welcome_continue":
         try:
             await query.message.delete()
             await context.bot.send_message(
                 chat_id=user_id,
-                text="🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
-                reply_markup=lang_kb
+                text=get_text(user_id, "guide")
             )
         except Exception:
-            await query.edit_message_text(
-                "🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
-                reply_markup=lang_kb
-            )
+            await query.edit_message_text(get_text(user_id, "guide"))
         return
 
+    # মেনু থেকে ভাষা পরিবর্তন
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -1251,7 +1284,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
+                                caption=f"🎙️️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
