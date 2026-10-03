@@ -44,28 +44,17 @@ user_urls = {}
 user_waiting_custom_time = {}
 user_languages = {}
 
-# বাংলা ও ইংরেজির পূর্ণাঙ্গ টেক্সট ও ব্যবহার নির্দেশিকা
 TEXTS = {
     "bn": {
         "guide": (
             "🌟 **সোশ্যাল মিডিয়া ডাউনলোডার বটে স্বাগতম!** 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **কোন বাটন কী কাজ করে জেনে নিন:**\n\n"
-            "🎥 **ভিডিও ডাউনলোড:**\n"
-            "• `Highest (1080p)`: সর্বোচ্চ স্পষ্ট কোয়ালিটি\n"
-            "• `Normal (720p)`: স্ট্যান্ডার্ড রেজোলিউশন\n"
-            "• `Fast (Low Size)`: খুব দ্রুত ও কম মেগাবাইটে ডাউনলোড\n"
-            "• `1080p, 720p, 480p, 360p, 240p, 144p`: নির্দিষ্ট রেজোলিউশন\n"
-            "• `📁 Document`: কোনো কম্প্রেশন ছাড়া আসল ফাইল\n\n"
-            "🎵 **অডিও ও টুলস:**\n"
-            "• `320k, 192k, 128k`: সেরা সাউন্ড কোয়ালিটির MP3 গান\n"
-            "• `🎙️ Voice Note`: সরাসরি টেলিগ্রাম ভয়েস মেসেজ\n"
-            "• `🎞️ Animated GIF`: ছোট ভিডিওকে GIF অ্যানিমেশন করা\n\n"
-            "🖼️ **থাম্বনেইল ও ফ্রেম:**\n"
-            "• `Thumb HD / Std`: ভিডিওর কভার ছবি ডাউনলোড\n"
-            "• `⏱️ Mid Frame`: ভিডিওর ঠিক মাঝখানের দৃশ্য ক্যাপচার\n"
-            "• `⏳ Custom Frame`: যেকোনো সেকেন্ডের ফ্রেম ছবি আকারে নেওয়া\n\n"
-            "💡 **ব্যবহারের নিয়ম:** যেকোনো পাবলিক লিঙ্ক (TikTok, Facebook, Insta, X, Reddit, Pinterest) সরাসরি চ্যাটে পাঠিয়ে দিন!"
+            "📌 **ব্যবহারের নিয়ম:**\n"
+            "যেকোনো পাবলিক ভিডিও লিঙ্ক (TikTok, Facebook, Insta, X, Reddit, Pinterest) সরাসরি চ্যাটে পাঠিয়ে দিন।\n\n"
+            "🎥 **ভিডিও:** 1080p, 720p, 480p, Fast ও ডকুমেন্ট মোড\n"
+            "🎵 **অডিও:** 320k, 192k, 128k এবং সরাসরি ভয়েস নোট\n"
+            "🖼️ **থাম্বনেইল:** HD কভার, মাঝের দৃশ্য ও নির্দিষ্ট সেকেন্ডের ফ্রেম\n"
+            "🎞️ **টুলস:** অ্যানিমেটেড GIF কনভার্টার!"
         ),
         "help_text": (
             "📖 **জরুরি নির্দেশনা ও সমাধান:**\n\n"
@@ -82,7 +71,10 @@ TEXTS = {
             "• লিঙ্কটি পুনরায় পাঠিয়ে চেষ্টা করুন।"
         ),
         "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB পর্যন্ত ফাইল পাঠানো যায়। বড় ভিডিও হলে 480p বা 360p সিলেক্ট করলে সহজে ডাউনলোড হবে।",
-        "choose_option": "📥 আপনার পছন্দের কোয়ালিটি বা ফরম্যাট বেছে নিন:",
+        "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
+        "choose_video": "🎥 আপনার পছন্দের ভিডিও কোয়ালিটি বেছে নিন:",
+        "choose_audio": "🎵 আপনার পছন্দের অডিও ফরম্যাট বেছে নিন:",
+        "choose_thumb": "🖼️ আপনার পছন্দের থাম্বনেইল বা ফ্রেম অপশন বেছে নিন:",
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, দয়া করে অপেক্ষা করুন...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": (
@@ -96,12 +88,15 @@ TEXTS = {
         "error_expired": "❌ লিঙ্কের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে লিঙ্কটি পুনরায় পাঠান।",
         "error_youtube": "⚠️ ইউটিউব ডাউনলোডের জন্য আলাদা বট নির্ধারিত। এখানে অন্যান্য সোশ্যাল মিডিয়া লিঙ্ক পাঠান।",
         "error_50mb": "⚠️ ফাইলটির সাইজ {size:.1f} MB! টেলিগ্রাম বট লিমিট ৫০ MB ছাড়িয়ে যাওয়ায় পাঠানো সম্ভব নয়।",
-        "btn_change_lang": "🌐 ভাষা পরিবর্তন (Language)",
+        "btn_video": "🎥 Video Options",
+        "btn_audio": "🎵 Audio & Voice",
+        "btn_thumb": "🖼️ Thumbnail & Frame",
+        "btn_back": "🔙 Back (প্রধান মেনু)",
         "highest": "🌟 Highest (1080p)",
         "normal": "🎬 Normal (720p)",
         "fast": "🚀 Fast (Low Size)",
         "doc": "📁 Document Uncompressed",
-        "voice": "🎙️ Voice Note (.ogg)",
+        "voice": "🎙️️ Voice Note (.ogg)",
         "gif": "🎞️ Animated GIF",
         "thumb_hd": "🖼️ Thumb HD",
         "thumb_sd": "🖼️ Thumb Std",
@@ -112,22 +107,12 @@ TEXTS = {
         "guide": (
             "🌟 **Welcome to Social Media Downloader Bot!** 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **Button Guide & Features:**\n\n"
-            "🎥 **Video Options:**\n"
-            "• `Highest (1080p)`: Maximum available video quality\n"
-            "• `Normal (720p)`: Balanced quality & size\n"
-            "• `Fast (Low Size)`: Fast download with small file size\n"
-            "• `1080p, 720p, 480p, 360p, 240p, 144p`: Specific resolutions\n"
-            "• `📁 Document`: Send original file without compression\n\n"
-            "🎵 **Audio & Tools:**\n"
-            "• `320k, 192k, 128k`: High-fidelity MP3 music tracks\n"
-            "• `🎙️ Voice Note`: Native playable voice message\n"
-            "• `🎞️ Animated GIF`: Converts clip into a Telegram GIF\n\n"
-            "🖼️ **Thumbnails & Frames:**\n"
-            "• `Thumb HD / Std`: Original cover picture\n"
-            "• `⏱️ Mid Frame`: Screenshot from the exact middle of the video\n"
-            "• `⏳ Custom Frame`: Extract any frame by replying with seconds\n\n"
-            "💡 **How to use:** Just paste any public video link from TikTok, Facebook, Instagram, X, Reddit, or Pinterest!"
+            "📌 **How to use:**\n"
+            "Just send any public video link from TikTok, Facebook, Instagram, X, Reddit, or Pinterest!\n\n"
+            "🎥 **Video:** 1080p, 720p, 480p, Fast & Document Mode\n"
+            "🎵 **Audio:** 320k, 192k, 128k & Voice Notes\n"
+            "🖼️ **Thumbnails:** HD Cover, Mid-Frame & Custom Timestamps\n"
+            "🎞️ **Tools:** Animated GIF Converter!"
         ),
         "help_text": (
             "📖 **User Guide & Troubleshooting:**\n\n"
@@ -144,7 +129,10 @@ TEXTS = {
             "• Try resending the link."
         ),
         "help_size_resp": "ℹ️ Telegram Bot API restricts files to 50 MB max. For long videos, choose 480p or 360p to keep it under 50 MB.",
-        "choose_option": "📥 Choose your desired quality or format:",
+        "choose_main": "📥 What would you like to download? Choose a category:",
+        "choose_video": "🎥 Choose your desired video resolution:",
+        "choose_audio": "🎵 Choose your audio format:",
+        "choose_thumb": "🖼️️ Choose your thumbnail or frame option:",
         "processing": "⚡ Processing {quality}, please wait...",
         "uploading": "🚀 Uploading to Telegram...",
         "custom_prompt": (
@@ -158,7 +146,10 @@ TEXTS = {
         "error_expired": "❌ Link expired. Please send the link again.",
         "error_youtube": "⚠️ YouTube downloads are managed by another bot. Please send links from other platforms.",
         "error_50mb": "⚠️ File size is {size:.1f} MB! Telegram Bot API cannot send files over 50 MB.",
-        "btn_change_lang": "🌐 Change Language",
+        "btn_video": "🎥 Video Options",
+        "btn_audio": "🎵 Audio & Voice",
+        "btn_thumb": "🖼️ Thumbnail & Frame",
+        "btn_back": "🔙 Back to Main Menu",
         "highest": "🌟 Highest (1080p)",
         "normal": "🎬 Normal (720p)",
         "fast": "🚀 Fast (Low Size)",
@@ -223,17 +214,24 @@ def convert_to_voice_note(input_audio, output_ogg):
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return os.path.exists(output_ogg)
 
-def convert_to_gif(input_video, output_gif):
+def convert_to_gif_mp4(input_video, output_mp4):
+    # Telegram GIF হিসেবে মসৃণভাবে চলার জন্য সাউন্ড ছাড়া লুপেবল MP4
     cmd = [
         "ffmpeg",
         "-t", "10",
         "-i", input_video,
-        "-vf", "fps=10,scale=360:-1:flags=lanczos",
+        "-an",
+        "-vf", "scale='min(480,iw)':-2",
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        "-profile:v", "baseline",
+        "-level", "3.0",
+        "-movflags", "+faststart",
         "-y",
-        output_gif
+        output_mp4
     ]
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return os.path.exists(output_gif)
+    return os.path.exists(output_mp4) and os.path.getsize(output_mp4) > 1024
 
 def format_caption(title, author, platform, quality, size_mb=None):
     caption = (
@@ -256,8 +254,74 @@ def build_language_keyboard():
         ]
     ])
 
+def get_main_menu(user_id):
+    keyboard = [
+        [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
+        [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
+        [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_video_menu(user_id):
+    keyboard = [
+        [
+            InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
+            InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
+            InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast")
+        ],
+        [
+            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
+            InlineKeyboardButton("📺 720p", callback_data="vid_720"),
+            InlineKeyboardButton("📱 480p", callback_data="vid_480"),
+            InlineKeyboardButton("📱 360p", callback_data="vid_360")
+        ],
+        [
+            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
+            InlineKeyboardButton("⚡ 144p", callback_data="vid_144"),
+            InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "gif"), callback_data="tool_gif")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_audio_menu(user_id):
+    keyboard = [
+        [
+            InlineKeyboardButton("🎵 MP3 320k", callback_data="aud_320"),
+            InlineKeyboardButton("🎶 MP3 192k", callback_data="aud_192"),
+            InlineKeyboardButton("📻 MP3 128k", callback_data="aud_128")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "voice"), callback_data="aud_voice")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_thumb_menu(user_id):
+    keyboard = [
+        [
+            InlineKeyboardButton(get_text(user_id, "thumb_hd"), callback_data="thumb_hd"),
+            InlineKeyboardButton(get_text(user_id, "thumb_sd"), callback_data="thumb_sd")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "mid_frame"), callback_data="frame_mid"),
+            InlineKeyboardButton(get_text(user_id, "custom_frame"), callback_data="frame_custom")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # শুরুতে সর্বদা দুটি ভাষার অপশন দেওয়া হবে
     await update.message.reply_text(
         "🌐 **Please select your language / আপনার ভাষা নির্বাচন করুন:**",
         reply_markup=build_language_keyboard(),
@@ -283,7 +347,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id not in user_languages:
         user_languages[user_id] = "bn"
 
-    # কাস্টম ফ্রেমের সময় ইনপুট হ্যান্ডলিং
+    # কাস্টম ফ্রেমের ইনপুট চেক
     if user_id in user_waiting_custom_time:
         saved_url = user_waiting_custom_time.pop(user_id)
         time_input = text.replace("s", "").replace("sec", "").strip()
@@ -368,44 +432,11 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    keyboard = [
-        [
-            InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
-            InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
-            InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast")
-        ],
-        [
-            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
-            InlineKeyboardButton("📺 720p", callback_data="vid_720"),
-            InlineKeyboardButton("📱 480p", callback_data="vid_480"),
-            InlineKeyboardButton("📱 360p", callback_data="vid_360")
-        ],
-        [
-            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
-            InlineKeyboardButton("⚡ 144p", callback_data="vid_144"),
-            InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
-        ],
-        [
-            InlineKeyboardButton("🎵 320k", callback_data="aud_320"),
-            InlineKeyboardButton("🎶 192k", callback_data="aud_192"),
-            InlineKeyboardButton("📻 128k", callback_data="aud_128")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "voice"), callback_data="aud_voice"),
-            InlineKeyboardButton(get_text(user_id, "gif"), callback_data="tool_gif")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "thumb_hd"), callback_data="thumb_hd"),
-            InlineKeyboardButton(get_text(user_id, "thumb_sd"), callback_data="thumb_sd"),
-            InlineKeyboardButton(get_text(user_id, "mid_frame"), callback_data="frame_mid"),
-            InlineKeyboardButton(get_text(user_id, "custom_frame"), callback_data="frame_custom")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_change_lang"), callback_data="cmd_lang")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(get_text(user_id, "choose_option"), reply_markup=reply_markup)
+    # লিংক পাঠানোর সাথে সাথে শুধু ৩টি পরিষ্কার ক্যাটাগরি বাটন আসবে
+    await update.message.reply_text(
+        get_text(user_id, "choose_main"),
+        reply_markup=get_main_menu(user_id)
+    )
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -414,23 +445,42 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ভাষা বাছাই এবং পরিবর্তন হ্যান্ডলার
-    if data == "cmd_lang":
+    # ১. ভাষা হ্যান্ডলিং
+    if data.startswith("setlang_"):
+        lang_code = data.split("_")[1]
+        user_languages[user_id] = lang_code
         await query.edit_message_text(
-            "🌐 **Select Language / ভাষা বেছে নিন:**",
-            reply_markup=build_language_keyboard(),
+            get_text(user_id, "guide"),
             parse_mode="Markdown"
         )
         return
 
-    if data.startswith("setlang_"):
-        lang_code = data.split("_")[1]
-        user_languages[user_id] = lang_code
-        # ভাষা সিলেক্ট করার পর সম্পূর্ণ গাইড ও ফিচার তালিকা প্রদর্শন
+    # ২. পরিষ্কার ক্যাটাগরি নেভিগেশন
+    if data == "cat_main":
         await query.edit_message_text(
-            get_text(user_id, "guide"),
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(get_text(user_id, "btn_change_lang"), callback_data="cmd_lang")]])
+            get_text(user_id, "choose_main"),
+            reply_markup=get_main_menu(user_id)
+        )
+        return
+
+    if data == "cat_video":
+        await query.edit_message_text(
+            get_text(user_id, "choose_video"),
+            reply_markup=get_video_menu(user_id)
+        )
+        return
+
+    if data == "cat_audio":
+        await query.edit_message_text(
+            get_text(user_id, "choose_audio"),
+            reply_markup=get_audio_menu(user_id)
+        )
+        return
+
+    if data == "cat_thumb":
+        await query.edit_message_text(
+            get_text(user_id, "choose_thumb"),
+            reply_markup=get_thumb_menu(user_id)
         )
         return
 
@@ -722,20 +772,24 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(get_text(user_id, "error_50mb", size=file_size_mb))
             return
 
+        # ফিক্সড Animated GIF মেকার
         if req_type == "tool" and quality == "gif":
-            await status_msg.edit_text(get_text(user_id, "processing", quality="GIF"))
-            gif_path = f"{output_dir}/gif_{unique_id}.gif"
-            if convert_to_gif(file_path, gif_path):
-                with open(gif_path, "rb") as gf:
+            await status_msg.edit_text("🎞️ ভিডিও থেকে মসৃণ GIF তৈরি হচ্ছে...")
+            gif_mp4_path = f"{output_dir}/gif_{unique_id}.mp4"
+            if convert_to_gif_mp4(file_path, gif_mp4_path):
+                with open(gif_mp4_path, "rb") as gf:
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
                         caption=f"🎞️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
                         parse_mode="Markdown"
                     )
-                if os.path.exists(gif_path):
-                    os.remove(gif_path)
+                if os.path.exists(gif_mp4_path):
+                    os.remove(gif_mp4_path)
                 await status_msg.delete()
+                return
+            else:
+                await status_msg.edit_text("❌ GIF তৈরি করা সম্ভব হয়নি। সাধারণ ভিডিও ডাউনলোড করুন।")
                 return
 
         if req_type == "aud" and quality == "voice":
@@ -840,7 +894,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra Simple Dual-Language Social Media Bot is Running...")
+    print("Clean Categorized Social Media Bot is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
