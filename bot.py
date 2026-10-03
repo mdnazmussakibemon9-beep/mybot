@@ -45,28 +45,26 @@ user_waiting_custom_time = {}
 user_waiting_gif_time = {}
 user_waiting_audio_trim = {}
 user_languages = {}
-user_quick_mode = {}  # কুইক ডাউনলোড মোড স্টোরেজ
+user_quick_mode = {}
 
 TEXTS = {
     "bn": {
         "guide": (
-            "🌟 **আল্টিমেট অল-ইন-ওয়ান সোশ্যাল মিডিয়া ডাউনলোডার** 🌟\n"
+            "🌟 **আল্টিমেট সোশ্যাল মিডিয়া ডাউনলোডার** 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **নতুন সুপার ফিচারসমূহ:**\n"
-            "• **Instagram Carousel:** একাধিক ছবি/ভিডিও একসাথে অ্যালবাম আকারে\n"
-            "• **ভিডিও স্পিড চেঞ্জার:** 0.5x, 1.5x, 2.0x প্লেব্যাক স্পিড\n"
-            "• **অডিও রিংটোন মেকার:** মিউজিকের প্রিয় অংশ কেটে রিংটোন তৈরি\n"
-            "• **ইনস্ট্যান্ট কুইক মোড:** অপশন ছাড়া সরাসরি ডাউনলোড করতে /quick লিখুন\n"
-            "• **TikTok স্লাইডশো:** সব ছবি একসাথে HD কোয়ালিটিতে\n"
-            "• **কাস্টম ফ্রেম ও GIF:** নির্দিষ্ট সেকেন্ড লিখে ছবি ও অ্যানিমেশন কাটুন!\n\n"
-            "💡 **ব্যবহারের নিয়ম:** যেকোনো পাবলিক লিঙ্ক (TikTok, Facebook, Insta, X, Reddit, Pinterest) চ্যাটে পাঠিয়ে দিন!"
+            "📌 **সহজ ব্যবহারের নিয়মাবলী:**\n"
+            "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
+            "🎥 **ভিডিও:** 1080p, 720p, 480p, Fast ও ডকুমেন্ট মোড\n"
+            "🎵 **অডিও:** 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
+            "🖼️ **ছবি ও স্লাইড:** একসাথে সব ছবি (অ্যালবাম), ফুল এইচডি কভার ও ফ্রেম\n"
+            "🎞️ **টুলস:** নির্দিষ্ট সেকেন্ডে কাস্টম অ্যানিমেটেড GIF ও ভিডিওর গতি পরিবর্তন (0.5x, 1.5x, 2x)!"
         ),
         "help_text": (
             "📖 **জরুরি নির্দেশিকা ও কমান্ডসমূহ:**\n\n"
-            "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট মোড অন বা অফ করার কমান্ড।\n"
-            "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করার কমান্ড।\n"
-            "3️⃣ **ইনস্টাগ্রাম স্লাইড:** মাল্টিপল ছবির পোস্টে অ্যালবাম বা ১ম ছবির অপশন পাবেন।\n"
-            "4️⃣ **৫০ MB লিমিট:** টেলিগ্রাম লিমিট ৫০ MB-র বেশি হলে 480p বা Fast মোড বেছে নিন।"
+            "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
+            "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
+            "3️⃣ **একাধিক ছবির পোস্ট:** একসাথে সব ছবি বা শুধু ১ম ছবি নামানোর সহজ অপশন পাবেন।\n"
+            "4️⃣ **৫০ MB লিমিট:** টেলিগ্রাম লিমিটের কারণে বড় ফাইলের জন্য 480p বা Fast মোড বেছে নিন।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং ফাইলের সাইজ ৫০ MB এর কম রাখুন।",
@@ -74,8 +72,8 @@ TEXTS = {
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 আপনার পছন্দের ভিডিও কোয়ালিটি বেছে নিন:",
         "choose_audio": "🎵 আপনার পছন্দের অডিও ফরম্যাট বেছে নিন:",
-        "choose_thumb": "🖼️ আপনার পছন্দের থাম্বনেইল, ফ্রেম বা ছবি বেছে নিন:",
-        "choose_speed": "⏩ ভিডিওর জন্য পছন্দের স্পিড নির্বাচন করুন:",
+        "choose_thumb": "🖼️ আপনার পছন্দের ছবি বা ফ্রেম অপশন বেছে নিন:",
+        "choose_speed": "⏩ ভিডিওর প্লেব্যাক স্পিড বেছে নিন:",
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, দয়া করে অপেক্ষা করুন...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: `10` বা `01:15`):",
@@ -91,7 +89,7 @@ TEXTS = {
         "error_50mb": "⚠️ ফাইলটির সাইজ {size:.1f} MB! টেলিগ্রাম ৫০ MB-র বড় ফাইল পাঠাতে পারে না।",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
-        "btn_thumb": "🖼️ Thumbnail & Photos",
+        "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_back": "🔙 Back (মেনু)",
         "btn_cancel": "❌ Cancel",
@@ -102,33 +100,31 @@ TEXTS = {
         "voice": "🎙️ Voice Note (.ogg)",
         "gif": "🎞️ Custom Trimmed GIF",
         "ringtone": "✂️ Audio Trim / Ringtone",
-        "thumb_hd": "🖼️ Thumb HD",
-        "thumb_sd": "🖼️ Thumb Std",
+        "thumb_hd": "🖼️️ HD Cover Photo",
+        "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
-        "tiktok_photos": "📸 TikTok Photo Slide (All)",
-        "insta_all": "📦 Download All Carousel (Album)",
-        "insta_first": "🖼️ Download First Media Only"
+        "all_photos": "📸 সব ছবি একসাথে নামান (All Photos)",
+        "multi_all": "📦 সব ছবি ও ভিডিও একসাথে (Album)",
+        "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
     },
     "en": {
         "guide": (
-            "🌟 **Ultimate All-In-One Social Media Downloader** 🌟\n"
+            "🌟 **Ultimate Social Media Downloader** 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **Features & Guides:**\n"
-            "• **Instagram Carousel:** Download multi-slide posts as full albums or single items.\n"
-            "• **Video Speed Changer:** Convert video to 0.5x, 1.5x, or 2.0x playback speed.\n"
-            "• **Audio Ringtone Trimmer:** Cut custom timestamps for ringtones.\n"
-            "• **Instant Quick Mode:** Type /quick to toggle direct 720p instant downloads.\n"
-            "• **TikTok Photo Slides:** Download full album with original background audio.\n"
-            "• **Custom Frames & GIFs:** Precise timestamp clipping.\n\n"
-            "💡 **How to use:** Just paste any public video link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!"
+            "📌 **How to use:**\n"
+            "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
+            "🎥 **Video:** 1080p, 720p, 480p, Fast & Document Mode\n"
+            "🎵 **Audio:** 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
+            "🖼️ **Photos:** Download full photo albums, HD Covers & custom frames\n"
+            "🎞️ **Tools:** Custom Animated GIF Converter & Playback Speed Changer!"
         ),
         "help_text": (
             "📖 **User Guide & Commands:**\n\n"
             "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ **Carousels:** Automatically supports Instagram multi-slide albums.\n"
-            "4️⃣ **50 MB Limit:** If files exceed 50 MB, select 480p or Fast mode."
+            "3️⃣ **Multi-slide posts:** Download all items together as an album or just the first item.\n"
+            "4️⃣ **50 MB Limit:** If files exceed 50 MB, choose 480p or Fast mode."
         ),
         "help_lang_resp": "🌐 To change your language, click below or type /lang:",
         "help_error_resp": "🛠️ Ensure the post is public and file size is under 50 MB.",
@@ -136,7 +132,7 @@ TEXTS = {
         "choose_main": "📥 What would you like to download? Choose a category:",
         "choose_video": "🎥 Choose your desired video quality:",
         "choose_audio": "🎵 Choose your audio format:",
-        "choose_thumb": "🖼️ Choose your thumbnail, frame, or photos:",
+        "choose_thumb": "🖼️️ Choose your photo, cover, or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
         "uploading": "🚀 Uploading to Telegram...",
@@ -144,7 +140,7 @@ TEXTS = {
         "gif_prompt": "🎞️ Reply with start and end time (e.g. `5-10` or `00:10-00:15`, max 10s):",
         "audio_trim_prompt": "✂️ Reply with start and end time (e.g. `0-30` or `00:20-00:50`, max 60s):",
         "gif_limit_error": "⚠️ GIF range must be 10 seconds or less. Please try again.",
-        "audio_limit_error": "⚠️️ Ringtone range must be 60 seconds or less. Please try again.",
+        "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less. Please try again.",
         "custom_success": "✅ Frame captured successfully ({sec}s)",
         "mid_success": "✅ Middle video frame ({sec}s)",
         "error_frame": "❌ Failed to extract frame.",
@@ -153,7 +149,7 @@ TEXTS = {
         "error_50mb": "⚠️ File size is {size:.1f} MB! Telegram cannot send files over 50 MB.",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
-        "btn_thumb": "🖼️ Thumbnail & Photos",
+        "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_back": "🔙 Back to Main Menu",
         "btn_cancel": "❌ Cancel",
@@ -164,13 +160,13 @@ TEXTS = {
         "voice": "🎙️ Voice Note (.ogg)",
         "gif": "🎞️ Custom Trimmed GIF",
         "ringtone": "✂️ Audio Trim / Ringtone",
-        "thumb_hd": "🖼️ Thumb HD",
-        "thumb_sd": "🖼️ Thumb Std",
+        "thumb_hd": "🖼️ HD Cover Photo",
+        "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
-        "tiktok_photos": "📸 TikTok Photo Slide (All)",
-        "insta_all": "📦 Download All Carousel (Album)",
-        "insta_first": "🖼️ Download First Media Only"
+        "all_photos": "📸 Download All Photos (Album)",
+        "multi_all": "📦 Download All Photos/Videos (Album)",
+        "multi_first": "🖼️ Download First Media Only"
     }
 }
 
@@ -270,7 +266,6 @@ def convert_to_gif_mp4(input_video, output_mp4, start_sec=0, duration=8):
     return os.path.exists(output_mp4) and os.path.getsize(output_mp4) > 1024
 
 def change_video_speed_ffmpeg(input_video, output_video, speed=1.5):
-    # স্পিড অনুযায়ী ভিডিও এবং অডিও ফিল্টার সেটআপ
     v_pts = 1.0 / speed
     if speed == 0.5:
         a_filter = "atempo=0.5"
@@ -316,18 +311,19 @@ def build_language_keyboard():
         ]
     ])
 
-def get_main_menu(user_id, is_insta=False):
-    keyboard = [
+def get_main_menu(user_id, has_multi=False):
+    keyboard = []
+    if has_multi:
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "multi_all"), callback_data="multi_all"),
+            InlineKeyboardButton(get_text(user_id, "multi_first"), callback_data="multi_first")
+        ])
+    keyboard.extend([
         [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
         [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
-        [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")]
-    ]
-    if is_insta:
-        keyboard.insert(0, [
-            InlineKeyboardButton(get_text(user_id, "insta_all"), callback_data="insta_all"),
-            InlineKeyboardButton(get_text(user_id, "insta_first"), callback_data="insta_first")
-        ])
-    keyboard.append([InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")])
+        [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")],
+        [InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")]
+    ])
     return InlineKeyboardMarkup(keyboard)
 
 def get_video_menu(user_id):
@@ -391,7 +387,7 @@ def get_audio_menu(user_id):
 def get_thumb_menu(user_id, has_photos=False):
     keyboard = []
     if has_photos:
-        keyboard.append([InlineKeyboardButton(get_text(user_id, "tiktok_photos"), callback_data="tk_photos")])
+        keyboard.append([InlineKeyboardButton(get_text(user_id, "all_photos"), callback_data="all_photos_dl")])
     keyboard.extend([
         [
             InlineKeyboardButton(get_text(user_id, "thumb_hd"), callback_data="thumb_hd"),
@@ -421,7 +417,7 @@ async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     state_str = "চালু (ON) ⚡" if not current_state else "বন্ধ (OFF) 🛑"
     await update.message.reply_text(
         f"⚡ **Quick Download Mode:** {state_str}\n"
-        "এটি অন থাকলে লিঙ্ক দেওয়ার সাথে সাথে কোনো মেনু ছাড়া সরাসরি সেরা কোয়ালিটিতে ভিডিও ডাউনলোড হবে।"
+        "এটি চালু থাকলে লিঙ্ক দেওয়ার সাথে সাথে কোনো মেনু ছাড়াই সরাসরি 720p সেরা কোয়ালিটিতে ভিডিও ডাউনলোড হবে।"
     )
 
 async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -446,7 +442,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # অডিও রিংটোন ইনপুট হ্যান্ডলার
+    # ১. অডিও রিংটোন ইনপুট হ্যান্ডলার
     if user_id in user_waiting_audio_trim:
         saved_url = user_waiting_audio_trim.pop(user_id)
         start_sec, end_sec = 0, 30
@@ -506,7 +502,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # কাস্টম GIF টাইম ইনপুট হ্যান্ডলার
+    # ২. কাস্টম GIF টাইম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_gif_time:
         saved_url = user_waiting_gif_time.pop(user_id)
         start_sec, end_sec = 0, 8
@@ -562,7 +558,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # কাস্টম ফ্রেম ইনপুট হ্যান্ডলার
+    # ৩. কাস্টম ফ্রেম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_custom_time:
         saved_url = user_waiting_custom_time.pop(user_id)
         try:
@@ -600,7 +596,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(get_text(user_id, "error_frame"))
         return
 
-    # অটো অ্যাসিস্ট্যান্ট
+    # টেক্সট নির্দেশিকা
     if not text.startswith("http://") and not text.startswith("https://"):
         if any(w in lower_text for w in ["language", "ভাষা", "bhasha", "change", "পরিবর্তন", "change language"]):
             await update.message.reply_text(get_text(user_id, "help_lang_resp"), reply_markup=build_language_keyboard())
@@ -625,7 +621,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    # ইনস্ট্যান্ট কুইক ডাউনলোড মোড চেক
+    # কুইক ডাউনলোড মোড
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
@@ -658,8 +654,8 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-    is_insta = "instagram.com" in url
-    await update.message.reply_text(get_text(user_id, "choose_main"), reply_markup=get_main_menu(user_id, is_insta))
+    has_multi = "instagram.com" in url
+    await update.message.reply_text(get_text(user_id, "choose_main"), reply_markup=get_main_menu(user_id, has_multi))
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -715,25 +711,23 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
-    # ইনস্টাগ্রাম ক্যারোজেল অ্যালবাম ডাউনলোড
-    if data in ["insta_all", "insta_first"]:
-        status_msg = await query.edit_message_text("📦 ইনস্টাগ্রাম ক্যারোজেল প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
+    # একাধিক ছবি/ভিডিও একসাথে বা শুধু ১মটি ডাউনলোড
+    if data in ["multi_all", "multi_first"]:
+        status_msg = await query.edit_message_text("📦 প্রসেসিং হচ্ছে, দয়া করে অপেক্ষা করুন...")
         ydl_opts = {
-            'outtmpl': f"{output_dir}/insta_{unique_id}_%(autonumber)s.%(ext)s",
+            'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
             'quiet': True,
         }
-        if data == "insta_first":
+        if data == "multi_first":
             ydl_opts['playlist_items'] = '1'
 
         downloaded_media = []
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
-                title = info.get('title', 'Instagram Post')
-                uploader = info.get('uploader', 'Instagram Creator')
 
             for file in os.listdir(output_dir):
-                if file.startswith(f"insta_{unique_id}_"):
+                if file.startswith(f"multi_{unique_id}_"):
                     downloaded_media.append(os.path.join(output_dir, file))
 
             if downloaded_media:
@@ -748,11 +742,11 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
                     await status_msg.delete()
                 else:
-                    await status_msg.edit_text("❌ কোনো উপযুক্ত ফাইল পাওয়া যায়নি।")
+                    await status_msg.edit_text("❌ ফাইলটি পাঠানো সম্ভব হয়নি।")
             else:
-                await status_msg.edit_text("❌ পোস্টটি প্রাইভেট বা নামানো সম্ভব হয়নি।")
+                await status_msg.edit_text("❌ কোনো উপযুক্ত ফাইল পাওয়া যায়নি। লিঙ্কটি পাবলিক কি না চেক করুন।")
         except Exception as e:
-            await status_msg.edit_text(f"ইনস্টাগ্রাম ত্রুটি: {str(e)[:100]}")
+            await status_msg.edit_text(f"ত্রুটি: {str(e)[:100]}")
         finally:
             for f in downloaded_media:
                 if os.path.exists(f): os.remove(f)
@@ -797,16 +791,16 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # TikTok ফটো স্লাইডশো ডাউনলোড
-    if data == "tk_photos":
-        status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে, দয়া করে অপেক্ষা করুন...")
+    # ছবি ডাউনলোড হ্যান্ডলার
+    if data == "all_photos_dl":
+        status_msg = await query.edit_message_text("📸 সব ছবি নামানো হচ্ছে, দয়া করে অপেক্ষা করুন...")
         tk_data = get_tiktok_details(url)
         if tk_data and tk_data.get("images"):
             images = tk_data["images"]
             downloaded_files = []
             try:
                 for idx, img_url in enumerate(images[:10]):
-                    img_path = f"{output_dir}/tk_slide_{unique_id}_{idx}.jpg"
+                    img_path = f"{output_dir}/slide_{unique_id}_{idx}.jpg"
                     r = requests.get(img_url, headers=headers, timeout=20)
                     with open(img_path, "wb") as f:
                         f.write(r.content)
@@ -816,7 +810,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_media_group(chat_id=user_id, media=media_group)
 
                 if tk_data.get("audio_url"):
-                    aud_path = f"{output_dir}/tk_aud_{unique_id}.mp3"
+                    aud_path = f"{output_dir}/aud_{unique_id}.mp3"
                     ar = requests.get(tk_data["audio_url"], headers=headers, timeout=20)
                     with open(aud_path, "wb") as f:
                         f.write(ar.content)
@@ -831,13 +825,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 await status_msg.delete()
             except Exception as e:
-                await status_msg.edit_text(f"ফটো ডাউনলোডে সমস্যা: {str(e)[:100]}")
+                await status_msg.edit_text(f"ফটো ত্রুটি: {str(e)[:100]}")
             finally:
                 for f in downloaded_files:
                     if os.path.exists(f): os.remove(f)
             return
         else:
-            await status_msg.edit_text("❌ এই লিঙ্কে কোনো ফটো স্লাইড পাওয়া যায়নি।")
+            await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
     if data == "tool_audiotrim":
@@ -1086,7 +1080,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'writethumbnail': True,
             'postprocessors': [
                 {'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': bitrate},
-                {'key': 'FFmpegMetadata'},  # মেটাডেটা এমবেড
+                {'key': 'FFmpegMetadata'},
             ],
         }
 
@@ -1127,7 +1121,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await status_msg.delete()
                 return
 
-        # কভার থাম্বনেইল প্রসেসিং
         if req_type == "aud":
             base_path = os.path.splitext(file_path)[0]
             for ext in ['.webp', '.jpg', '.jpeg', '.png']:
@@ -1211,7 +1204,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra Ultimate Social Media Bot with 6 Premium Features is Running...")
+    print("Ultra Ultimate Social Media Bot is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
