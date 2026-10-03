@@ -31,7 +31,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot with Premium UI is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -44,6 +44,9 @@ logging.basicConfig(
 BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
+
+# আকর্ষণীয় ওয়েলকাম ব্যানার ছবির সরাসরি লিঙ্ক (Clean Aesthetic Tech/Social Banner)
+WELCOME_BANNER_URL = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"
 
 user_urls = {}
 user_waiting_custom_time = {}
@@ -65,19 +68,19 @@ L = instaloader.Instaloader(
 TEXTS = {
     "bn": {
         "guide": (
-            "🌸 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌸\n"
+            "🌸 𝗨𝗹𝘁𝗿𝗮 𝟰𝗞 𝗦𝗼𝗰𝗶𝗮𝗹 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 সহজ ব্যবহারের নিয়মাবলী:\n"
-            "যেকোনো ভিডিও বা ছবির লিঙ্ক সরাসরি পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
+            "📌 ব্যবহার করার নিয়মাবলী:\n"
+            "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
             "🎥 ভিডিও কোয়ালিটি: Highest, Medium, Lowest, Fast ও কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
-            "🖼️ ছবি ও অ্যালবাম: Instagram ও TikTok-এর সব ছবি একসাথে ডাউনলোড!\n"
-            "🎞️ GIF ও স্পিড টুলস: অটো GIF, ট্রিমড GIF ও প্লেব্যাক স্পিড\n"
+            "🖼️ ছবি ও স্লাইড: Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে ডাউনলোড!\n"
+            "🎞️ GIF ও স্পিড টুলস: অটো GIF, ট্রিমড GIF ও প্লেব্যাক স্পিড চেঞ্জার\n"
             "🎵 অডিও: MP3 (320k, 192k, 128k), রিংটোন মেকার ও ভয়েস মেসেজ\n"
-            "🗜️ স্মার্ট কম্প্রেশন: ৫০ MB-র বেশি বড় ফাইল হলে বট নিজ থেকেই সাইজ অপ্টিমাইজ করে পাঠাবে!"
+            "🗜️ স্মার্ট কম্প্রেশন: ৫০ MB-র বড় ভিডিও হলে বট নিজেই সাইজ অপ্টিমাইজ করে পাঠাবে!"
         ),
         "help_text": (
             "📖 নির্দেশিকা ও কমান্ডসমূহ:\n\n"
-            "1️⃣ /quick : সরাসরি 720p ফাস্ট ডাউনলোড অন/অফ করতে।\n"
+            "1️⃣ /quick : সরাসরি 720p ফাস্ট ডাউনলোড মোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
             "3️⃣ কাস্টম রেজোলিউশন: Video Options থেকে 4K, 2K, 1080p পছন্দ করুন।"
         ),
@@ -135,7 +138,7 @@ TEXTS = {
     },
     "en": {
         "guide": (
-            "🌸 Ultimate 4K Social Media Downloader 🌸\n"
+            "🌸 𝗨𝗹𝘁𝗿𝗮 𝟰𝗞 𝗦𝗼𝗰𝗶𝗮𝗹 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 How to use:\n"
             "Send any video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
@@ -158,7 +161,7 @@ TEXTS = {
         "choose_video": "🎥 Choose video mode:",
         "choose_custom_res": "🎯 Choose specific resolution:",
         "choose_audio": "🎵 Choose audio format:",
-        "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
+        "choose_gif_tools": "🎞️️ Choose GIF or video speed tools:",
         "choose_thumb": "🖼️ Choose photo or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
@@ -178,7 +181,7 @@ TEXTS = {
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
-        "btn_thumb": "🖼️ Photos & Thumbnails",
+        "btn_thumb": "🖼️️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back",
@@ -439,26 +442,40 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     )
     return caption
 
-# প্রথম /start প্রেস করলে এই সুন্দর মেসেজ আসবে
+# স্টাইলিশ ফটো ব্যানার সহ প্রিমিয়াম ওয়েলকাম মেসেজ
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome_msg = (
-        "🌸 ✨ Welcome to Ultra Social Downloader ✨ 🌸\n"
+    welcome_caption = (
+        "🌸 ✨ 𝒲𝑒𝓁𝒸𝑜𝓂𝑒 𝓉𝑜 𝒰𝓁𝓉𝓇𝒶 𝒟𝑜𝓌𝓃𝓁𝑜𝒶𝒹𝑒𝓇 ✨ 🌸\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "🤍 Download high-quality videos, photos, and music effortlessly from:\n"
-        "✦ TikTok (No Watermark)\n"
-        "✦ Instagram (Reels & Carousels)\n"
-        "✦ Facebook, X (Twitter), Pinterest & Reddit\n\n"
-        "🤍 Please support our creator by following on Instagram below! 🌸"
+        "🤍 ʏᴏᴜʀ ᴀʟʟ-ɪɴ-ᴏɴᴇ ʜɪɢʜ-ꜱᴘᴇᴇᴅ ꜱᴏᴄɪᴀʟ ꜱᴀᴠᴇʀ 🤍\n\n"
+        "✦ 𝗧𝗶𝗸𝗧𝗼𝗸 : No Watermark (4K / HD)\n"
+        "✦ 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 : Reels, Videos & Carousels\n"
+        "✦ 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 & 𝗫 : Full HD Media & GIF\n"
+        "✦ 𝗣𝗶𝗻𝘁𝗲𝗿𝗲𝘀𝘁 & 𝗥𝗲𝗱𝗱𝗶𝘁 : Photos & Audio\n\n"
+        "🤍 𝒫𝓁𝑒𝒶𝓈𝑒 𝓈𝓊𝓅𝓅𝑜𝓇𝓉 𝓉𝒽𝑒 𝒸𝓇𝑒𝒶𝓉𝑜𝓇 𝑜𝓃 𝐼𝓃𝓈𝓉𝒶𝑔𝓇𝒶𝓂 𝒷𝑒𝓁𝑜𝓌 🌸"
     )
     keyboard = InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("🔗 Follow on Instagram 🤍", url=INSTAGRAM_PROFILE_URL)
+            InlineKeyboardButton("🔗 𝗙𝗼𝗹𝗹𝗼𝘄 𝗼𝗻 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 🤍", url=INSTAGRAM_PROFILE_URL)
         ],
         [
-            InlineKeyboardButton("✨ Continue / Skip 🤍", callback_data="welcome_next")
+            InlineKeyboardButton("✨ 𝗖𝗼𝗻𝘁𝗶𝗻𝘂𝗲 / 𝗦𝗸𝗶𝗽 🤍", callback_data="welcome_next")
         ]
     ])
-    await update.message.reply_text(welcome_msg, reply_markup=keyboard)
+
+    try:
+        # ব্যানার ছবি সহ প্রিমিয়াম মেসেজ
+        await update.message.reply_photo(
+            photo=WELCOME_BANNER_URL,
+            caption=welcome_caption,
+            reply_markup=keyboard
+        )
+    except Exception:
+        # ছবি লোড না হলেও টেক্সট নির্বিঘ্নে পৌঁছাবে
+        await update.message.reply_text(
+            welcome_caption,
+            reply_markup=keyboard
+        )
 
 async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -483,7 +500,6 @@ async def cmd_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ])
     await update.message.reply_text("🌐 Select Language / ভাষা বেছে নিন:", reply_markup=keyboard)
 
-# সরাসরি লিঙ্ক দিলে সুপার ফাস্ট মেনু আসবে
 async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.strip()
     user_id = update.effective_user.id
@@ -675,7 +691,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    # কুইক ডাউনলোড মোড চেক
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
@@ -753,7 +768,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ওয়েলকাম স্টেপ থেকে ভাষা সিলেক্ট পেজে যাওয়া
+    # ওয়েলকাম স্টেপ থেকে ভাষা পেজে যাওয়া
     if data == "welcome_next":
         lang_kb = InlineKeyboardMarkup([
             [
@@ -761,10 +776,19 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
             ]
         ])
-        await query.edit_message_text(
-            "🌸 Choose Your Language / আপনার ভাষা নির্বাচন করুন: 🤍",
-            reply_markup=lang_kb
-        )
+        # ছবি থাকলে ডিলিট করে টেক্সট আনবে অথবা এডিট করবে
+        try:
+            await query.message.delete()
+            await context.bot.send_message(
+                chat_id=user_id,
+                text="🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
+                reply_markup=lang_kb
+            )
+        except Exception:
+            await query.edit_message_text(
+                "🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
+                reply_markup=lang_kb
+            )
         return
 
     # ভাষা নির্ধারণ
@@ -1405,7 +1429,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                        caption=f"🎙️️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
                 await status_msg.delete()
