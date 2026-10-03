@@ -1,4 +1,5 @@
 import os
+import io
 import threading
 import uuid
 import logging
@@ -23,12 +24,12 @@ from PIL import Image
 # FFmpeg সচল করা
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 লাইভ রাখার Flask ওয়েব সার্ভার
+# Render Web Service 24/7 লাইভ রাখার Flask সার্ভার
 web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot with Fixed Photo Engine is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -56,17 +57,17 @@ TEXTS = {
             "📌 **সহজ ব্যবহারের নিয়মাবলী:**\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
             "🎥 **ভিডিও কোয়ালিটি:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest ও Fast মোড\n"
+            "🖼️ **ছবি ও স্লাইড:** Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে অ্যালবাম আকারে ডাউনলোড!\n"
             "🎞️ **GIF ও স্পিড টুলস:** অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
             "🎵 **অডিও:** 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
-            "🖼️ **ছবি ও স্লাইড:** একসাথে সব ছবি (অ্যালবাম), ফুল এইচডি কভার ও ফ্রেম\n"
-            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
+            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
         ),
         "help_text": (
             "📖 **জরুরি নির্দেশিকা ও কমান্ডসমূহ:**\n\n"
             "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
-            "3️⃣ **4K ও 2K ভিডিও:** ভিডিওর মূল সোর্সে 4K/2K থাকলে এটি সর্বোচ্চ কোয়ালিটিতে নামাবে।\n"
-            "4️⃣ **৫০ MB লিমিট:** ফাইল ৫০ MB-র বেশি বড় হলে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
+            "3️⃣ **ইনস্টাগ্রাম ও টিকটক ফটো:** সব ছবি ও স্লাইডশো এক ক্লিকেই ফুল কোয়ালিটিতে নেমে আসবে।\n"
+            "4️⃣ **৫০ MB লিমিট:** ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট কোয়ালিটি নষ্ট না করে নিজ থেকেই সাইজ অপ্টিমাইজ করে ইনবক্সে দেবে।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
@@ -124,26 +125,26 @@ TEXTS = {
             "📌 **How to use:**\n"
             "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
             "🎥 **Video Quality:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest & Fast Modes\n"
+            "🖼️ **Photos:** Full-resolution album download for Instagram & TikTok carousels!\n"
             "🎞️ **GIF & Speed Tools:** Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
             "🎵 **Audio:** 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🖼️️ **Photos:** Download full photo albums, HD Covers & custom frames\n"
             "🗜️️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB!"
         ),
         "help_text": (
             "📖 **User Guide & Commands:**\n\n"
             "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ **4K & 2K Media:** Bot pulls maximum available server quality.\n"
-            "4️⃣ **50 MB Limit:** Large files are automatically compressed preserving high quality."
+            "3️⃣ **Photos & Carousels:** Download all multi-slide images in original quality.\n"
+            "4️⃣ **50 MB Limit:** Files over 50 MB are automatically compressed with visual preservation."
         ),
         "help_lang_resp": "🌐 To change your language, click below or type /lang:",
-        "help_error_resp": "🛠️ Ensure the post is public and not from a private account.",
-        "help_size_resp": "ℹ️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
+        "help_error_resp": "🛠️️ Ensure the post is public and not from a private account.",
+        "help_size_resp": "ℹ️️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
         "choose_main": "📥 What would you like to download? Choose a category:",
         "choose_video": "🎥 Choose your desired video resolution & mode:",
         "choose_audio": "🎵 Choose your audio format:",
         "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
-        "choose_thumb": "🖼️ Choose your photo, cover, or frame option:",
+        "choose_thumb": "🖼️️ Choose your photo, cover, or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
         "compressing": "🗜️ File exceeds 50 MB, optimizing under 50 MB without quality loss...",
@@ -183,7 +184,7 @@ TEXTS = {
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 Download All Photos (Album)",
         "multi_all": "📦 Download All Photos/Videos (Album)",
-        "multi_first": "🖼️️ Download First Media Only"
+        "multi_first": "🖼️ Download First Media Only"
     }
 }
 
@@ -224,12 +225,17 @@ def get_tiktok_details(tiktok_url):
     return None
 
 def get_instagram_direct_media(url):
+    """ইনস্টাগ্রাম ছবি ও ভিডিও সরাসরি ব্লকহীনভাবে এক্সট্র্যাক্ট করার মেথড"""
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
     }
     media_urls = []
+    clean_url = url.split("?")[0].rstrip("/")
+
+    # মেথড ১: ডিরেক্ট ওপেন JSON এন্ডপয়েন্ট
     try:
-        clean_url = url.split("?")[0].rstrip("/")
         json_url = f"{clean_url}/?__a=1&__d=dis"
         res = requests.get(json_url, headers=headers, timeout=10)
         if res.status_code == 200:
@@ -249,6 +255,20 @@ def get_instagram_direct_media(url):
                     media_urls.append(item["video_versions"][0]["url"])
     except Exception:
         pass
+
+    # মেথড ২: ওপেন স্ক্র্যাপার প্রক্সি ফলব্যাক (লগইন ছাড়া ছবি পেতে)
+    if not media_urls:
+        try:
+            api_endpoint = "https://api.vkrdown.com/insta/"
+            res = requests.post(api_endpoint, data={"url": clean_url}, timeout=12).json()
+            if res.get("status") == "success" and res.get("data"):
+                for m in res["data"]:
+                    m_url = m.get("url") or m.get("download_url")
+                    if m_url:
+                        media_urls.append(m_url)
+        except Exception:
+            pass
+
     return media_urls
 
 def extract_frame_ffmpeg(video_source, timestamp_sec, output_img_path):
@@ -700,7 +720,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(get_text(user_id, "error_frame"))
         return
 
-    # টেক্সট নির্দেশিকা
+    # সাধারণ টেক্সট গাইড
     if not text.startswith("http://") and not text.startswith("https://"):
         if any(w in lower_text for w in ["language", "ভাষা", "bhasha", "change", "পরিবর্তন", "change language"]):
             await update.message.reply_text(get_text(user_id, "help_lang_resp"), reply_markup=build_language_keyboard())
@@ -827,7 +847,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unique_id = str(uuid.uuid4())[:6]
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 
     # ১-ক্লিক অটো GIF
@@ -865,121 +885,105 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # একাধিক ছবি/ভিডিও অ্যালবাম
+    # একাধিক ছবি/ভিডিও অ্যালবাম (Instagram / Multi-Post ফিক্সড)
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
-        downloaded_media = []
-        open_files = []
+        media_group = []
         try:
             direct_urls = get_instagram_direct_media(url)
             if direct_urls:
                 target_urls = [direct_urls[0]] if data == "multi_first" else direct_urls[:10]
                 for idx, m_url in enumerate(target_urls):
-                    ext = "mp4" if ".mp4" in m_url else "jpg"
-                    file_path = f"{output_dir}/insta_direct_{unique_id}_{idx}.{ext}"
                     r = requests.get(m_url, headers=headers, timeout=20)
                     if r.status_code == 200:
-                        with open(file_path, "wb") as f:
-                            f.write(r.content)
-                        downloaded_media.append(file_path)
-            else:
-                ydl_opts = {
-                    'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
-                    'quiet': True,
-                    'ignoreerrors': True,
-                }
-                if data == "multi_first":
-                    ydl_opts['playlist_items'] = '1'
+                        file_bytes = io.BytesIO(r.content)
+                        if ".mp4" in m_url.lower() or "video" in r.headers.get("Content-Type", ""):
+                            file_bytes.name = f"media_{idx}.mp4"
+                            media_group.append(InputMediaVideo(media=file_bytes))
+                        else:
+                            file_bytes.name = f"media_{idx}.jpg"
+                            media_group.append(InputMediaPhoto(media=file_bytes))
 
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.extract_info(url, download=True)
+                if media_group:
+                    await context.bot.send_media_group(chat_id=user_id, media=media_group)
+                    await status_msg.delete()
+                    return
 
-                for file in sorted(os.listdir(output_dir)):
-                    if file.startswith(f"multi_{unique_id}_"):
-                        downloaded_media.append(os.path.join(output_dir, file))
+            # ফলব্যাক yt-dlp
+            ydl_opts = {
+                'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
+                'quiet': True,
+                'ignoreerrors': True,
+            }
+            if data == "multi_first":
+                ydl_opts['playlist_items'] = '1'
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.extract_info(url, download=True)
+
+            downloaded_media = []
+            for file in sorted(os.listdir(output_dir)):
+                if file.startswith(f"multi_{unique_id}_"):
+                    downloaded_media.append(os.path.join(output_dir, file))
 
             if downloaded_media:
                 media_group = []
                 for file_p in downloaded_media[:10]:
+                    with open(file_p, "rb") as f_read:
+                        b = io.BytesIO(f_read.read())
                     if file_p.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
-                        f = open(file_p, "rb")
-                        open_files.append(f)
-                        media_group.append(InputMediaPhoto(media=f))
+                        b.name = "image.jpg"
+                        media_group.append(InputMediaPhoto(media=b))
                     elif file_p.lower().endswith((".mp4", ".mov", ".mkv")):
-                        f = open(file_p, "rb")
-                        open_files.append(f)
-                        media_group.append(InputMediaVideo(media=f))
+                        b.name = "video.mp4"
+                        media_group.append(InputMediaVideo(media=b))
 
                 if media_group:
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
                     await status_msg.delete()
                 else:
                     await status_msg.edit_text("❌ ফাইল পাঠানো সম্ভব হয়নি।")
+                for f in downloaded_media:
+                    if os.path.exists(f): os.remove(f)
             else:
                 await status_msg.edit_text("❌ পোস্টটি প্রাইভেট অথবা ছবিগুলো নামানো সম্ভব হয়নি। লিঙ্কটি পাবলিক কি না চেক করুন।")
         except Exception as e:
             await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
-        finally:
-            for f in open_files:
-                try: f.close()
-                except Exception: pass
-            for f in downloaded_media:
-                if os.path.exists(f): 
-                    try: os.remove(f)
-                    except Exception: pass
         return
 
     # TikTok সব ছবি একসাথে
     if data == "all_photos_dl":
         status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
         tk_data = get_tiktok_details(url)
-        downloaded_files = []
-        open_files = []
         if tk_data and tk_data.get("images"):
             images = tk_data["images"]
+            media_group = []
             try:
                 for idx, img_url in enumerate(images[:10]):
-                    img_path = f"{output_dir}/slide_{unique_id}_{idx}.jpg"
                     r = requests.get(img_url, headers=headers, timeout=20)
                     if r.status_code == 200:
-                        with open(img_path, "wb") as f:
-                            f.write(r.content)
-                        downloaded_files.append(img_path)
+                        b = io.BytesIO(r.content)
+                        b.name = f"slide_{idx}.jpg"
+                        media_group.append(InputMediaPhoto(media=b))
 
-                if downloaded_files:
-                    media_group = []
-                    for f_path in downloaded_files:
-                        f = open(f_path, "rb")
-                        open_files.append(f)
-                        media_group.append(InputMediaPhoto(media=f))
-
+                if media_group:
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
 
                 if tk_data.get("audio_url"):
-                    aud_path = f"{output_dir}/aud_{unique_id}.mp3"
                     ar = requests.get(tk_data["audio_url"], headers=headers, timeout=20)
-                    with open(aud_path, "wb") as f:
-                        f.write(ar.content)
-                    with open(aud_path, "rb") as af:
+                    if ar.status_code == 200:
+                        aud_b = io.BytesIO(ar.content)
+                        aud_b.name = "audio.mp3"
                         await context.bot.send_audio(
                             chat_id=user_id,
-                            audio=af,
+                            audio=aud_b,
                             title=tk_data["title"][:40],
                             performer=tk_data["author"]
                         )
-                    if os.path.exists(aud_path): os.remove(aud_path)
 
                 await status_msg.delete()
             except Exception as e:
                 await status_msg.edit_text(f"ফটো ত্রুটি: {str(e)[:100]}")
-            finally:
-                for f in open_files:
-                    try: f.close()
-                    except Exception: pass
-                for f in downloaded_files:
-                    if os.path.exists(f): 
-                        try: os.remove(f)
-                        except Exception: pass
             return
         else:
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
@@ -1208,7 +1212,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # ২. অন্যান্য সোশ্যাল মিডিয়া (সব রেজোলিউশন ও কম্প্রেশন সহ)
+    # ২. অন্যান্য সোশ্যাল মিডিয়া
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1253,7 +1257,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if req_type in ["vid"]:
-        # রেজোলিউশন ও মোড ফিল্টার
         if quality in ["2160", "highest", "doc"]:
             format_opt = "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"
         elif quality == "1440":
@@ -1317,7 +1320,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
         was_compressed = False
 
-        # ৫০ MB ছাড়ালে অটো-কম্প্রেশন
         if req_type == "vid" and file_size_mb > 50:
             await status_msg.edit_text(get_text(user_id, "compressing"))
             compressed_video = f"{output_dir}/comp_{unique_id}.mp4"
@@ -1338,7 +1340,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
+                        caption=f"🎙️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
                         parse_mode="Markdown"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
@@ -1428,7 +1430,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra 4K/2K Social Media Bot is Running...")
+    print("Ultra 4K/2K Social Media Bot with Fixed Photo Engine is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
