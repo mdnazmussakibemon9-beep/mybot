@@ -1,6 +1,7 @@
-python-telegram-bot[job-queue]
+python-telegram-bot>=20.0
 yt-dlp
+instaloader
 requests
+Pillow
+Flask
 static-ffmpeg
-pillow
-flask
