@@ -73,7 +73,7 @@ TEXTS = {
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
             "আপনার প্রতিদিনের প্রিয় মুহূর্ত, ভিডিও আর সুন্দর স্মৃতিগুলো সুরক্ষিত ও সহজে ডাউনলোড করে নিতে **NSE NEXORA** সব সময় আপনার পাশে আছে।\n\n"
             "আশা করি আপনার যাত্রাটি সুন্দর ও চমৎকার হবে! ✨\n\n"
-            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে ফলো ও ভালোবাসা দিতে পারেন 🤍"
+            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে একটু ভালোবাসা ও সাপোর্ট দিতে পারেন 🤍"
         ),
         "btn_follow": "🔗 ইনস্টাগ্রামে ফলো করুন 🤍",
         "btn_continue": "✨ শুরু করুন / স্কিপ 🤍",
@@ -96,7 +96,7 @@ TEXTS = {
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না তা নিশ্চিত করুন।",
-        "help_size_resp": "ℹ️ টেলিগ্রামে ৫০ MB-র বড় ভিডিও হলে বট নিজে থেকেই কোয়ালিটি ঠিক রেখে সাইজ কমিয়ে পাঠায়।",
+        "help_size_resp": "ℹ️️ টেলিগ্রামে ৫০ MB-র বড় ভিডিও হলে বট নিজে থেকেই কোয়ালিটি ঠিক রেখে সাইজ কমিয়ে পাঠায়।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 ভিডিও মোড বেছে নিন:",
         "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন:",
@@ -766,7 +766,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ২. ভাষা সিলেক্ট করার পর নির্বাচিত ভাষার ব্যানার ছবি ও হৃদয়স্পর্শী ক্যাপশন পাঠানো
+    # ২. ভাষা সিলেক্ট করার পর ফুল-উইডথ ব্যানার ও মার্জিত টেক্সট কার্ড পাঠানো
     if data.startswith("firstlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -784,21 +784,27 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         try:
             await query.message.delete()
+            # স্টেপ ১: ক্যাপশন ছাড়া ব্যানার পাঠানো যাতে ছবি দুই সাইড থেকে সংকুচিত না হয়ে ফুল স্ক্রিনে থাকে
             await context.bot.send_photo(
                 chat_id=user_id,
-                photo=banner_url,
-                caption=get_text(user_id, "welcome_caption"),
+                photo=banner_url
+            )
+            # স্টেপ ২: ছবির ঠিক নিচে মার্জিত লেখা ও ইনস্টাগ্রাম বাটন পাঠানো
+            await context.bot.send_message(
+                chat_id=user_id,
+                text=get_text(user_id, "welcome_caption"),
                 parse_mode="Markdown",
                 reply_markup=card_kb
             )
         except Exception:
-            # যদি কোনো কারণে মার্কডাউন বা নেটওয়ার্কে সমস্যা হয় তবে প্লেইন টেক্সট হিসেবে পাঠাবে
-            await context.bot.send_photo(
-                chat_id=user_id,
-                photo=banner_url,
-                caption=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
-                reply_markup=card_kb
-            )
+            try:
+                await context.bot.send_message(
+                    chat_id=user_id,
+                    text=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
+                    reply_markup=card_kb
+                )
+            except Exception:
+                pass
         return
 
     # ৩. ওয়েলকাম কার্ডে Continue চাপলে গাইডলাইন আসবে
@@ -1276,7 +1282,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
+                                caption=f"🎙️️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
