@@ -28,7 +28,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Auto-Compressor Social Downloader Bot is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -40,7 +40,7 @@ logging.basicConfig(
 
 BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
 
-# ডাটা স্টোরেজ
+# ডাটা ডিকশনারি
 user_urls = {}
 user_waiting_custom_time = {}
 user_waiting_gif_time = {}
@@ -55,30 +55,30 @@ TEXTS = {
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 **সহজ ব্যবহারের নিয়মাবলী:**\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
-            "🎥 **ভিডিও রেজোলিউশন:** 4K (2160p), 2K (1440p), 1080p, 720p, 480p, Fast ও ডকুমেন্ট মোড\n"
-            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে সাইজ অপ্টিমাইজ হয়ে যাবে!\n"
+            "🎥 **ভিডিও কোয়ালিটি:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest ও Fast মোড\n"
+            "🎞️ **GIF ও স্পিড টুলস:** অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
             "🎵 **অডিও:** 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
             "🖼️ **ছবি ও স্লাইড:** একসাথে সব ছবি (অ্যালবাম), ফুল এইচডি কভার ও ফ্রেম\n"
-            "🎞️ **GIF টুলস:** অটোমেটিক ১-ক্লিক GIF এবং কাস্টম ট্রিমড GIF!\n"
-            "⏩ **স্পিড টুলস:** ভিডিওর গতি পরিবর্তন (0.5x, 1.5x, 2x)!"
+            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
         ),
         "help_text": (
             "📖 **জরুরি নির্দেশিকা ও কমান্ডসমূহ:**\n\n"
             "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
-            "3️⃣ **স্মার্ট কম্প্রেশন:** ৪K/২K ভিডিও ৫০ MB-র বেশি বড় হলে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে ইনবক্সে পৌঁছে দেবে।\n"
-            "4️⃣ **স্লাইডশো ছবি:** টিকটক বা ইনস্টাগ্রামের একাধিক ছবির পোস্টে এক ক্লিকেই পুরো অ্যালবাম নামানো যাবে।"
+            "3️⃣ **4K ও 2K ভিডিও:** ভিডিওর মূল সোর্সে 4K/2K থাকলে এটি সর্বোচ্চ কোয়ালিটিতে নামাবে।\n"
+            "4️⃣ **৫০ MB লিমিট:** ফাইল ৫০ MB-র বেশি বড় হলে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
         "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
-        "choose_video": "🎥 আপনার পছন্দের ভিডিও কোয়ালিটি বেছে নিন:",
+        "choose_video": "🎥 আপনার পছন্দের ভিডিও কোয়ালিটি ও মোড বেছে নিন:",
         "choose_audio": "🎵 আপনার পছন্দের অডিও ফরম্যাট বেছে নিন:",
+        "choose_gif_tools": "🎞️ আপনার পছন্দের GIF বা স্পিড টুল বেছে নিন:",
         "choose_thumb": "🖼️ আপনার পছন্দের ছবি বা ফ্রেম অপশন বেছে নিন:",
         "choose_speed": "⏩ ভিডিওর প্লেব্যাক স্পিড বেছে নিন:",
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, দয়া করে অপেক্ষা করুন...",
-        "compressing": "🗜️️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
+        "compressing": "🗜️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: `10` বা `01:15`):",
         "gif_prompt": "🎞️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: `5-10` বা `00:10-00:15`, সর্বোচ্চ ১০ সেকেন্ড):",
@@ -93,15 +93,17 @@ TEXTS = {
         "error_compress": "⚠️ ভিডিওটি অতিরিক্ত বড় হওয়ায় ৫০ MB-র মধ্যে কম্প্রেস করা সম্ভব হয়নি। কম রেজোলিউশন (720p/480p) বেছে নিন।",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
+        "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
-        "btn_back": "🔙 Back (মেনু)",
+        "btn_back": "🔙 Back (প্রধান মেনু)",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
-        "highest": "🌟 Full HD (1080p)",
-        "normal": "🎬 HD (720p)",
-        "fast": "🚀 Fast (Low Size)",
+        "highest": "🌟 Highest Download",
+        "normal": "🎬 Medium Download",
+        "lowest": "⚡ Lowest Download",
+        "fast": "🚀 Fast Mode (Quick)",
         "doc": "📁 Document Uncompressed",
         "voice": "🎙️ Voice Note (.ogg)",
         "gif_auto": "🎞️ Auto GIF (১-ক্লিক)",
@@ -121,26 +123,26 @@ TEXTS = {
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 **How to use:**\n"
             "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
-            "🎥 **Video Resolutions:** 4K (2160p), 2K (1440p), 1080p, 720p, 480p, Fast & Document Mode\n"
-            "🗜️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB without noticeable quality loss!\n"
+            "🎥 **Video Quality:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest & Fast Modes\n"
+            "🎞️ **GIF & Speed Tools:** Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
             "🎵 **Audio:** 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🖼️ **Photos:** Download full photo albums, HD Covers & custom frames\n"
-            "🎞️️ **GIF Tools:** Instant Auto GIF & Custom Trimmed GIF Converter!\n"
-            "⏩ **Speed Tools:** Playback Speed Changer (0.5x, 1.5x, 2x)!"
+            "🖼️️ **Photos:** Download full photo albums, HD Covers & custom frames\n"
+            "🗜️️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB!"
         ),
         "help_text": (
             "📖 **User Guide & Commands:**\n\n"
             "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ **Smart Compression:** If 4K/2K videos exceed 50 MB, the bot automatically compresses them under 50 MB preserving quality.\n"
-            "4️⃣ **Photo Slides:** Full carousel albums supported seamlessly."
+            "3️⃣ **4K & 2K Media:** Bot pulls maximum available server quality.\n"
+            "4️⃣ **50 MB Limit:** Large files are automatically compressed preserving high quality."
         ),
         "help_lang_resp": "🌐 To change your language, click below or type /lang:",
         "help_error_resp": "🛠️ Ensure the post is public and not from a private account.",
         "help_size_resp": "ℹ️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
         "choose_main": "📥 What would you like to download? Choose a category:",
-        "choose_video": "🎥 Choose your desired video quality:",
+        "choose_video": "🎥 Choose your desired video resolution & mode:",
         "choose_audio": "🎵 Choose your audio format:",
+        "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
         "choose_thumb": "🖼️ Choose your photo, cover, or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
@@ -159,15 +161,17 @@ TEXTS = {
         "error_compress": "⚠️ File was too large to fit in 50 MB cleanly. Please select a lower resolution (720p/480p).",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
+        "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_back": "🔙 Back to Main Menu",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
-        "highest": "🌟 Full HD (1080p)",
-        "normal": "🎬 HD (720p)",
-        "fast": "🚀 Fast (Low Size)",
+        "highest": "🌟 Highest Download",
+        "normal": "🎬 Medium Download",
+        "lowest": "⚡ Lowest Download",
+        "fast": "🚀 Fast Mode (Quick)",
         "doc": "📁 Document Uncompressed",
         "voice": "🎙️ Voice Note (.ogg)",
         "gif_auto": "🎞️ Auto GIF (Instant)",
@@ -179,7 +183,7 @@ TEXTS = {
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 Download All Photos (Album)",
         "multi_all": "📦 Download All Photos/Videos (Album)",
-        "multi_first": "🖼️ Download First Media Only"
+        "multi_first": "🖼️️ Download First Media Only"
     }
 }
 
@@ -332,10 +336,8 @@ def change_video_speed_ffmpeg(input_video, output_video, speed=1.5):
     return os.path.exists(output_video) and os.path.getsize(output_video) > 1024
 
 def compress_video_under_50mb(input_video, output_video, duration=None):
-    """ভিডিও কোয়ালিটি ও সাউন্ড ঠিক রেখে ফাইল সাইজ স্বয়ংক্রিয়ভাবে ৫০ MB-র নিচে নামিয়ে আনার ফাংশন"""
     try:
         if not duration or duration <= 0:
-            # ffprobe দিয়ে মোট ডিউরেশন নির্ণয়
             cmd_dur = [
                 "ffprobe", "-v", "error", "-show_entries", "format=duration",
                 "-of", "default=noprint_wrappers=1:nokey=1", input_video
@@ -345,8 +347,7 @@ def compress_video_under_50mb(input_video, output_video, duration=None):
     except Exception:
         duration = 60.0
 
-    # টার্গেট সাইজ ৪৭ মেগাবাইট (নিরাপত্তা বাফারের জন্য)
-    target_size_bytes = 47.0 * 1024 * 1024 * 8  # বিটস
+    target_size_bytes = 47.0 * 1024 * 1024 * 8
     audio_bitrate_kb = 128
     audio_bits = audio_bitrate_kb * 1024 * duration
     video_bits = target_size_bytes - audio_bits
@@ -405,6 +406,7 @@ def get_main_menu(user_id, has_multi=False):
     keyboard.extend([
         [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
         [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
+        [InlineKeyboardButton(get_text(user_id, "btn_gif_tools"), callback_data="cat_gif_tools")],
         [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")],
         [InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")]
     ])
@@ -417,21 +419,40 @@ def get_video_menu(user_id):
             InlineKeyboardButton(get_text(user_id, "vid_2k"), callback_data="vid_1440")
         ],
         [
-            InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_1080"),
-            InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_720"),
-            InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast")
+            InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
+            InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
+            InlineKeyboardButton(get_text(user_id, "lowest"), callback_data="vid_lowest")
         ],
         [
-            InlineKeyboardButton("📱 480p", callback_data="vid_480"),
+            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
+            InlineKeyboardButton("📺 720p", callback_data="vid_720"),
+            InlineKeyboardButton("📱 480p", callback_data="vid_480")
+        ],
+        [
             InlineKeyboardButton("📱 360p", callback_data="vid_360"),
+            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
+            InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast"),
             InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
         ],
+        [
+            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+def get_gif_tools_menu(user_id):
+    keyboard = [
         [
             InlineKeyboardButton(get_text(user_id, "gif_auto"), callback_data="tool_gifauto"),
             InlineKeyboardButton(get_text(user_id, "gif_custom"), callback_data="tool_gifcustom")
         ],
         [
-            InlineKeyboardButton(get_text(user_id, "btn_speed"), callback_data="cat_speed"),
+            InlineKeyboardButton(get_text(user_id, "btn_speed"), callback_data="cat_speed")
+        ],
+        [
             InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
         ]
     ]
@@ -445,7 +466,7 @@ def get_speed_menu(user_id):
             InlineKeyboardButton("🚀 2.0x Double", callback_data="spd_2.0")
         ],
         [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_video")
+            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_gif_tools")
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -704,7 +725,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    # কুইক ডাউনলোড মোড (অটো-কম্প্রেশন সহ)
+    # কুইক ডাউনলোড মোড
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
@@ -780,6 +801,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data == "cat_audio":
         await query.edit_message_text(get_text(user_id, "choose_audio"), reply_markup=get_audio_menu(user_id))
         return
+    if data == "cat_gif_tools":
+        await query.edit_message_text(get_text(user_id, "choose_gif_tools"), reply_markup=get_gif_tools_menu(user_id))
+        return
     if data == "cat_speed":
         await query.edit_message_text(get_text(user_id, "choose_speed"), reply_markup=get_speed_menu(user_id))
         return
@@ -806,7 +830,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
-    # অটোমেটিক ১-ক্লিক GIF তৈরি
+    # ১-ক্লিক অটো GIF
     if data == "tool_gifauto":
         status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
@@ -841,7 +865,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # একাধিক ছবি/ভিডিও অ্যালবাম ডাউনলোড
+    # একাধিক ছবি/ভিডিও অ্যালবাম
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         downloaded_media = []
@@ -905,7 +929,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     except Exception: pass
         return
 
-    # TikTok সব ছবি একসাথে নামানোর হ্যান্ডলার
+    # TikTok সব ছবি একসাথে
     if data == "all_photos_dl":
         status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
         tk_data = get_tiktok_details(url)
@@ -961,7 +985,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
-    # ভিডিও স্পিড কনভার্সন
+    # ভিডিও স্পিড
     if data.startswith("spd_"):
         speed_factor = float(data.split("_")[1])
         status_msg = await query.edit_message_text(f"⏩ ভিডিওর গতি {speed_factor}x করা হচ্ছে, অপেক্ষা করুন...")
@@ -1105,7 +1129,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
                 was_compressed = False
 
-                # টিকটকের ভিডিও ৫০ MB ছাড়ালে অটো-কম্প্রেশন
                 if req_type == "vid" and file_size_mb > 50:
                     await status_msg.edit_text(get_text(user_id, "compressing"))
                     compressed_path = f"{output_dir}/tk_comp_{unique_id}.mp4"
@@ -1185,7 +1208,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # ২. অন্যান্য সোশ্যাল মিডিয়া (অটো-কম্প্রেশন সহ)
+    # ২. অন্যান্য সোশ্যাল মিডিয়া (সব রেজোলিউশন ও কম্প্রেশন সহ)
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1230,14 +1253,23 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if req_type in ["vid"]:
+        # রেজোলিউশন ও মোড ফিল্টার
         if quality in ["2160", "highest", "doc"]:
             format_opt = "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"
         elif quality == "1440":
             format_opt = "bestvideo[height<=1440]+bestaudio/best[height<=1440]/best"
         elif quality == "1080":
             format_opt = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
-        elif quality == "720" or quality == "normal":
+        elif quality in ["720", "normal"]:
             format_opt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
+        elif quality in ["480"]:
+            format_opt = "bestvideo[height<=480]+bestaudio/best[height<=480]/best"
+        elif quality in ["360"]:
+            format_opt = "bestvideo[height<=360]+bestaudio/best[height<=360]/best"
+        elif quality in ["240"]:
+            format_opt = "bestvideo[height<=240]+bestaudio/best[height<=240]/best"
+        elif quality in ["144", "lowest"]:
+            format_opt = "worstvideo[height<=144]+worstaudio/worst"
         elif quality == "fast":
             format_opt = "worstvideo[height<=480]+worstaudio/worst"
         elif quality.isdigit():
@@ -1285,7 +1317,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
         was_compressed = False
 
-        # ৪K/২K বা যেকোনো বড় ভিডিও ৫০ MB ছাড়িয়ে গেলে স্মার্ট অটো-কম্প্রেশন
+        # ৫০ MB ছাড়ালে অটো-কম্প্রেশন
         if req_type == "vid" and file_size_mb > 50:
             await status_msg.edit_text(get_text(user_id, "compressing"))
             compressed_video = f"{output_dir}/comp_{unique_id}.mp4"
@@ -1306,7 +1338,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
+                        caption=f"🎙️️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
                         parse_mode="Markdown"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
@@ -1396,7 +1428,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra 4K/2K Auto-Compressor Social Media Bot is Running...")
+    print("Ultra 4K/2K Social Media Bot is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
