@@ -31,7 +31,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot with Branding & Gateway is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot with Safe Gateway is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -70,10 +70,10 @@ L = instaloader.Instaloader(
 TEXTS = {
     "bn": {
         "welcome_gate": (
-            "👋 **স্বাগতম আল্টিমেট ডাউনলোডার বটে!**\n"
+            "👋 স্বাগতম আল্টিমেট ডাউনলোডার বটে!\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "বটটি সব সময় ফ্রিতে সচল রাখতে দয়া করে আমাদের ক্রিয়েটরের ইনস্টাগ্রাম অ্যাকাউন্টটি ফলো করুন।\n\n"
-            "যাদের ইনস্টাগ্রাম নেই, তারা সরাসরি **Skip** বাটনে চাপ দিয়ে বট ব্যবহার করতে পারেন!"
+            "যাদের ইনস্টাগ্রাম নেই, তারা সরাসরি Skip বাটনে চাপ দিয়ে বট ব্যবহার করতে পারেন!"
         ),
         "guide": (
             "🌟 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌟\n"
@@ -147,10 +147,10 @@ TEXTS = {
     },
     "en": {
         "welcome_gate": (
-            "👋 **Welcome to Ultra Downloader Bot!**\n"
+            "👋 Welcome to Ultra Downloader Bot!\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "To support this free bot, please follow our creator on Instagram.\n\n"
-            "If you don't use Instagram, simply tap **Skip** to continue!"
+            "If you don't use Instagram, simply tap Skip to continue!"
         ),
         "guide": (
             "🌟 Ultimate 4K Social Media Downloader 🌟\n"
@@ -437,7 +437,6 @@ def compress_video_under_50mb(input_video, output_video, duration=None):
         return size_mb <= 49.5
     return False
 
-# অটো-প্রমোশনাল ক্যাপশন ফরম্যাটার
 def format_caption(title, author, platform, quality, size_mb=None, was_compressed=False):
     safe_title = title.replace("\n", " ").strip()[:65]
     safe_author = author.replace("\n", " ").strip()[:30]
@@ -474,7 +473,7 @@ def build_welcome_keyboard():
         ],
         [
             InlineKeyboardButton("✅ I Have Followed", callback_data="gate_followed"),
-            InlineKeyboardButton("⏭️ I don't use Instagram (Skip)", callback_data="gate_skip")
+            InlineKeyboardButton("⏭️ Skip", callback_data="gate_skip")
         ]
     ])
 
@@ -604,11 +603,13 @@ def get_thumb_menu(user_id, has_photos=False):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+    if user_id not in user_languages:
+        user_languages[user_id] = "bn"
+
     if user_id not in verified_users:
         await update.message.reply_text(
             get_text(user_id, "welcome_gate"),
-            reply_markup=build_welcome_keyboard(),
-            parse_mode="Markdown"
+            reply_markup=build_welcome_keyboard()
         )
         return
 
@@ -642,21 +643,19 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lower_text = text.lower()
 
-    # অ্যান্টি-ফ্লাড স্প্যাম কন্ট্রোল (২ সেকেন্ড কুলডাউন)
     now = time.time()
-    if user_id in user_last_action and now - user_last_action[user_id] < 2.0:
+    if user_id in user_last_action and now - user_last_action[user_id] < 1.5:
         return
     user_last_action[user_id] = now
 
     if user_id not in user_languages:
         user_languages[user_id] = "bn"
 
-    # নতুন ইউজারদের ইনস্টাগ্রাম ফলো গেটওয়ে চেক
+    # গেটওয়ে আনভেরিফাইড হলে ওয়েলকাম কার্ড পাঠাবে
     if user_id not in verified_users:
         await update.message.reply_text(
             get_text(user_id, "welcome_gate"),
-            reply_markup=build_welcome_keyboard(),
-            parse_mode="Markdown"
+            reply_markup=build_welcome_keyboard()
         )
         return
 
@@ -920,7 +919,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # গেটওয়ে আনলক হ্যান্ডলার
     if data in ["gate_followed", "gate_skip"]:
         verified_users.add(user_id)
-        await query.edit_message_text("✅ আপনাকে ধন্যবাদ! বটটি সফলভাবে আনলক হয়েছে।\nএখন যেকোনো সোশ্যাল মিডিয়া লিঙ্ক পাঠিয়ে দিন!")
+        if user_id not in user_languages:
+            user_languages[user_id] = "bn"
+        await query.edit_message_text(
+            "✅ আপনাকে ধন্যবাদ! বটটি সফলভাবে আনলক হয়েছে।\n\n"
+            "📥 এখন যেকোনো সোশ্যাল মিডিয়া লিঙ্ক চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Pinterest ইত্যাদি)!"
+        )
         return
 
     if data.startswith("setlang_"):
