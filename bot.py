@@ -9,7 +9,7 @@ import requests
 import re
 import static_ffmpeg
 from flask import Flask
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo, LinkPreviewOptions
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -96,7 +96,7 @@ TEXTS = {
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না তা নিশ্চিত করুন।",
-        "help_size_resp": "ℹ️️ টেলিগ্রামে ৫০ MB-র বড় ভিডিও হলে বট নিজে থেকেই কোয়ালিটি ঠিক রেখে সাইজ কমিয়ে পাঠায়।",
+        "help_size_resp": "ℹ️ টেলিগ্রামে ৫০ MB-র বড় ভিডিও হলে বট নিজে থেকেই কোয়ালিটি ঠিক রেখে সাইজ কমিয়ে পাঠায়।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 ভিডিও মোড বেছে নিন:",
         "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন:",
@@ -109,7 +109,7 @@ TEXTS = {
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
         "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
-        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
+        "audio_trim_prompt": "✂️️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
         "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
         "custom_success": "✅ ফ্রেম ক্যাপচার সফল ({sec}s)",
@@ -766,7 +766,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ২. ভাষা সিলেক্ট করার পর ফুল-উইডথ ব্যানার ও মার্জিত টেক্সট কার্ড পাঠানো
+    # ২. ভাষা সিলেক্ট করার পর 16:9 ফুল-উইডথ ব্যানার ও টেক্সট বাবল কার্ড পাঠানো
     if data.startswith("firstlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -784,23 +784,29 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         try:
             await query.message.delete()
-            # স্টেপ ১: ক্যাপশন ছাড়া ব্যানার পাঠানো যাতে ছবি দুই সাইড থেকে সংকুচিত না হয়ে ফুল স্ক্রিনে থাকে
-            await context.bot.send_photo(
-                chat_id=user_id,
-                photo=banner_url
-            )
-            # স্টেপ ২: ছবির ঠিক নিচে মার্জিত লেখা ও ইনস্টাগ্রাম বাটন পাঠানো
+            
+            # অদৃশ্য লিঙ্কের মাধ্যমে টেলিগ্রামের লার্জ প্রিভিউ কার্ড চালু করা যাতে ইমেজ ঠিক লেখার সাইজের সমান চওড়া (16:9) থাকে
+            full_text = f"[\u200b]({banner_url})" + get_text(user_id, "welcome_caption")
+
             await context.bot.send_message(
                 chat_id=user_id,
-                text=get_text(user_id, "welcome_caption"),
+                text=full_text,
                 parse_mode="Markdown",
+                link_preview_options=LinkPreviewOptions(
+                    is_disabled=False,
+                    prefer_large_media=True,
+                    show_above_text=True,
+                    url=banner_url
+                ),
                 reply_markup=card_kb
             )
         except Exception:
+            # যদি কোনো কারণে লিঙ্ক প্রিভিউ কাজ না করে তবে সরাসরি ব্যাকআপ ফটো পাঠাবে
             try:
-                await context.bot.send_message(
+                await context.bot.send_photo(
                     chat_id=user_id,
-                    text=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
+                    photo=banner_url,
+                    caption=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
                     reply_markup=card_kb
                 )
             except Exception:
@@ -1282,7 +1288,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
