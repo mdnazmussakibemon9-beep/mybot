@@ -29,7 +29,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot with Fixed Photo Engine is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot with Categorized Video Quality is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -56,24 +56,25 @@ TEXTS = {
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 **সহজ ব্যবহারের নিয়মাবলী:**\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
-            "🎥 **ভিডিও কোয়ালিটি:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest ও Fast মোড\n"
+            "🎥 **ভিডিও কোয়ালিটি:** Highest, Medium, Lowest, Fast ও ডকুমেন্ট মোড এবং কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
             "🖼️ **ছবি ও স্লাইড:** Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে অ্যালবাম আকারে ডাউনলোড!\n"
             "🎞️ **GIF ও স্পিড টুলস:** অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
             "🎵 **অডিও:** 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
-            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
+            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
         ),
         "help_text": (
             "📖 **জরুরি নির্দেশিকা ও কমান্ডসমূহ:**\n\n"
             "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
-            "3️⃣ **ইনস্টাগ্রাম ও টিকটক ফটো:** সব ছবি ও স্লাইডশো এক ক্লিকেই ফুল কোয়ালিটিতে নেমে আসবে।\n"
-            "4️⃣ **৫০ MB লিমিট:** ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট কোয়ালিটি নষ্ট না করে নিজ থেকেই সাইজ অপ্টিমাইজ করে ইনবক্সে দেবে।"
+            "3️⃣ **কাস্টম রেজোলিউশন:** ভিডিও অপশনে গিয়ে 'কাস্টম রেজোলিউশন' চাপলে 4K, 2K, 1080p সহ সব সাইজ দেখতে পাবেন।\n"
+            "4️⃣ **৫০ MB লিমিট:** ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
         "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
         "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
-        "choose_video": "🎥 আপনার পছন্দের ভিডিও কোয়ালিটি ও মোড বেছে নিন:",
+        "choose_video": "🎥 আপনার পছন্দের ভিডিও মোড বেছে নিন:",
+        "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন (4K থেকে 144p):",
         "choose_audio": "🎵 আপনার পছন্দের অডিও ফরম্যাট বেছে নিন:",
         "choose_gif_tools": "🎞️ আপনার পছন্দের GIF বা স্পিড টুল বেছে নিন:",
         "choose_thumb": "🖼️ আপনার পছন্দের ছবি বা ফ্রেম অপশন বেছে নিন:",
@@ -97,7 +98,9 @@ TEXTS = {
         "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
+        "btn_custom_res": "🎯 কাস্টম রেজোলিউশন (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back (প্রধান মেনু)",
+        "btn_back_video": "🔙 Back (ভিডিও মেনু)",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
@@ -124,27 +127,28 @@ TEXTS = {
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 **How to use:**\n"
             "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
-            "🎥 **Video Quality:** 4K, 2K, 1080p, 720p, 480p, 360p, 240p, 144p, Highest, Medium, Lowest & Fast Modes\n"
+            "🎥 **Video Quality:** Highest, Medium, Lowest, Fast, Document & Custom Resolutions (4K to 144p)\n"
             "🖼️ **Photos:** Full-resolution album download for Instagram & TikTok carousels!\n"
             "🎞️ **GIF & Speed Tools:** Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
             "🎵 **Audio:** 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🗜️️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB!"
+            "🗜️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB!"
         ),
         "help_text": (
             "📖 **User Guide & Commands:**\n\n"
             "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ **Photos & Carousels:** Download all multi-slide images in original quality.\n"
-            "4️⃣ **50 MB Limit:** Files over 50 MB are automatically compressed with visual preservation."
+            "3️⃣ **Custom Resolutions:** Go to Video Options and tap 'Custom Resolutions' to choose 4K, 2K, 1080p, etc.\n"
+            "4️⃣ **50 MB Limit:** Files over 50 MB are automatically compressed preserving high quality."
         ),
         "help_lang_resp": "🌐 To change your language, click below or type /lang:",
-        "help_error_resp": "🛠️️ Ensure the post is public and not from a private account.",
-        "help_size_resp": "ℹ️️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
+        "help_error_resp": "🛠️ Ensure the post is public and not from a private account.",
+        "help_size_resp": "ℹ️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
         "choose_main": "📥 What would you like to download? Choose a category:",
-        "choose_video": "🎥 Choose your desired video resolution & mode:",
+        "choose_video": "🎥 Choose your desired video mode:",
+        "choose_custom_res": "🎯 Choose specific resolution (4K to 144p):",
         "choose_audio": "🎵 Choose your audio format:",
         "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
-        "choose_thumb": "🖼️️ Choose your photo, cover, or frame option:",
+        "choose_thumb": "🖼️ Choose your photo, cover, or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
         "compressing": "🗜️ File exceeds 50 MB, optimizing under 50 MB without quality loss...",
@@ -152,7 +156,7 @@ TEXTS = {
         "custom_prompt": "⏳ Reply with frame timestamp (e.g. `10` or `01:15`):",
         "gif_prompt": "🎞️ Reply with start and end time (e.g. `5-10` or `00:10-00:15`, max 10s):",
         "audio_trim_prompt": "✂️ Reply with start and end time (e.g. `0-30` or `00:20-00:50`, max 60s):",
-        "gif_limit_error": "⚠️ GIF range must be 10 seconds or less. Please try again.",
+        "gif_limit_error": "⚠️️ GIF range must be 10 seconds or less. Please try again.",
         "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less. Please try again.",
         "custom_success": "✅ Frame captured successfully ({sec}s)",
         "mid_success": "✅ Middle video frame ({sec}s)",
@@ -165,7 +169,9 @@ TEXTS = {
         "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
+        "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back to Main Menu",
+        "btn_back_video": "🔙 Back to Video Menu",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
@@ -225,7 +231,6 @@ def get_tiktok_details(tiktok_url):
     return None
 
 def get_instagram_direct_media(url):
-    """ইনস্টাগ্রাম ছবি ও ভিডিও সরাসরি ব্লকহীনভাবে এক্সট্র্যাক্ট করার মেথড"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -234,7 +239,6 @@ def get_instagram_direct_media(url):
     media_urls = []
     clean_url = url.split("?")[0].rstrip("/")
 
-    # মেথড ১: ডিরেক্ট ওপেন JSON এন্ডপয়েন্ট
     try:
         json_url = f"{clean_url}/?__a=1&__d=dis"
         res = requests.get(json_url, headers=headers, timeout=10)
@@ -256,7 +260,6 @@ def get_instagram_direct_media(url):
     except Exception:
         pass
 
-    # মেথড ২: ওপেন স্ক্র্যাপার প্রক্সি ফলব্যাক (লগইন ছাড়া ছবি পেতে)
     if not media_urls:
         try:
             api_endpoint = "https://api.vkrdown.com/insta/"
@@ -432,33 +435,48 @@ def get_main_menu(user_id, has_multi=False):
     ])
     return InlineKeyboardMarkup(keyboard)
 
+# ১. প্রথম ভিডিও মেনু (মূল মোডসমূহ ও কাস্টম রেজোলিউশন বাটন)
 def get_video_menu(user_id):
     keyboard = [
-        [
-            InlineKeyboardButton(get_text(user_id, "vid_4k"), callback_data="vid_2160"),
-            InlineKeyboardButton(get_text(user_id, "vid_2k"), callback_data="vid_1440")
-        ],
         [
             InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
             InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
             InlineKeyboardButton(get_text(user_id, "lowest"), callback_data="vid_lowest")
         ],
         [
-            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
-            InlineKeyboardButton("📺 720p", callback_data="vid_720"),
-            InlineKeyboardButton("📱 480p", callback_data="vid_480")
-        ],
-        [
-            InlineKeyboardButton("📱 360p", callback_data="vid_360"),
-            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
-            InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
-        ],
-        [
             InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast"),
             InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
         ],
         [
+            InlineKeyboardButton(get_text(user_id, "btn_custom_res"), callback_data="cat_custom_res")
+        ],
+        [
             InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+# ২. কাস্টম রেজোলিউশন সাব-মেনু (4K, 2K, 1080p ইত্যাদি)
+def get_custom_res_menu(user_id):
+    keyboard = [
+        [
+            InlineKeyboardButton(get_text(user_id, "vid_4k"), callback_data="vid_2160"),
+            InlineKeyboardButton(get_text(user_id, "vid_2k"), callback_data="vid_1440")
+        ],
+        [
+            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
+            InlineKeyboardButton("📺 720p", callback_data="vid_720")
+        ],
+        [
+            InlineKeyboardButton("📱 480p", callback_data="vid_480"),
+            InlineKeyboardButton("📱 360p", callback_data="vid_360")
+        ],
+        [
+            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
+            InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "btn_back_video"), callback_data="cat_video")
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -818,6 +836,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data == "cat_video":
         await query.edit_message_text(get_text(user_id, "choose_video"), reply_markup=get_video_menu(user_id))
         return
+    if data == "cat_custom_res":
+        await query.edit_message_text(get_text(user_id, "choose_custom_res"), reply_markup=get_custom_res_menu(user_id))
+        return
     if data == "cat_audio":
         await query.edit_message_text(get_text(user_id, "choose_audio"), reply_markup=get_audio_menu(user_id))
         return
@@ -885,7 +906,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # একাধিক ছবি/ভিডিও অ্যালবাম (Instagram / Multi-Post ফিক্সড)
+    # একাধিক ছবি/ভিডিও অ্যালবাম (Instagram / Multi-Post)
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         media_group = []
@@ -909,7 +930,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await status_msg.delete()
                     return
 
-            # ফলব্যাক yt-dlp
             ydl_opts = {
                 'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
                 'quiet': True,
@@ -989,7 +1009,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
-    # ভিডিও স্পিড
+    # ভিডিও স্পিড চেঞ্জার
     if data.startswith("spd_"):
         speed_factor = float(data.split("_")[1])
         status_msg = await query.edit_message_text(f"⏩ ভিডিওর গতি {speed_factor}x করা হচ্ছে, অপেক্ষা করুন...")
@@ -1212,7 +1232,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # ২. অন্যান্য সোশ্যাল মিডিয়া
+    # ২. অন্যান্য সোশ্যাল মিডিয়া (সব রেজোলিউশন ও কম্প্রেশন সহ)
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1430,7 +1450,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra 4K/2K Social Media Bot with Fixed Photo Engine is Running...")
+    print("Ultra 4K/2K Social Media Bot is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
