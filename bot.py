@@ -23,15 +23,15 @@ import yt_dlp
 import instaloader
 from PIL import Image
 
-# FFmpeg সচল করা
+# FFmpeg shochol kora
 static_ffmpeg.add_paths()
 
-# Render Web Service 24/7 লাইভ রাখার Flask সার্ভার
+# Render Web Service 24/7 live rakhar Flask server
 web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot with Premium UI is Running 24/7!"
+    return "NSE NEXORA DOWNLOADER Bot is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -45,8 +45,8 @@ BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
-# আকর্ষণীয় ওয়েলকাম ব্যানার ছবির সরাসরি লিঙ্ক (Clean Aesthetic Tech/Social Banner)
-WELCOME_BANNER_URL = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"
+# Sundor aesthetic modern digital card image
+WELCOME_BANNER_URL = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop"
 
 user_urls = {}
 user_waiting_custom_time = {}
@@ -68,7 +68,7 @@ L = instaloader.Instaloader(
 TEXTS = {
     "bn": {
         "guide": (
-            "🌸 𝗨𝗹𝘁𝗿𝗮 𝟰𝗞 𝗦𝗼𝗰𝗶𝗮𝗹 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 🌸\n"
+            "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 ব্যবহার করার নিয়মাবলী:\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
@@ -98,7 +98,7 @@ TEXTS = {
         "compressing": "🗜️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
+        "gif_prompt": "🎞️️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
         "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
         "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
@@ -138,7 +138,7 @@ TEXTS = {
     },
     "en": {
         "guide": (
-            "🌸 𝗨𝗹𝘁𝗿𝗮 𝟰𝗞 𝗦𝗼𝗰𝗶𝗮𝗹 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 🌸\n"
+            "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 How to use:\n"
             "Send any video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
@@ -161,7 +161,7 @@ TEXTS = {
         "choose_video": "🎥 Choose video mode:",
         "choose_custom_res": "🎯 Choose specific resolution:",
         "choose_audio": "🎵 Choose audio format:",
-        "choose_gif_tools": "🎞️️ Choose GIF or video speed tools:",
+        "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
         "choose_thumb": "🖼️ Choose photo or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
@@ -181,7 +181,7 @@ TEXTS = {
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
-        "btn_thumb": "🖼️️ Photos & Thumbnails",
+        "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back",
@@ -438,21 +438,23 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     caption += (
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n"
-        f"⚡ Downloaded via Ultra Social Bot 🌸"
+        f"⚡ Downloaded via NSE NEXORA DOWNLOADER 🌸"
     )
     return caption
 
-# স্টাইলিশ ফটো ব্যানার সহ প্রিমিয়াম ওয়েলকাম মেসেজ
+# Notun stylish welcome card & message
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_caption = (
-        "🌸 ✨ 𝒲𝑒𝓁𝒸𝑜𝓂𝑒 𝓉𝑜 𝒰𝓁𝓉𝓇𝒶 𝒟𝑜𝓌𝓃𝓁𝑜𝒶𝒹𝑒𝓇 ✨ 🌸\n"
+        "🌸 ✨ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐍𝐒𝐄 𝐍𝐄𝐗𝐎𝐑𝐀 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑 ✨ 🌸\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "🤍 ʏᴏᴜʀ ᴀʟʟ-ɪɴ-ᴏɴᴇ ʜɪɢʜ-ꜱᴘᴇᴇᴅ ꜱᴏᴄɪᴀʟ ꜱᴀᴠᴇʀ 🤍\n\n"
-        "✦ 𝗧𝗶𝗸𝗧𝗼𝗸 : No Watermark (4K / HD)\n"
-        "✦ 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 : Reels, Videos & Carousels\n"
-        "✦ 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 & 𝗫 : Full HD Media & GIF\n"
-        "✦ 𝗣𝗶𝗻𝘁𝗲𝗿𝗲𝘀𝘁 & 𝗥𝗲𝗱𝗱𝗶𝘁 : Photos & Audio\n\n"
-        "🤍 𝒫𝓁𝑒𝒶𝓈𝑒 𝓈𝓊𝓅𝓅𝑜𝓇𝓉 𝓉𝒽𝑒 𝒸𝓇𝑒𝒶𝓉𝑜𝓇 𝑜𝓃 𝐼𝓃𝓈𝓉𝒶𝑔𝓇𝒶𝓂 𝒷𝑒𝓁𝑜𝓌 🌸"
+        "🤍 ʏᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ, ꜱᴡɪꜰᴛ & ᴇꜰꜰᴏʀᴛʟᴇꜱꜱ ᴍᴇᴅɪᴀ ᴄᴏᴍᴘᴀɴɪᴏɴ 🤍\n\n"
+        "✨ Experience effortless high-speed downloads from your favorite platforms:\n"
+        "✦ 𝗧𝗶𝗸𝗧𝗼𝗸 : Pure Crystal HD (No Watermark)\n"
+        "✦ 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 : Seamless Reels, Posts & Full Carousels\n"
+        "✦ 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 & 𝗫 : Full HD Videos & Crisp Animations\n"
+        "✦ 𝗣𝗶𝗻𝘁𝗲𝗿𝗲𝘀𝘁 & 𝗥𝗲𝗱𝗱𝗶𝘁 : High-Res Media & Studio Audio\n\n"
+        "🌱 Crafted with care to give you the cleanest experience.\n"
+        "🤍 Please support our creator by following on Instagram below! 🌸"
     )
     keyboard = InlineKeyboardMarkup([
         [
@@ -464,14 +466,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ])
 
     try:
-        # ব্যানার ছবি সহ প্রিমিয়াম মেসেজ
         await update.message.reply_photo(
             photo=WELCOME_BANNER_URL,
             caption=welcome_caption,
             reply_markup=keyboard
         )
     except Exception:
-        # ছবি লোড না হলেও টেক্সট নির্বিঘ্নে পৌঁছাবে
         await update.message.reply_text(
             welcome_caption,
             reply_markup=keyboard
@@ -557,7 +557,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         title=f"{title[:35]} (Ringtone)",
                         performer=artist[:25],
                         duration=duration,
-                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -627,7 +627,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -669,7 +669,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with open(output_img, "rb") as f:
                 await update.message.reply_photo(
                     photo=f,
-                    caption=get_text(user_id, "custom_success", sec=sec) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                    caption=get_text(user_id, "custom_success", sec=sec) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -768,7 +768,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ওয়েলকাম স্টেপ থেকে ভাষা পেজে যাওয়া
     if data == "welcome_next":
         lang_kb = InlineKeyboardMarkup([
             [
@@ -776,7 +775,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
             ]
         ])
-        # ছবি থাকলে ডিলিট করে টেক্সট আনবে অথবা এডিট করবে
         try:
             await query.message.delete()
             await context.bot.send_message(
@@ -791,7 +789,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         return
 
-    # ভাষা নির্ধারণ
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -992,7 +989,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]} (Auto GIF)\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                        caption=f"🎞️ {title[:45]} (Auto GIF)\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -1161,7 +1158,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=user_id,
                     photo=f,
-                    caption=get_text(user_id, "mid_success", sec=mid_point) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                    caption=get_text(user_id, "mid_success", sec=mid_point) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -1254,7 +1251,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
@@ -1429,7 +1426,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
+                        caption=f"🎙️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
                 await status_msg.delete()
@@ -1516,7 +1513,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_url))
     app.add_handler(CallbackQueryHandler(button_callback))
 
-    print("Ultra 4K/2K Social Media Bot is Running...")
+    print("NSE NEXORA DOWNLOADER Bot is Running...")
     app.run_polling()
 
 if __name__ == "__main__":
