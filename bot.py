@@ -1,5 +1,6 @@
 import os
 import io
+import time
 import threading
 import uuid
 import logging
@@ -30,7 +31,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot (GIF Fixed) is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot with Branding & Gateway is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -40,15 +41,22 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
+# আপনার বটের API টোকেন ও ইনস্টাগ্রাম প্রোফাইল
 BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
+INSTAGRAM_USERNAME = "emon.innocent.boy"
+INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
+# ডাটা ডিকশনারি
 user_urls = {}
 user_waiting_custom_time = {}
 user_waiting_gif_time = {}
 user_waiting_audio_trim = {}
 user_languages = {}
 user_quick_mode = {}
+verified_users = set()       # যারা ফলো বা স্কিপ করেছে
+user_last_action = {}       # অ্যান্টি-ফ্লাড স্প্যাম কন্ট্রোল
 
+# Instaloader ইঞ্জিন সেটআপ
 L = instaloader.Instaloader(
     download_pictures=False,
     download_videos=False,
@@ -61,6 +69,12 @@ L = instaloader.Instaloader(
 
 TEXTS = {
     "bn": {
+        "welcome_gate": (
+            "👋 **স্বাগতম আল্টিমেট ডাউনলোডার বটে!**\n"
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "বটটি সব সময় ফ্রিতে সচল রাখতে দয়া করে আমাদের ক্রিয়েটরের ইনস্টাগ্রাম অ্যাকাউন্টটি ফলো করুন।\n\n"
+            "যাদের ইনস্টাগ্রাম নেই, তারা সরাসরি **Skip** বাটনে চাপ দিয়ে বট ব্যবহার করতে পারেন!"
+        ),
         "guide": (
             "🌟 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
@@ -93,7 +107,7 @@ TEXTS = {
         "compressing": "🗜️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
+        "gif_prompt": "🎞️️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
         "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় লিখে পাঠান (উদা: 0-30 বা 00:20-00:50, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF তৈরির রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে (যেমন: 5-12)। আবার চেষ্টা করুন।",
         "audio_limit_error": "⚠️ রিংটোনের রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে (যেমন: 0-30)। আবার চেষ্টা করুন।",
@@ -106,7 +120,7 @@ TEXTS = {
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
-        "btn_thumb": "🖼️️ Photos & Thumbnails",
+        "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 কাস্টম রেজোলিউশন (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back (প্রধান মেনু)",
@@ -120,7 +134,7 @@ TEXTS = {
         "fast": "🚀 Fast Mode (Quick)",
         "doc": "📁 Document Uncompressed",
         "voice": "🎙️ Voice Note (.ogg)",
-        "gif_auto": "🎞️️ Auto GIF (১-ক্লিক)",
+        "gif_auto": "🎞️ Auto GIF (১-ক্লিক)",
         "gif_custom": "⏳ Custom GIF (টাইম ট্রিম)",
         "ringtone": "✂️ Audio Trim / Ringtone",
         "thumb_hd": "🖼️ HD Cover Photo",
@@ -132,6 +146,12 @@ TEXTS = {
         "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
     },
     "en": {
+        "welcome_gate": (
+            "👋 **Welcome to Ultra Downloader Bot!**\n"
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "To support this free bot, please follow our creator on Instagram.\n\n"
+            "If you don't use Instagram, simply tap **Skip** to continue!"
+        ),
         "guide": (
             "🌟 Ultimate 4K Social Media Downloader 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
@@ -141,7 +161,7 @@ TEXTS = {
             "🖼️ Photos: Full-resolution album download for Instagram & TikTok carousels!\n"
             "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
             "🎵 Audio: 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🗜️️ Smart Compression: Videos exceeding 50 MB are automatically optimized under 50 MB!"
+            "🗜️ Smart Compression: Videos exceeding 50 MB are automatically optimized under 50 MB!"
         ),
         "help_text": (
             "📖 User Guide & Commands:\n\n"
@@ -319,7 +339,6 @@ def trim_audio_ffmpeg(input_file, output_mp3, start_sec, duration):
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return os.path.exists(output_mp3) and os.path.getsize(output_mp3) > 1024
 
-# পিওর টেলিগ্রাম অ্যানিমেটেড GIF কনভার্টার
 def convert_to_gif_mp4(input_video, output_mp4, start_sec=0, duration=7):
     cmd = [
         "ffmpeg",
@@ -418,6 +437,7 @@ def compress_video_under_50mb(input_video, output_video, duration=None):
         return size_mb <= 49.5
     return False
 
+# অটো-প্রমোশনাল ক্যাপশন ফরম্যাটার
 def format_caption(title, author, platform, quality, size_mb=None, was_compressed=False):
     safe_title = title.replace("\n", " ").strip()[:65]
     safe_author = author.replace("\n", " ").strip()[:30]
@@ -432,7 +452,11 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
         caption += f"💾 Size: {size_mb:.1f} MB\n"
     if was_compressed:
         caption += "🗜️ Smart 50MB Auto-Compressed (High Quality)\n"
-    caption += "━━━━━━━━━━━━━━━━━━━━\n⚡ Downloaded via Ultra Social Bot"
+    caption += (
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n"
+        f"⚡ Downloaded via Ultra Social Bot"
+    )
     return caption
 
 def build_language_keyboard():
@@ -440,6 +464,17 @@ def build_language_keyboard():
         [
             InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
             InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
+        ]
+    ])
+
+def build_welcome_keyboard():
+    return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("🔗 Follow on Instagram", url=INSTAGRAM_PROFILE_URL)
+        ],
+        [
+            InlineKeyboardButton("✅ I Have Followed", callback_data="gate_followed"),
+            InlineKeyboardButton("⏭️ I don't use Instagram (Skip)", callback_data="gate_skip")
         ]
     ])
 
@@ -568,6 +603,15 @@ def get_thumb_menu(user_id, has_photos=False):
     return InlineKeyboardMarkup(keyboard)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id not in verified_users:
+        await update.message.reply_text(
+            get_text(user_id, "welcome_gate"),
+            reply_markup=build_welcome_keyboard(),
+            parse_mode="Markdown"
+        )
+        return
+
     await update.message.reply_text(
         "🌐 Please select your language / আপনার ভাষা নির্বাচন করুন:",
         reply_markup=build_language_keyboard()
@@ -598,8 +642,23 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lower_text = text.lower()
 
+    # অ্যান্টি-ফ্লাড স্প্যাম কন্ট্রোল (২ সেকেন্ড কুলডাউন)
+    now = time.time()
+    if user_id in user_last_action and now - user_last_action[user_id] < 2.0:
+        return
+    user_last_action[user_id] = now
+
     if user_id not in user_languages:
         user_languages[user_id] = "bn"
+
+    # নতুন ইউজারদের ইনস্টাগ্রাম ফলো গেটওয়ে চেক
+    if user_id not in verified_users:
+        await update.message.reply_text(
+            get_text(user_id, "welcome_gate"),
+            reply_markup=build_welcome_keyboard(),
+            parse_mode="Markdown"
+        )
+        return
 
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
@@ -650,7 +709,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         title=f"{title[:35]} (Ringtone)",
                         performer=artist[:25],
                         duration=duration,
-                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n⚡ Ultra Social Bot"
+                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -662,7 +721,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # কাস্টম GIF ফিক্স (সম্পূর্ণ রিলায়েবল মেথড)
     if user_id in user_waiting_gif_time:
         saved_url = user_waiting_gif_time.pop(user_id)
         start_sec, end_sec = 0, 7
@@ -721,7 +779,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n⚡ Ultra Social Bot"
+                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -763,7 +821,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with open(output_img, "rb") as f:
                 await update.message.reply_photo(
                     photo=f,
-                    caption=get_text(user_id, "custom_success", sec=sec) + "\n⚡ Ultra Social Bot"
+                    caption=get_text(user_id, "custom_success", sec=sec) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -859,6 +917,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
+    # গেটওয়ে আনলক হ্যান্ডলার
+    if data in ["gate_followed", "gate_skip"]:
+        verified_users.add(user_id)
+        await query.edit_message_text("✅ আপনাকে ধন্যবাদ! বটটি সফলভাবে আনলক হয়েছে।\nএখন যেকোনো সোশ্যাল মিডিয়া লিঙ্ক পাঠিয়ে দিন!")
+        return
+
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -912,7 +976,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 
-    # অটো GIF ফিক্স (সম্পূর্ণ রিলায়েবল মেথড)
     if data == "tool_gifauto":
         status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
@@ -949,7 +1012,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]} (Auto GIF)\n⚡ Ultra Social Bot"
+                        caption=f"🎞️ {title[:45]} (Auto GIF)\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -963,7 +1026,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     except Exception: pass
         return
 
-    # একাধিক ছবি/ভিডিও অ্যালবাম
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         media_group = []
@@ -992,7 +1054,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
         return
 
-    # TikTok সব ছবি একসাথে
     if data == "all_photos_dl":
         status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
         tk_data = get_tiktok_details(url)
@@ -1030,7 +1091,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
-    # ভিডিও স্পিড চেঞ্জার
     if data.startswith("spd_"):
         speed_factor = float(data.split("_")[1])
         status_msg = await query.edit_message_text(f"⏩ ভিডিওর গতি {speed_factor}x করা হচ্ছে, অপেক্ষা করুন...")
@@ -1121,7 +1181,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=user_id,
                     photo=f,
-                    caption=get_text(user_id, "mid_success", sec=mid_point) + "\n⚡ Ultra Social Bot"
+                    caption=get_text(user_id, "mid_success", sec=mid_point) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -1140,7 +1200,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "reddit.com" in url: platform_name = "Reddit"
     elif "pinterest.com" in url or "pin.it" in url: platform_name = "Pinterest"
 
-    # টিকটক ইঞ্জিন (নো-ওয়াটারমার্ক সহ)
     if "tiktok.com" in url and req_type not in ["tool"]:
         tk_data = get_tiktok_details(url)
         if tk_data:
@@ -1215,7 +1274,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n⚡ Ultra Social Bot"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
@@ -1264,7 +1323,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # অন্যান্য সোশ্যাল মিডিয়া
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1391,7 +1449,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️️ {video_title[:50]}\n⚡ Ultra Social Bot"
+                        caption=f"🎙️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
                 await status_msg.delete()
