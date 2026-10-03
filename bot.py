@@ -4,6 +4,7 @@ import uuid
 import logging
 import subprocess
 import requests
+import re
 import static_ffmpeg
 from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo
@@ -161,7 +162,7 @@ TEXTS = {
         "gif": "🎞️ Custom Trimmed GIF",
         "ringtone": "✂️ Audio Trim / Ringtone",
         "thumb_hd": "🖼️ HD Cover Photo",
-        "thumb_sd": "🖼️️ Standard Cover",
+        "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 Download All Photos (Album)",
@@ -205,6 +206,36 @@ def get_tiktok_details(tiktok_url):
     except Exception:
         pass
     return None
+
+def get_instagram_direct_media(url):
+    """ইনস্টাগ্রাম ছবি ও ভিডিও সরাসরি স্ক্র্যাপ করার নির্ভরযোগ্য মেথড"""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+    media_urls = []
+    try:
+        # ওপেন এন্ডপয়েন্ট দিয়ে ট্রাই করা
+        clean_url = url.split("?")[0].rstrip("/")
+        json_url = f"{clean_url}/?__a=1&__d=dis"
+        res = requests.get(json_url, headers=headers, timeout=10)
+        if res.status_code == 200:
+            data = res.json()
+            items = data.get("items", [])
+            if items:
+                item = items[0]
+                if "carousel_media" in item:
+                    for cm in item["carousel_media"]:
+                        if "image_versions2" in cm:
+                            media_urls.append(cm["image_versions2"]["candidates"][0]["url"])
+                        elif "video_versions" in cm:
+                            media_urls.append(cm["video_versions"][0]["url"])
+                elif "image_versions2" in item:
+                    media_urls.append(item["image_versions2"]["candidates"][0]["url"])
+                elif "video_versions" in item:
+                    media_urls.append(item["video_versions"][0]["url"])
+    except Exception:
+        pass
+    return media_urls
 
 def extract_frame_ffmpeg(video_source, timestamp_sec, output_img_path):
     cmd = [
@@ -442,7 +473,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # ১. অডিও রিংটোন ইনপুট হ্যান্ডলার
+    # অডিও রিংটোন ইনপুট হ্যান্ডলার
     if user_id in user_waiting_audio_trim:
         saved_url = user_waiting_audio_trim.pop(user_id)
         start_sec, end_sec = 0, 30
@@ -502,7 +533,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # ২. কাস্টম GIF টাইম ইনপুট হ্যান্ডলার
+    # কাস্টম GIF টাইম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_gif_time:
         saved_url = user_waiting_gif_time.pop(user_id)
         start_sec, end_sec = 0, 8
@@ -558,7 +589,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # ৩. কাস্টম ফ্রেম ইনপুট হ্যান্ডলার
+    # কাস্টম ফ্রেম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_custom_time:
         saved_url = user_waiting_custom_time.pop(user_id)
         try:
@@ -711,27 +742,40 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
-    # একাধিক ছবি/ভিডিও একসাথে বা শুধু ১মটি ডাউনলোড (Instagram/All Fixed)
+    # ইনস্টাগ্রাম বা অন্যান্য পোস্টের সব ছবি/ভিডিও নামানোর শতভাগ কার্যকর ফিক্স
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
-        ydl_opts = {
-            'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
-            'quiet': True,
-            'ignoreerrors': True,
-            'extract_flat': False,
-        }
-        if data == "multi_first":
-            ydl_opts['playlist_items'] = '1'
-
         downloaded_media = []
         open_files = []
         try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.extract_info(url, download=True)
+            # প্রথমে ডিরেক্ট এপিআই চেক
+            direct_urls = get_instagram_direct_media(url)
+            if direct_urls:
+                target_urls = [direct_urls[0]] if data == "multi_first" else direct_urls[:10]
+                for idx, m_url in enumerate(target_urls):
+                    ext = "mp4" if ".mp4" in m_url else "jpg"
+                    file_path = f"{output_dir}/insta_direct_{unique_id}_{idx}.{ext}"
+                    r = requests.get(m_url, headers=headers, timeout=20)
+                    if r.status_code == 200:
+                        with open(file_path, "wb") as f:
+                            f.write(r.content)
+                        downloaded_media.append(file_path)
+            else:
+                # ফলব্যাক হিসেবে yt-dlp চালানো
+                ydl_opts = {
+                    'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
+                    'quiet': True,
+                    'ignoreerrors': True,
+                }
+                if data == "multi_first":
+                    ydl_opts['playlist_items'] = '1'
 
-            for file in sorted(os.listdir(output_dir)):
-                if file.startswith(f"multi_{unique_id}_"):
-                    downloaded_media.append(os.path.join(output_dir, file))
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.extract_info(url, download=True)
+
+                for file in sorted(os.listdir(output_dir)):
+                    if file.startswith(f"multi_{unique_id}_"):
+                        downloaded_media.append(os.path.join(output_dir, file))
 
             if downloaded_media:
                 media_group = []
@@ -749,9 +793,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
                     await status_msg.delete()
                 else:
-                    await status_msg.edit_text("❌ উপযুক্ত কোনো ছবি বা ভিডিও পাওয়া যায়নি।")
+                    await status_msg.edit_text("❌ ফাইল পাঠানো সম্ভব হয়নি।")
             else:
-                await status_msg.edit_text("❌ পোস্টটি প্রাইভেট অথবা ছবিগুলো নামানো সম্ভব হয়নি।")
+                await status_msg.edit_text("❌ পোস্টটি প্রাইভেট অথবা ছবিগুলো নামানো সম্ভব হয়নি। লিঙ্কটি পাবলিক কি না চেক করুন।")
         except Exception as e:
             await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
         finally:
@@ -790,7 +834,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
 
-                # অডিও আলাদাভাবে পাঠানো
                 if tk_data.get("audio_url"):
                     aud_path = f"{output_dir}/aud_{unique_id}.mp3"
                     ar = requests.get(tk_data["audio_url"], headers=headers, timeout=20)
@@ -923,7 +966,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "reddit.com" in url: platform_name = "Reddit"
     elif "pinterest.com" in url or "pin.it" in url: platform_name = "Pinterest"
 
-    # ১. টিকটক ইঞ্জিন
+    # টিকটক ইঞ্জিন
     if "tiktok.com" in url and req_type not in ["tool"]:
         tk_data = get_tiktok_details(url)
         if tk_data:
@@ -1034,7 +1077,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # ২. অন্যান্য সোশ্যাল মিডিয়া
+    # অন্যান্য সোশ্যাল মিডিয়া
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
@@ -1140,7 +1183,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
+                        caption=f"🎙️️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
                         parse_mode="Markdown"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
