@@ -9,7 +9,7 @@ import requests
 import re
 import static_ffmpeg
 from flask import Flask
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo, LinkPreviewOptions
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, InputMediaVideo
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -105,11 +105,11 @@ TEXTS = {
         "choose_thumb": "🖼️ ছবি বা ফ্রেম অপশন বেছে নিন:",
         "choose_speed": "⏩ প্লেব্যাক স্পিড বেছে নিন:",
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, অপেক্ষা করুন...",
-        "compressing": "🗜️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
+        "compressing": "🗜️️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
         "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
-        "audio_trim_prompt": "✂️️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
+        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
         "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
         "custom_success": "✅ ফ্রেম ক্যাপচার সফল ({sec}s)",
@@ -137,14 +137,14 @@ TEXTS = {
         "voice": "🎙️ Voice Note (.ogg)",
         "gif_auto": "🎞️ Auto GIF (1-Click)",
         "gif_custom": "⏳ Custom GIF",
-        "ringtone": "✂️ Ringtone Maker",
+        "ringtone": "✂️️ Ringtone Maker",
         "thumb_hd": "🖼️ HD Cover Photo",
         "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 All Photos (Album)",
         "multi_all": "📦 সব ছবি ও ভিডিও (Album)",
-        "multi_first": "🖼️ শুধুমাত্র ১ম মিডিয়া"
+        "multi_first": "🖼️️ শুধুমাত্র ১ম মিডিয়া"
     },
     "en": {
         "welcome_caption": (
@@ -185,7 +185,7 @@ TEXTS = {
         "choose_thumb": "🖼️ Choose photo or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
-        "compressing": "🗜️ Optimizing file under 50 MB without quality loss...",
+        "compressing": "🗜️️ Optimizing file under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
         "custom_prompt": "⏳ Enter frame timestamp (e.g. 10 or 01:15):",
         "gif_prompt": "🎞️ Enter start and end time (e.g. 5-10, max 10s):",
@@ -462,7 +462,7 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     )
     return caption
 
-# ১. /start দিলে সবার আগে ভাষা নির্বাচন
+# ১. /start দিলে ভাষা নির্বাচন
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang_kb = InlineKeyboardMarkup([
         [
@@ -766,7 +766,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ২. ভাষা সিলেক্ট করার পর 16:9 ফুল-উইডথ ব্যানার ও টেক্সট বাবল কার্ড পাঠানো
+    # ২. ভাষা সিলেক্ট করার পর ফুল-স্ক্রিন ব্যানার পাঠানো
     if data.startswith("firstlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -785,28 +785,23 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await query.message.delete()
             
-            # অদৃশ্য লিঙ্কের মাধ্যমে টেলিগ্রামের লার্জ প্রিভিউ কার্ড চালু করা যাতে ইমেজ ঠিক লেখার সাইজের সমান চওড়া (16:9) থাকে
-            full_text = f"[\u200b]({banner_url})" + get_text(user_id, "welcome_caption")
-
+            # ফুল-উইডথ রাখার জন্য কোনো ক্যাপশন ছাড়াই প্রথমে ব্যানার ছবি পাঠানো
+            await context.bot.send_photo(
+                chat_id=user_id,
+                photo=banner_url
+            )
+            # টেক্সটের বক্স ও বাটনগুলো ঠিক নিচে মার্জিতভাবে পাঠানো
             await context.bot.send_message(
                 chat_id=user_id,
-                text=full_text,
+                text=get_text(user_id, "welcome_caption"),
                 parse_mode="Markdown",
-                link_preview_options=LinkPreviewOptions(
-                    is_disabled=False,
-                    prefer_large_media=True,
-                    show_above_text=True,
-                    url=banner_url
-                ),
                 reply_markup=card_kb
             )
         except Exception:
-            # যদি কোনো কারণে লিঙ্ক প্রিভিউ কাজ না করে তবে সরাসরি ব্যাকআপ ফটো পাঠাবে
             try:
-                await context.bot.send_photo(
+                await context.bot.send_message(
                     chat_id=user_id,
-                    photo=banner_url,
-                    caption=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
+                    text=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
                     reply_markup=card_kb
                 )
             except Exception:
@@ -991,7 +986,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     if data == "tool_gifauto":
-        status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
+        status_msg = await query.edit_message_text("🎞️️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
         gif_mp4_path = f"{output_dir}/autogif_{unique_id}.mp4"
         try:
