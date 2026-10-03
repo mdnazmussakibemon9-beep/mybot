@@ -45,9 +45,8 @@ BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
-# আপনার আপলোড করা দুটি ব্যানার ছবির ডিরেক্ট লিংক
-BANNER_BN_URL = "https://i.ibb.co.com/kRmX7pr/NSE-NEXORA-A-Golden-Welcome.png"
-BANNER_EN_URL = "https://i.ibb.co.com/7JzqSgrR/NSE-NEXORA-Sunset-Welcome-Banner-1.png"
+# ইংরেজি প্রধান ব্যানার কার্ডের ডিরেক্ট লিঙ্ক
+WELCOME_BANNER_URL = "https://i.ibb.co.com/7JzqSgrR/NSE-NEXORA-Sunset-Welcome-Banner-1.png"
 
 user_urls = {}
 user_waiting_custom_time = {}
@@ -68,15 +67,6 @@ L = instaloader.Instaloader(
 
 TEXTS = {
     "bn": {
-        "welcome_caption": (
-            "🌸 ✨ **স্বাগতম! আপনাকে পেয়ে আমরা আনন্দিত** 🤍\n"
-            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            "আপনার প্রতিদিনের প্রিয় মুহূর্ত, ভিডিও আর সুন্দর স্মৃতিগুলো সুরক্ষিত ও সহজে ডাউনলোড করে নিতে **NSE NEXORA** সব সময় আপনার পাশে আছে।\n\n"
-            "আশা করি আপনার যাত্রাটি সুন্দর ও চমৎকার হবে! ✨\n\n"
-            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে একটু ভালোবাসা ও সাপোর্ট দিতে পারেন 🤍"
-        ),
-        "btn_follow": "🔗 ইনস্টাগ্রামে ফলো করুন 🤍",
-        "btn_continue": "✨ শুরু করুন / স্কিপ 🤍",
         "guide": (
             "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
@@ -105,10 +95,10 @@ TEXTS = {
         "choose_thumb": "🖼️ ছবি বা ফ্রেম অপশন বেছে নিন:",
         "choose_speed": "⏩ প্লেব্যাক স্পিড বেছে নিন:",
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, অপেক্ষা করুন...",
-        "compressing": "🗜️️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
+        "compressing": "🗜️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
         "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
+        "gif_prompt": "🎞️️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
         "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
         "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
         "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
@@ -137,26 +127,16 @@ TEXTS = {
         "voice": "🎙️ Voice Note (.ogg)",
         "gif_auto": "🎞️ Auto GIF (1-Click)",
         "gif_custom": "⏳ Custom GIF",
-        "ringtone": "✂️️ Ringtone Maker",
+        "ringtone": "✂️ Ringtone Maker",
         "thumb_hd": "🖼️ HD Cover Photo",
         "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 All Photos (Album)",
         "multi_all": "📦 সব ছবি ও ভিডিও (Album)",
-        "multi_first": "🖼️️ শুধুমাত্র ১ম মিডিয়া"
+        "multi_first": "🖼️ শুধুমাত্র ১ম মিডিয়া"
     },
     "en": {
-        "welcome_caption": (
-            "🌸 ✨ **Welcome to NSE NEXORA** ✨ 🌸\n"
-            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            "🤍 *We're truly glad to have you here!*\n"
-            "Save your favorite memories, videos, and music effortlessly with seamless speed.\n\n"
-            "Wishing you a wonderful and smooth experience! ✨\n\n"
-            "🌱 Support our creator on Instagram to keep this space free for everyone 🤍"
-        ),
-        "btn_follow": "🔗 Follow on Instagram 🤍",
-        "btn_continue": "✨ Continue / Skip 🤍",
         "guide": (
             "🌸 𝗡𝗦𝗘 𝗡𝗘𝗫𝗢𝗥𝗔 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
@@ -185,7 +165,7 @@ TEXTS = {
         "choose_thumb": "🖼️ Choose photo or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
-        "compressing": "🗜️️ Optimizing file under 50 MB without quality loss...",
+        "compressing": "🗜️ Optimizing file under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
         "custom_prompt": "⏳ Enter frame timestamp (e.g. 10 or 01:15):",
         "gif_prompt": "🎞️ Enter start and end time (e.g. 5-10, max 10s):",
@@ -229,8 +209,8 @@ TEXTS = {
 }
 
 def get_text(user_id, key, **kwargs):
-    lang = user_languages.get(user_id, "bn")
-    text = TEXTS.get(lang, TEXTS["bn"]).get(key, TEXTS["bn"].get(key, ""))
+    lang = user_languages.get(user_id, "en")
+    text = TEXTS.get(lang, TEXTS["en"]).get(key, TEXTS["en"].get(key, ""))
     return text.format(**kwargs)
 
 def parse_time_str(t_str):
@@ -462,18 +442,42 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     )
     return caption
 
-# ১. /start দিলে ভাষা নির্বাচন
+# ১. /start দিলে সরাসরি ইংরেজি প্রিমিয়াম ব্যানার ও মেসেজ
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lang_kb = InlineKeyboardMarkup([
+    user_id = update.effective_user.id
+    if user_id not in user_languages:
+        user_languages[user_id] = "en"
+
+    welcome_caption = (
+        "🌸 ✨ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐍𝐒𝐄 𝐍𝐄𝐗𝐎𝐑𝐀 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑 ✨ 🌸\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        "🤍 ʏᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ, ꜱᴡɪꜰᴛ & ᴇꜰꜰᴏʀᴛʟᴇꜱꜱ ᴍᴇᴅɪᴀ ᴄᴏᴍᴘᴀɴɪᴏɴ 🤍\n\n"
+        "Save your favorite memories, videos, and music effortlessly with seamless speed.\n\n"
+        "✦ TikTok : Pure Crystal HD (No Watermark)\n"
+        "✦ Instagram : Seamless Reels, Posts & Full Carousels\n"
+        "✦ Facebook, X, Pinterest & Reddit\n\n"
+        "🌱 Support our creator on Instagram to keep this space free for everyone 🤍"
+    )
+    keyboard = InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="firstlang_bn"),
-            InlineKeyboardButton("🇺🇸 English", callback_data="firstlang_en")
+            InlineKeyboardButton("🔗 𝗙𝗼𝗹𝗹𝗼𝘄 𝗼𝗻 𝗜𝗻𝘀𝘁𝗮𝗴𝗿𝗮𝗺 🤍", url=INSTAGRAM_PROFILE_URL)
+        ],
+        [
+            InlineKeyboardButton("✨ 𝗖𝗼𝗻𝘁𝗶𝗻𝘂𝗲 / 𝗦𝗸𝗶𝗽 🤍", callback_data="welcome_next")
         ]
     ])
-    await update.message.reply_text(
-        "🌸 𝗖𝗵𝗼𝗼𝘀𝗲 𝗬𝗼𝘂𝗿 𝗟𝗮𝗻𝗴𝘂𝗮𝗴𝗲 / আপনার ভাষা নির্বাচন করুন: 🤍",
-        reply_markup=lang_kb
-    )
+
+    try:
+        await update.message.reply_photo(
+            photo=WELCOME_BANNER_URL,
+            caption=welcome_caption,
+            reply_markup=keyboard
+        )
+    except Exception:
+        await update.message.reply_text(
+            welcome_caption,
+            reply_markup=keyboard
+        )
 
 async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -504,7 +508,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lower_text = text.lower()
 
     if user_id not in user_languages:
-        user_languages[user_id] = "bn"
+        user_languages[user_id] = "en"
 
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
@@ -625,7 +629,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
+                        caption=f"🎞️️ {title[:45]}\n⏱ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -766,65 +770,37 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ২. ভাষা সিলেক্ট করার পর ফুল-স্ক্রিন ব্যানার পাঠানো
-    if data.startswith("firstlang_"):
-        lang_code = data.split("_")[1]
-        user_languages[user_id] = lang_code
-        
-        banner_url = BANNER_BN_URL if lang_code == "bn" else BANNER_EN_URL
-
-        card_kb = InlineKeyboardMarkup([
+    # Continue চাপলে ভাষা সিলেক্ট করার অপশন আসবে
+    if data == "welcome_next":
+        lang_kb = InlineKeyboardMarkup([
             [
-                InlineKeyboardButton(get_text(user_id, "btn_follow"), url=INSTAGRAM_PROFILE_URL)
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "btn_continue"), callback_data="welcome_continue")
+                InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
+                InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
             ]
         ])
-
-        try:
-            await query.message.delete()
-            
-            # ফুল-উইডথ রাখার জন্য কোনো ক্যাপশন ছাড়াই প্রথমে ব্যানার ছবি পাঠানো
-            await context.bot.send_photo(
-                chat_id=user_id,
-                photo=banner_url
-            )
-            # টেক্সটের বক্স ও বাটনগুলো ঠিক নিচে মার্জিতভাবে পাঠানো
-            await context.bot.send_message(
-                chat_id=user_id,
-                text=get_text(user_id, "welcome_caption"),
-                parse_mode="Markdown",
-                reply_markup=card_kb
-            )
-        except Exception:
-            try:
-                await context.bot.send_message(
-                    chat_id=user_id,
-                    text=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
-                    reply_markup=card_kb
-                )
-            except Exception:
-                pass
-        return
-
-    # ৩. ওয়েলকাম কার্ডে Continue চাপলে গাইডলাইন আসবে
-    if data == "welcome_continue":
         try:
             await query.message.delete()
             await context.bot.send_message(
                 chat_id=user_id,
-                text=get_text(user_id, "guide")
+                text="🌐 Select Your Language / ভাষা বেছে নিন:",
+                reply_markup=lang_kb
             )
         except Exception:
-            await query.edit_message_text(get_text(user_id, "guide"))
+            await query.edit_message_text(
+                "🌐 Select Your Language / ভাষা বেছে নিন:",
+                reply_markup=lang_kb
+            )
         return
 
-    # মেনু থেকে ভাষা পরিবর্তন
+    # ভাষা পরিবর্তন করার পর গাইডলাইন মেসেজ আসবে
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
-        await query.edit_message_text(get_text(user_id, "guide"))
+        try:
+            await query.message.delete()
+            await context.bot.send_message(chat_id=user_id, text=get_text(user_id, "guide"))
+        except Exception:
+            await query.edit_message_text(get_text(user_id, "guide"))
         return
 
     if data == "cat_cancel":
@@ -986,7 +962,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     if data == "tool_gifauto":
-        status_msg = await query.edit_message_text("🎞️️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
+        status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
         gif_mp4_path = f"{output_dir}/autogif_{unique_id}.mp4"
         try:
