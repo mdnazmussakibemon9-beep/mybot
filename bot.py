@@ -100,7 +100,7 @@ TEXTS = {
         "voice": "🎙️ Voice Note (.ogg)",
         "gif": "🎞️ Custom Trimmed GIF",
         "ringtone": "✂️ Audio Trim / Ringtone",
-        "thumb_hd": "🖼️️ HD Cover Photo",
+        "thumb_hd": "🖼️ HD Cover Photo",
         "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
@@ -132,7 +132,7 @@ TEXTS = {
         "choose_main": "📥 What would you like to download? Choose a category:",
         "choose_video": "🎥 Choose your desired video quality:",
         "choose_audio": "🎵 Choose your audio format:",
-        "choose_thumb": "🖼️️ Choose your photo, cover, or frame option:",
+        "choose_thumb": "🖼️ Choose your photo, cover, or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
         "uploading": "🚀 Uploading to Telegram...",
@@ -161,7 +161,7 @@ TEXTS = {
         "gif": "🎞️ Custom Trimmed GIF",
         "ringtone": "✂️ Audio Trim / Ringtone",
         "thumb_hd": "🖼️ HD Cover Photo",
-        "thumb_sd": "🖼️ Standard Cover",
+        "thumb_sd": "🖼️️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 Download All Photos (Album)",
@@ -711,46 +711,115 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
 
-    # একাধিক ছবি/ভিডিও একসাথে বা শুধু ১মটি ডাউনলোড
+    # একাধিক ছবি/ভিডিও একসাথে বা শুধু ১মটি ডাউনলোড (Instagram/All Fixed)
     if data in ["multi_all", "multi_first"]:
-        status_msg = await query.edit_message_text("📦 প্রসেসিং হচ্ছে, দয়া করে অপেক্ষা করুন...")
+        status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         ydl_opts = {
             'outtmpl': f"{output_dir}/multi_{unique_id}_%(autonumber)s.%(ext)s",
             'quiet': True,
+            'ignoreerrors': True,
+            'extract_flat': False,
         }
         if data == "multi_first":
             ydl_opts['playlist_items'] = '1'
 
         downloaded_media = []
+        open_files = []
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
+                ydl.extract_info(url, download=True)
 
-            for file in os.listdir(output_dir):
+            for file in sorted(os.listdir(output_dir)):
                 if file.startswith(f"multi_{unique_id}_"):
                     downloaded_media.append(os.path.join(output_dir, file))
 
             if downloaded_media:
                 media_group = []
                 for file_p in downloaded_media[:10]:
-                    if file_p.endswith((".jpg", ".jpeg", ".png", ".webp")):
-                        media_group.append(InputMediaPhoto(open(file_p, "rb")))
-                    elif file_p.endswith((".mp4", ".mov", ".mkv")):
-                        media_group.append(InputMediaVideo(open(file_p, "rb")))
+                    if file_p.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+                        f = open(file_p, "rb")
+                        open_files.append(f)
+                        media_group.append(InputMediaPhoto(media=f))
+                    elif file_p.lower().endswith((".mp4", ".mov", ".mkv")):
+                        f = open(file_p, "rb")
+                        open_files.append(f)
+                        media_group.append(InputMediaVideo(media=f))
 
                 if media_group:
                     await context.bot.send_media_group(chat_id=user_id, media=media_group)
                     await status_msg.delete()
                 else:
-                    await status_msg.edit_text("❌ ফাইলটি পাঠানো সম্ভব হয়নি।")
+                    await status_msg.edit_text("❌ উপযুক্ত কোনো ছবি বা ভিডিও পাওয়া যায়নি।")
             else:
-                await status_msg.edit_text("❌ কোনো উপযুক্ত ফাইল পাওয়া যায়নি। লিঙ্কটি পাবলিক কি না চেক করুন।")
+                await status_msg.edit_text("❌ পোস্টটি প্রাইভেট অথবা ছবিগুলো নামানো সম্ভব হয়নি।")
         except Exception as e:
-            await status_msg.edit_text(f"ত্রুটি: {str(e)[:100]}")
+            await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
         finally:
+            for f in open_files:
+                try: f.close()
+                except Exception: pass
             for f in downloaded_media:
-                if os.path.exists(f): os.remove(f)
+                if os.path.exists(f): 
+                    try: os.remove(f)
+                    except Exception: pass
         return
+
+    # TikTok সব ছবি একসাথে নামানোর ফিক্সড হ্যান্ডলার
+    if data == "all_photos_dl":
+        status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
+        tk_data = get_tiktok_details(url)
+        downloaded_files = []
+        open_files = []
+        if tk_data and tk_data.get("images"):
+            images = tk_data["images"]
+            try:
+                for idx, img_url in enumerate(images[:10]):
+                    img_path = f"{output_dir}/slide_{unique_id}_{idx}.jpg"
+                    r = requests.get(img_url, headers=headers, timeout=20)
+                    if r.status_code == 200:
+                        with open(img_path, "wb") as f:
+                            f.write(r.content)
+                        downloaded_files.append(img_path)
+
+                if downloaded_files:
+                    media_group = []
+                    for f_path in downloaded_files:
+                        f = open(f_path, "rb")
+                        open_files.append(f)
+                        media_group.append(InputMediaPhoto(media=f))
+
+                    await context.bot.send_media_group(chat_id=user_id, media=media_group)
+
+                # অডিও আলাদাভাবে পাঠানো
+                if tk_data.get("audio_url"):
+                    aud_path = f"{output_dir}/aud_{unique_id}.mp3"
+                    ar = requests.get(tk_data["audio_url"], headers=headers, timeout=20)
+                    with open(aud_path, "wb") as f:
+                        f.write(ar.content)
+                    with open(aud_path, "rb") as af:
+                        await context.bot.send_audio(
+                            chat_id=user_id,
+                            audio=af,
+                            title=tk_data["title"][:40],
+                            performer=tk_data["author"]
+                        )
+                    if os.path.exists(aud_path): os.remove(aud_path)
+
+                await status_msg.delete()
+            except Exception as e:
+                await status_msg.edit_text(f"ফটো ত্রুটি: {str(e)[:100]}")
+            finally:
+                for f in open_files:
+                    try: f.close()
+                    except Exception: pass
+                for f in downloaded_files:
+                    if os.path.exists(f): 
+                        try: os.remove(f)
+                        except Exception: pass
+            return
+        else:
+            await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
+            return
 
     # ভিডিও স্পিড কনভার্সন হ্যান্ডলার
     if data.startswith("spd_"):
@@ -790,49 +859,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             for f in [raw_vid, spd_vid]:
                 if os.path.exists(f): os.remove(f)
         return
-
-    # ছবি ডাউনলোড হ্যান্ডলার
-    if data == "all_photos_dl":
-        status_msg = await query.edit_message_text("📸 সব ছবি নামানো হচ্ছে, দয়া করে অপেক্ষা করুন...")
-        tk_data = get_tiktok_details(url)
-        if tk_data and tk_data.get("images"):
-            images = tk_data["images"]
-            downloaded_files = []
-            try:
-                for idx, img_url in enumerate(images[:10]):
-                    img_path = f"{output_dir}/slide_{unique_id}_{idx}.jpg"
-                    r = requests.get(img_url, headers=headers, timeout=20)
-                    with open(img_path, "wb") as f:
-                        f.write(r.content)
-                    downloaded_files.append(img_path)
-
-                media_group = [InputMediaPhoto(open(f, "rb")) for f in downloaded_files]
-                await context.bot.send_media_group(chat_id=user_id, media=media_group)
-
-                if tk_data.get("audio_url"):
-                    aud_path = f"{output_dir}/aud_{unique_id}.mp3"
-                    ar = requests.get(tk_data["audio_url"], headers=headers, timeout=20)
-                    with open(aud_path, "wb") as f:
-                        f.write(ar.content)
-                    with open(aud_path, "rb") as af:
-                        await context.bot.send_audio(
-                            chat_id=user_id,
-                            audio=af,
-                            title=tk_data["title"][:40],
-                            performer=tk_data["author"]
-                        )
-                    if os.path.exists(aud_path): os.remove(aud_path)
-
-                await status_msg.delete()
-            except Exception as e:
-                await status_msg.edit_text(f"ফটো ত্রুটি: {str(e)[:100]}")
-            finally:
-                for f in downloaded_files:
-                    if os.path.exists(f): os.remove(f)
-            return
-        else:
-            await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
-            return
 
     if data == "tool_audiotrim":
         user_waiting_audio_trim[user_id] = url
