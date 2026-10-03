@@ -65,26 +65,26 @@ L = instaloader.Instaloader(
 TEXTS = {
     "bn": {
         "guide": (
-            "🌟 **আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার** 🌟\n"
+            "🌟 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **সহজ ব্যবহারের নিয়মাবলী:**\n"
+            "📌 সহজ ব্যবহারের নিয়মাবলী:\n"
             "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
-            "🎥 **ভিডিও কোয়ালিটি:** Highest, Medium, Lowest, Fast ও ডকুমেন্ট মোড এবং কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
-            "🖼️ **ছবি ও স্লাইড:** Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে অ্যালবাম আকারে ডাউনলোড!\n"
-            "🎞️ **GIF ও স্পিড টুলস:** অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
-            "🎵 **অডিও:** 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
-            "🗜️ **স্মার্ট কম্প্রেশন:** বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
+            "🎥 ভিডিও কোয়ালিটি: Highest, Medium, Lowest, Fast ও ডকুমেন্ট মোড এবং কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
+            "🖼️ ছবি ও স্লাইড: Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে অ্যালবাম আকারে ডাউনলোড!\n"
+            "🎞️ GIF ও স্পিড টুলস: অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
+            "🎵 অডিও: 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
+            "🗜️ স্মার্ট কম্প্রেশন: বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
         ),
         "help_text": (
-            "📖 **জরুরি নির্দেশিকা ও কমান্ডসমূহ:**\n\n"
+            "📖 জরুরি নির্দেশিকা ও কমান্ডসমূহ:\n\n"
             "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
-            "3️⃣ **কাস্টম রেজোলিউশন:** ভিডিও অপশনে গিয়ে 'কাস্টম রেজোলিউশন' চাপলে 4K, 2K, 1080p সহ সব সাইজ দেখতে পাবেন।\n"
-            "4️⃣ **৫০ MB লিমিট:** ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
+            "3️⃣ কাস্টম রেজোলিউশন: ভিডিও অপশনে গিয়ে 'কাস্টম রেজোলিউশন' চাপলে 4K, 2K, 1080p সহ সব সাইজ দেখতে পাবেন।\n"
+            "4️⃣ ৫০ MB লিমিট: ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
-        "help_error_resp": "🛠️️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
-        "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
+        "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
+        "help_size_resp": "ℹ️️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 আপনার পছন্দের ভিডিও মোড বেছে নিন:",
         "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন (4K থেকে 144p):",
@@ -95,11 +95,11 @@ TEXTS = {
         "processing": "⚡ {quality} প্রস্তুত হচ্ছে, দয়া করে অপেক্ষা করুন...",
         "compressing": "🗜️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
-        "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: `10` বা `01:15`):",
-        "gif_prompt": "🎞️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: `5-10` বা `00:10-00:15`, সর্বোচ্চ ১০ সেকেন্ড):",
-        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় লিখে পাঠান (উদা: `0-30` বা `00:20-00:50`, সর্বোচ্চ ৬০ সেকেন্ড):",
-        "gif_limit_error": "⚠️ GIF তৈরির রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে (যেমন: `5-12`)। আবার চেষ্টা করুন।",
-        "audio_limit_error": "⚠️ রিংটোনের রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে (যেমন: `0-30`)। আবার চেষ্টা করুন।",
+        "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: 10 বা 01:15):",
+        "gif_prompt": "🎞️️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
+        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় লিখে পাঠান (উদা: 0-30 বা 00:20-00:50, সর্বোচ্চ ৬০ সেকেন্ড):",
+        "gif_limit_error": "⚠️ GIF তৈরির রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে (যেমন: 5-12)। আবার চেষ্টা করুন।",
+        "audio_limit_error": "⚠️ রিংটোনের রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে (যেমন: 0-30)। আবার চেষ্টা করুন।",
         "custom_success": "✅ ফ্রেম ক্যাপচার সফল ({sec}s)",
         "mid_success": "✅ ভিডিওর মাঝখানের ফ্রেম ({sec}s)",
         "error_frame": "❌ ফ্রেম ক্যাপচার করা সম্ভব হয়নি।",
@@ -127,31 +127,31 @@ TEXTS = {
         "gif_custom": "⏳ Custom GIF (টাইম ট্রিম)",
         "ringtone": "✂️ Audio Trim / Ringtone",
         "thumb_hd": "🖼️ HD Cover Photo",
-        "thumb_sd": "🖼️ Standard Cover",
+        "thumb_sd": "🖼️️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 সব ছবি একসাথে নামান (All Photos)",
         "multi_all": "📦 সব ছবি ও ভিডিও একসাথে (Album)",
-        "multi_first": "🖼️️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
+        "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
     },
     "en": {
         "guide": (
-            "🌟 **Ultimate 4K Social Media Downloader** 🌟\n"
+            "🌟 Ultimate 4K Social Media Downloader 🌟\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "📌 **How to use:**\n"
+            "📌 How to use:\n"
             "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
-            "🎥 **Video Quality:** Highest, Medium, Lowest, Fast, Document & Custom Resolutions (4K to 144p)\n"
-            "🖼️ **Photos:** Full-resolution album download for Instagram & TikTok carousels!\n"
-            "🎞️ **GIF & Speed Tools:** Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
-            "🎵 **Audio:** 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🗜️ **Smart Compression:** Videos exceeding 50 MB are automatically optimized under 50 MB!"
+            "🎥 Video Quality: Highest, Medium, Lowest, Fast, Document & Custom Resolutions (4K to 144p)\n"
+            "🖼️ Photos: Full-resolution album download for Instagram & TikTok carousels!\n"
+            "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
+            "🎵 Audio: 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
+            "🗜️ Smart Compression: Videos exceeding 50 MB are automatically optimized under 50 MB!"
         ),
         "help_text": (
-            "📖 **User Guide & Commands:**\n\n"
+            "📖 User Guide & Commands:\n\n"
             "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ **Custom Resolutions:** Go to Video Options and tap 'Custom Resolutions' to choose 4K, 2K, 1080p, etc.\n"
-            "4️⃣ **50 MB Limit:** Files over 50 MB are automatically compressed preserving high quality."
+            "3️⃣ Custom Resolutions: Go to Video Options and tap 'Custom Resolutions' to choose 4K, 2K, 1080p, etc.\n"
+            "4️⃣ 50 MB Limit: Files over 50 MB are automatically compressed preserving high quality."
         ),
         "help_lang_resp": "🌐 To change your language, click below or type /lang:",
         "help_error_resp": "🛠️ Ensure the post is public and not from a private account.",
@@ -166,9 +166,9 @@ TEXTS = {
         "processing": "⚡ Processing {quality}, please wait...",
         "compressing": "🗜️ File exceeds 50 MB, optimizing under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
-        "custom_prompt": "⏳ Reply with frame timestamp (e.g. `10` or `01:15`):",
-        "gif_prompt": "🎞️ Reply with start and end time (e.g. `5-10` or `00:10-00:15`, max 10s):",
-        "audio_trim_prompt": "✂️ Reply with start and end time (e.g. `0-30` or `00:20-00:50`, max 60s):",
+        "custom_prompt": "⏳ Reply with frame timestamp (e.g. 10 or 01:15):",
+        "gif_prompt": "🎞️ Reply with start and end time (e.g. 5-10 or 00:10-00:15, max 10s):",
+        "audio_trim_prompt": "✂️ Reply with start and end time (e.g. 0-30 or 00:20-00:50, max 60s):",
         "gif_limit_error": "⚠️ GIF range must be 10 seconds or less. Please try again.",
         "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less. Please try again.",
         "custom_success": "✅ Frame captured successfully ({sec}s)",
@@ -180,7 +180,7 @@ TEXTS = {
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
-        "btn_thumb": "🖼️ Photos & Thumbnails",
+        "btn_thumb": "🖼️️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
         "btn_back": "🔙 Back to Main Menu",
@@ -405,18 +405,21 @@ def compress_video_under_50mb(input_video, output_video, duration=None):
     return False
 
 def format_caption(title, author, platform, quality, size_mb=None, was_compressed=False):
+    # কোনো ধরনের এরর ছাড়া ক্লিন ক্যাপশন
+    safe_title = title.replace("\n", " ").strip()[:65]
+    safe_author = author.replace("\n", " ").strip()[:30]
     caption = (
-        f"🎬 **{title[:65]}**\n"
+        f"🎬 {safe_title}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"🌐 **Platform:** {platform}\n"
-        f"👤 **Author/Channel:** {author}\n"
-        f"🎯 **Quality:** {quality}\n"
+        f"🌐 Platform: {platform}\n"
+        f"👤 Author/Channel: {safe_author}\n"
+        f"🎯 Quality: {quality}\n"
     )
     if size_mb:
-        caption += f"💾 **Size:** {size_mb:.1f} MB\n"
+        caption += f"💾 Size: {size_mb:.1f} MB\n"
     if was_compressed:
-        caption += "🗜️ *Smart 50MB Auto-Compressed (High Quality)*\n"
-    caption += "━━━━━━━━━━━━━━━━━━━━\n⚡ *Downloaded via Ultra Social Bot*"
+        caption += "🗜️ Smart 50MB Auto-Compressed (High Quality)\n"
+    caption += "━━━━━━━━━━━━━━━━━━━━\n⚡ Downloaded via Ultra Social Bot"
     return caption
 
 def build_language_keyboard():
@@ -553,9 +556,8 @@ def get_thumb_menu(user_id, has_photos=False):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🌐 **Please select your language / আপনার ভাষা নির্বাচন করুন:**",
-        reply_markup=build_language_keyboard(),
-        parse_mode="Markdown"
+        "🌐 Please select your language / আপনার ভাষা নির্বাচন করুন:",
+        reply_markup=build_language_keyboard()
     )
 
 async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -564,19 +566,18 @@ async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_quick_mode[user_id] = not current_state
     state_str = "চালু (ON) ⚡" if not current_state else "বন্ধ (OFF) 🛑"
     await update.message.reply_text(
-        f"⚡ **Quick Download Mode:** {state_str}\n"
+        f"⚡ Quick Download Mode: {state_str}\n"
         "এটি চালু থাকলে লিঙ্ক দেওয়ার সাথে সাথে কোনো মেনু ছাড়াই সরাসরি 720p সেরা কোয়ালিটিতে ভিডিও ডাউনলোড হবে।"
     )
 
 async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    await update.message.reply_text(get_text(user_id, "help_text"), parse_mode="Markdown")
+    await update.message.reply_text(get_text(user_id, "help_text"))
 
 async def cmd_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🌐 **Select Language / ভাষা বেছে নিন:**",
-        reply_markup=build_language_keyboard(),
-        parse_mode="Markdown"
+        "🌐 Select Language / ভাষা বেছে নিন:",
+        reply_markup=build_language_keyboard()
     )
 
 async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -636,8 +637,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         title=f"{title[:35]} (Ringtone)",
                         performer=artist[:25],
                         duration=duration,
-                        caption=f"✂️ **Ringtone:** {start_sec}s - {end_sec}s\n⚡ *Ultra Social Bot*",
-                        parse_mode="Markdown"
+                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -691,8 +691,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ **{title[:45]}**\n⏱️ Range: {start_sec}s - {end_sec}s\n⚡ *Ultra Social Bot*",
-                        parse_mode="Markdown"
+                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -732,8 +731,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with open(output_img, "rb") as f:
                 await update.message.reply_photo(
                     photo=f,
-                    caption=get_text(user_id, "custom_success", sec=sec) + "\n⚡ *Ultra Social Bot*",
-                    parse_mode="Markdown"
+                    caption=get_text(user_id, "custom_success", sec=sec) + "\n⚡ Ultra Social Bot"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -749,10 +747,10 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(get_text(user_id, "help_size_resp"))
             return
         if any(w in lower_text for w in ["problem", "error", "সমস্যা", "কাজ করে না", "fail", "not working"]):
-            await update.message.reply_text(get_text(user_id, "help_error_resp"), parse_mode="Markdown")
+            await update.message.reply_text(get_text(user_id, "help_error_resp"))
             return
         if any(w in lower_text for w in ["help", "নির্দেশনা", "নিয়ম", "faq", "কীভাবে", "কিভাবে"]):
-            await update.message.reply_text(get_text(user_id, "help_text"), parse_mode="Markdown")
+            await update.message.reply_text(get_text(user_id, "help_text"))
             return
 
         await update.message.reply_text("💡 সোশ্যাল মিডিয়ার যেকোনো ভিডিও বা ছবির লিঙ্ক পাঠান অথবা সাহায্য পেতে /help লিখুন।")
@@ -800,8 +798,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         await update.message.reply_video(
                             video=f,
                             supports_streaming=True,
-                            caption=format_caption(title, uploader, "Fast Mode", "720p Quick", size_mb, was_compressed),
-                            parse_mode="Markdown"
+                            caption=format_caption(title, uploader, "Fast Mode", "720p Quick", size_mb, was_compressed)
                         )
                     await status_msg.delete()
                     if os.path.exists(file_path): os.remove(file_path)
@@ -822,7 +819,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
-        await query.edit_message_text(get_text(user_id, "guide"), parse_mode="Markdown")
+        await query.edit_message_text(get_text(user_id, "guide"))
         return
 
     if data == "cat_cancel":
@@ -893,8 +890,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ **{title[:45]}** (Auto GIF)\n⚡ *Ultra Social Bot*",
-                        parse_mode="Markdown"
+                        caption=f"🎞️ {title[:45]} (Auto GIF)\n⚡ Ultra Social Bot"
                     )
                 await status_msg.delete()
             else:
@@ -996,8 +992,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         chat_id=user_id,
                         video=f,
                         supports_streaming=True,
-                        caption=format_caption(title, uploader, "Speed Converted", f"{speed_factor}x Speed", size_mb),
-                        parse_mode="Markdown"
+                        caption=format_caption(title, uploader, "Speed Converted", f"{speed_factor}x Speed", size_mb)
                     )
                 await status_msg.delete()
             else:
@@ -1011,19 +1006,19 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if data == "tool_audiotrim":
         user_waiting_audio_trim[user_id] = url
-        await query.edit_message_text(get_text(user_id, "audio_trim_prompt"), parse_mode="Markdown")
+        await query.edit_message_text(get_text(user_id, "audio_trim_prompt"))
         return
 
     if data == "tool_gifcustom":
         user_waiting_gif_time[user_id] = url
-        await query.edit_message_text(get_text(user_id, "gif_prompt"), parse_mode="Markdown")
+        await query.edit_message_text(get_text(user_id, "gif_prompt"))
         return
 
     req_type, quality = data.split("_")
 
     if req_type == "frame" and quality == "custom":
         user_waiting_custom_time[user_id] = url
-        await query.edit_message_text(get_text(user_id, "custom_prompt"), parse_mode="Markdown")
+        await query.edit_message_text(get_text(user_id, "custom_prompt"))
         return
 
     if req_type == "frame" and quality == "mid":
@@ -1052,8 +1047,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=user_id,
                     photo=f,
-                    caption=get_text(user_id, "mid_success", sec=mid_point) + "\n⚡ *Ultra Social Bot*",
-                    parse_mode="Markdown"
+                    caption=get_text(user_id, "mid_success", sec=mid_point) + "\n⚡ Ultra Social Bot"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -1090,8 +1084,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         await context.bot.send_photo(
                             chat_id=user_id,
                             photo=f,
-                            caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display),
-                            parse_mode="Markdown"
+                            caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display)
                         )
                     await status_msg.delete()
                     return
@@ -1140,8 +1133,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n⚡ *Ultra Social Bot*",
-                                parse_mode="Markdown"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n⚡ Ultra Social Bot"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
@@ -1153,16 +1145,14 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_document(
                                 chat_id=user_id,
                                 document=f,
-                                caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display, file_size_mb, was_compressed),
-                                parse_mode="Markdown"
+                                caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display, file_size_mb, was_compressed)
                             )
                         else:
                             await context.bot.send_video(
                                 chat_id=user_id,
                                 video=f,
                                 supports_streaming=True,
-                                caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display, file_size_mb, was_compressed),
-                                parse_mode="Markdown"
+                                caption=format_caption(tk_data['title'], tk_data['author'], "TikTok", quality_display, file_size_mb, was_compressed)
                             )
                     else:
                         if thumb_path and os.path.exists(thumb_path):
@@ -1223,8 +1213,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_photo(
                         chat_id=user_id,
                         photo=f,
-                        caption=format_caption(video_title, uploader, platform_name, quality_display),
-                        parse_mode="Markdown"
+                        caption=format_caption(video_title, uploader, platform_name, quality_display)
                     )
                 await status_msg.delete()
             else:
@@ -1319,8 +1308,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️ {video_title[:50]}\n⚡ *Ultra Social Bot*",
-                        parse_mode="Markdown"
+                        caption=f"🎙️ {video_title[:50]}\n⚡ Ultra Social Bot"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
                 await status_msg.delete()
@@ -1348,16 +1336,14 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_document(
                         chat_id=user_id,
                         document=f,
-                        caption=format_caption(video_title, channel_name, platform_name, quality_display, file_size_mb, was_compressed),
-                        parse_mode="Markdown"
+                        caption=format_caption(video_title, channel_name, platform_name, quality_display, file_size_mb, was_compressed)
                     )
                 else:
                     await context.bot.send_video(
                         chat_id=user_id,
                         video=f,
                         supports_streaming=True,
-                        caption=format_caption(video_title, channel_name, platform_name, quality_display, file_size_mb, was_compressed),
-                        parse_mode="Markdown"
+                        caption=format_caption(video_title, channel_name, platform_name, quality_display, file_size_mb, was_compressed)
                     )
             else:
                 if thumb_jpg and os.path.exists(thumb_jpg):
