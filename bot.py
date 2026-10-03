@@ -45,9 +45,9 @@ BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
-# বাংলা এবং ইংরেজি ব্যানার ফাইলের নাম
-LOCAL_BANNER_BN = "welcome_bn.png"
-LOCAL_BANNER_EN = "welcome_en.png"
+# আপনার আপলোড করা দুটি ব্যানার ছবির ডিরেক্ট লিংক
+BANNER_BN_URL = "https://i.ibb.co.com/kRmX7pr/NSE-NEXORA-A-Golden-Welcome.png"
+BANNER_EN_URL = "https://i.ibb.co.com/7JzqSgrR/NSE-NEXORA-Sunset-Welcome-Banner-1.png"
 
 user_urls = {}
 user_waiting_custom_time = {}
@@ -69,13 +69,11 @@ L = instaloader.Instaloader(
 TEXTS = {
     "bn": {
         "welcome_caption": (
-            "🌸 স্বাগতম NSE NEXORA DOWNLOADER-এ 🤍\n"
+            "🌸 ✨ **স্বাগতম! আপনাকে পেয়ে আমরা আনন্দিত** 🤍\n"
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            "আপনাকে পেয়ে আমরা অত্যন্ত আনন্দিত! আপনার দৈনন্দিন প্রিয় মুহূর্ত, ভিডিও আর সুন্দর স্মৃতিগুলো এক ক্লিকে সহজে ডাউনলোড করতে আমরা প্রস্তুত।\n\n"
-            "✦ TikTok : ওয়াটারমার্ক ছাড়া ফুল এইচডি\n"
-            "✦ Instagram : রিলস, পোস্ট ও সম্পূর্ণ অ্যালবাম\n"
-            "✦ Facebook, X, Pinterest ও Reddit\n\n"
-            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে একটু ভালোবাসা ও সাপোর্ট দিতে পারেন 🌸"
+            "আপনার প্রতিদিনের প্রিয় মুহূর্ত, ভিডিও আর সুন্দর স্মৃতিগুলো সুরক্ষিত ও সহজে ডাউনলোড করে নিতে **NSE NEXORA** সব সময় আপনার পাশে আছে।\n\n"
+            "আশা করি আপনার যাত্রাটি সুন্দর ও চমৎকার হবে! ✨\n\n"
+            "🌱 বটটি উন্মুক্ত ও ফ্রি রাখতে আমাদের ক্রিয়েটরকে ইনস্টাগ্রামে ফলো ও ভালোবাসা দিতে পারেন 🤍"
         ),
         "btn_follow": "🔗 ইনস্টাগ্রামে ফলো করুন 🤍",
         "btn_continue": "✨ শুরু করুন / স্কিপ 🤍",
@@ -150,13 +148,12 @@ TEXTS = {
     },
     "en": {
         "welcome_caption": (
-            "🌸 Welcome to NSE NEXORA DOWNLOADER 🤍\n"
+            "🌸 ✨ **Welcome to NSE NEXORA** ✨ 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            "We're truly glad to have you here! Save your favorite memories, videos, and music effortlessly with seamless speed.\n\n"
-            "✦ TikTok : Pure Crystal HD (No Watermark)\n"
-            "✦ Instagram : Seamless Reels, Posts & Full Carousels\n"
-            "✦ Facebook, X, Pinterest & Reddit\n\n"
-            "🌱 Support our creator on Instagram to keep this space free for everyone 🌸"
+            "🤍 *We're truly glad to have you here!*\n"
+            "Save your favorite memories, videos, and music effortlessly with seamless speed.\n\n"
+            "Wishing you a wonderful and smooth experience! ✨\n\n"
+            "🌱 Support our creator on Instagram to keep this space free for everyone 🤍"
         ),
         "btn_follow": "🔗 Follow on Instagram 🤍",
         "btn_continue": "✨ Continue / Skip 🤍",
@@ -169,7 +166,7 @@ TEXTS = {
             "🖼️ Photos: Full-resolution album download for Instagram & TikTok!\n"
             "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer\n"
             "🎵 Audio: MP3 (320k, 192k, 128k), Ringtone Maker & Voice Notes\n"
-            "🗜️️ Smart Compression: Large files over 50 MB are automatically optimized!"
+            "🗜️ Smart Compression: Large files over 50 MB are automatically optimized!"
         ),
         "help_text": (
             "📖 Commands & Instructions:\n\n"
@@ -191,7 +188,7 @@ TEXTS = {
         "compressing": "🗜️ Optimizing file under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
         "custom_prompt": "⏳ Enter frame timestamp (e.g. 10 or 01:15):",
-        "gif_prompt": "🎞️️ Enter start and end time (e.g. 5-10, max 10s):",
+        "gif_prompt": "🎞️ Enter start and end time (e.g. 5-10, max 10s):",
         "audio_trim_prompt": "✂️ Enter start and end time (e.g. 0-30, max 60s):",
         "gif_limit_error": "⚠️ GIF range must be 10 seconds or less.",
         "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less.",
@@ -769,12 +766,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # ২. ভাষা সিলেক্ট করার পর নিজ নিজ ব্যানার ইমেজ ও বার্তা পাঠানো
+    # ২. ভাষা সিলেক্ট করার পর নির্বাচিত ভাষার ব্যানার ছবি ও হৃদয়স্পর্শী ক্যাপশন পাঠানো
     if data.startswith("firstlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
         
-        banner_file = LOCAL_BANNER_BN if lang_code == "bn" else LOCAL_BANNER_EN
+        banner_url = BANNER_BN_URL if lang_code == "bn" else BANNER_EN_URL
 
         card_kb = InlineKeyboardMarkup([
             [
@@ -787,24 +784,19 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         try:
             await query.message.delete()
-            if os.path.exists(banner_file):
-                with open(banner_file, "rb") as bf:
-                    await context.bot.send_photo(
-                        chat_id=user_id,
-                        photo=bf,
-                        caption=get_text(user_id, "welcome_caption"),
-                        reply_markup=card_kb
-                    )
-            else:
-                await context.bot.send_message(
-                    chat_id=user_id,
-                    text=get_text(user_id, "welcome_caption"),
-                    reply_markup=card_kb
-                )
-        except Exception:
-            await context.bot.send_message(
+            await context.bot.send_photo(
                 chat_id=user_id,
-                text=get_text(user_id, "welcome_caption"),
+                photo=banner_url,
+                caption=get_text(user_id, "welcome_caption"),
+                parse_mode="Markdown",
+                reply_markup=card_kb
+            )
+        except Exception:
+            # যদি কোনো কারণে মার্কডাউন বা নেটওয়ার্কে সমস্যা হয় তবে প্লেইন টেক্সট হিসেবে পাঠাবে
+            await context.bot.send_photo(
+                chat_id=user_id,
+                photo=banner_url,
+                caption=get_text(user_id, "welcome_caption").replace("**", "").replace("*", ""),
                 reply_markup=card_kb
             )
         return
@@ -1284,7 +1276,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ NSE NEXORA DOWNLOADER 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
