@@ -40,7 +40,8 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
-BOT_TOKEN = "8826750975:AAEQB-Lhqq3FrFyOVL7mXWqtC9CdcH1HvOI"
+# আপনার নতুন বটের API টোকেন
+BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 
 # ডাটা ডিকশনারি
 user_urls = {}
@@ -82,7 +83,7 @@ TEXTS = {
             "4️⃣ **৫০ MB লিমিট:** ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
         ),
         "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
-        "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
+        "help_error_resp": "🛠️️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
         "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
         "choose_video": "🎥 আপনার পছন্দের ভিডিও মোড বেছে নিন:",
@@ -131,7 +132,7 @@ TEXTS = {
         "custom_frame": "⏳ Custom Frame",
         "all_photos": "📸 সব ছবি একসাথে নামান (All Photos)",
         "multi_all": "📦 সব ছবি ও ভিডিও একসাথে (Album)",
-        "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
+        "multi_first": "🖼️️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
     },
     "en": {
         "guide": (
@@ -243,9 +244,7 @@ def get_tiktok_details(tiktok_url):
     return None
 
 def extract_instagram_media_robust(url):
-    """Instaloader ও পাবলিক স্ক্র্যাপার দিয়ে ইনস্টাগ্রাম ছবি নিশ্চিতভাবে বের করার মেথড"""
     media_list = []
-    
     shortcode_match = re.search(r'/(?:p|reel|tv)/([A-Za-z0-9_-]+)', url)
     if shortcode_match:
         shortcode = shortcode_match.group(1)
@@ -444,7 +443,6 @@ def get_main_menu(user_id, has_multi=False):
     ])
     return InlineKeyboardMarkup(keyboard)
 
-# ১. ভিডিও মেনু
 def get_video_menu(user_id):
     keyboard = [
         [
@@ -465,7 +463,6 @@ def get_video_menu(user_id):
     ]
     return InlineKeyboardMarkup(keyboard)
 
-# ২. কাস্টম রেজোলিউশন মেনু
 def get_custom_res_menu(user_id):
     keyboard = [
         [
@@ -593,7 +590,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
 
-    # ১. অডিও রিংটোন ইনপুট হ্যান্ডলার
     if user_id in user_waiting_audio_trim:
         saved_url = user_waiting_audio_trim.pop(user_id)
         start_sec, end_sec = 0, 30
@@ -653,7 +649,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # ২. কাস্টম GIF টাইম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_gif_time:
         saved_url = user_waiting_gif_time.pop(user_id)
         start_sec, end_sec = 0, 7
@@ -709,7 +704,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # ৩. কাস্টম ফ্রেম ইনপুট হ্যান্ডলার
     if user_id in user_waiting_custom_time:
         saved_url = user_waiting_custom_time.pop(user_id)
         try:
@@ -747,7 +741,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(get_text(user_id, "error_frame"))
         return
 
-    # সাধারণ টেক্সট গাইড
     if not text.startswith("http://") and not text.startswith("https://"):
         if any(w in lower_text for w in ["language", "ভাষা", "bhasha", "change", "পরিবর্তন", "change language"]):
             await update.message.reply_text(get_text(user_id, "help_lang_resp"), reply_markup=build_language_keyboard())
@@ -772,7 +765,6 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
-    # কুইক ডাউনলোড মোড
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
@@ -880,7 +872,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 
-    # ১-ক্লিক অটো GIF
     if data == "tool_gifauto":
         status_msg = await query.edit_message_text("🎞️ ভিডিও থেকে অটোমেটিক GIF তৈরি হচ্ছে...")
         raw_video = f"{output_dir}/raw_autogif_{unique_id}.mp4"
@@ -915,7 +906,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(f): os.remove(f)
         return
 
-    # একাধিক ছবি/ভিডিও অ্যালবাম (Instagram ফটো ১০০% ফিক্সড মেথড)
     if data in ["multi_all", "multi_first"]:
         status_msg = await query.edit_message_text("📦 ছবি ও মিডিয়া প্রসেস হচ্ছে, দয়া করে অপেক্ষা করুন...")
         media_group = []
@@ -944,7 +934,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text(f"ফটো ডাউনলোড ত্রুটি: {str(e)[:100]}")
         return
 
-    # TikTok সব ছবি একসাথে
     if data == "all_photos_dl":
         status_msg = await query.edit_message_text("📸 টিকটকের সব ছবি নামানো হচ্ছে...")
         tk_data = get_tiktok_details(url)
@@ -982,7 +971,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await status_msg.edit_text("❌ এতে কোনো ফটো স্লাইড পাওয়া যায়নি।")
             return
 
-    # ভিডিও স্পিড চেঞ্জার
     if data.startswith("spd_"):
         speed_factor = float(data.split("_")[1])
         status_msg = await query.edit_message_text(f"⏩ ভিডিওর গতি {speed_factor}x করা হচ্ছে, অপেক্ষা করুন...")
@@ -1084,7 +1072,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "reddit.com" in url: platform_name = "Reddit"
     elif "pinterest.com" in url or "pin.it" in url: platform_name = "Pinterest"
 
-    # ১. টিকটক ইঞ্জিন
     if "tiktok.com" in url and req_type not in ["tool"]:
         tk_data = get_tiktok_details(url)
         if tk_data:
@@ -1205,7 +1192,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if file_path and os.path.exists(file_path): os.remove(file_path)
                 if thumb_path and os.path.exists(thumb_path): os.remove(thumb_path)
 
-    # ২. অন্যান্য সোশ্যাল মিডিয়া (4K / 2K ও কম্প্রেশন সহ)
     output_template = f"{output_dir}/media_{unique_id}.%(ext)s"
 
     if req_type == "thumb":
