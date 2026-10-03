@@ -31,7 +31,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "Ultra 4K/2K Social Downloader Bot with Safe Gateway is Running 24/7!"
+    return "Ultra 4K/2K Social Downloader Bot is Running 24/7!"
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
@@ -41,22 +41,17 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 
-# আপনার বটের API টোকেন ও ইনস্টাগ্রাম প্রোফাইল
 BOT_TOKEN = "8739008151:AAFL3n3Q16U6mPuw5YCo1z635hIplMHy3l4"
 INSTAGRAM_USERNAME = "emon.innocent.boy"
 INSTAGRAM_PROFILE_URL = f"https://www.instagram.com/{INSTAGRAM_USERNAME}"
 
-# ডাটা ডিকশনারি
 user_urls = {}
 user_waiting_custom_time = {}
 user_waiting_gif_time = {}
 user_waiting_audio_trim = {}
 user_languages = {}
 user_quick_mode = {}
-verified_users = set()       # যারা ফলো বা স্কিপ করেছে
-user_last_action = {}       # অ্যান্টি-ফ্লাড স্প্যাম কন্ট্রোল
 
-# Instaloader ইঞ্জিন সেটআপ
 L = instaloader.Instaloader(
     download_pictures=False,
     download_videos=False,
@@ -69,164 +64,150 @@ L = instaloader.Instaloader(
 
 TEXTS = {
     "bn": {
-        "welcome_gate": (
-            "👋 স্বাগতম আল্টিমেট ডাউনলোডার বটে!\n"
-            "━━━━━━━━━━━━━━━━━━━━\n"
-            "বটটি সব সময় ফ্রিতে সচল রাখতে দয়া করে আমাদের ক্রিয়েটরের ইনস্টাগ্রাম অ্যাকাউন্টটি ফলো করুন।\n\n"
-            "যাদের ইনস্টাগ্রাম নেই, তারা সরাসরি Skip বাটনে চাপ দিয়ে বট ব্যবহার করতে পারেন!"
-        ),
         "guide": (
-            "🌟 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌟\n"
+            "🌸 আল্টিমেট ৪K সোশ্যাল মিডিয়া ডাউনলোডার 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 সহজ ব্যবহারের নিয়মাবলী:\n"
-            "যেকোনো ভিডিও বা ছবির পোস্ট লিঙ্ক সরাসরি চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
-            "🎥 ভিডিও কোয়ালিটি: Highest, Medium, Lowest, Fast ও ডকুমেন্ট মোড এবং কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
-            "🖼️ ছবি ও স্লাইড: Instagram ও TikTok-এর সব ছবি একসাথে ফুল রেজোলিউশনে অ্যালবাম আকারে ডাউনলোড!\n"
-            "🎞️ GIF ও স্পিড টুলস: অটো GIF, কাস্টম ট্রিমড GIF ও ভিডিও প্লেব্যাক স্পিড (0.5x, 1.5x, 2x)\n"
-            "🎵 অডিও: 320k, 192k, 128k, রিংটোন মেকার ও ভয়েস মেসেজ\n"
-            "🗜️ স্মার্ট কম্প্রেশন: বড় ফাইল (৫০ MB+) হলে কোয়ালিটি ঠিক রেখে স্বয়ংক্রিয়ভাবে অপ্টিমাইজ হয়ে যাবে!"
+            "যেকোনো ভিডিও বা ছবির লিঙ্ক সরাসরি পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Reddit, Pinterest)।\n\n"
+            "🎥 ভিডিও কোয়ালিটি: Highest, Medium, Lowest, Fast ও কাস্টম রেজোলিউশন (4K থেকে 144p)\n"
+            "🖼️ ছবি ও অ্যালবাম: Instagram ও TikTok-এর সব ছবি একসাথে ডাউনলোড!\n"
+            "🎞️ GIF ও স্পিড টুলস: অটো GIF, ট্রিমড GIF ও প্লেব্যাক স্পিড\n"
+            "🎵 অডিও: MP3 (320k, 192k, 128k), রিংটোন মেকার ও ভয়েস মেসেজ\n"
+            "🗜️ স্মার্ট কম্প্রেশন: ৫০ MB-র বেশি বড় ফাইল হলে বট নিজ থেকেই সাইজ অপ্টিমাইজ করে পাঠাবে!"
         ),
         "help_text": (
-            "📖 জরুরি নির্দেশিকা ও কমান্ডসমূহ:\n\n"
-            "1️⃣ /quick : সরাসরি 720p ইনস্ট্যান্ট ডাউনলোড মোড অন/অফ করতে।\n"
+            "📖 নির্দেশিকা ও কমান্ডসমূহ:\n\n"
+            "1️⃣ /quick : সরাসরি 720p ফাস্ট ডাউনলোড অন/অফ করতে।\n"
             "2️⃣ /lang : ভাষা (বাংলা / English) পরিবর্তন করতে।\n"
-            "3️⃣ কাস্টম রেজোলিউশন: ভিডিও অপশনে গিয়ে 'কাস্টম রেজোলিউশন' চাপলে 4K, 2K, 1080p সহ সব সাইজ দেখতে পাবেন।\n"
-            "4️⃣ ৫০ MB লিমিট: ৪K/২K ভিডিও ৫০ MB ছাড়ালে বট স্বয়ংক্রিয়ভাবে কোয়ালিটি অক্ষুণ্ণ রেখে সাইজ কমিয়ে পাঠাবে।"
+            "3️⃣ কাস্টম রেজোলিউশন: Video Options থেকে 4K, 2K, 1080p পছন্দ করুন।"
         ),
-        "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন অথবা /lang লিখুন:",
-        "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না চেক করুন এবং কোনো প্রাইভেট গ্রুপ বা প্রোফাইল নয় তা নিশ্চিত করুন।",
-        "help_size_resp": "ℹ️ টেলিগ্রাম বটে সর্বোচ্চ ৫০ MB ফাইল পাঠানো যায়। এর চেয়ে বড় ভিডিও হলে বট নিজেই তা স্বয়ংক্রিয়ভাবে অপ্টিমাইজ করে পাঠাবে।",
+        "help_lang_resp": "🌐 ভাষা পরিবর্তন করতে নিচের বাটনে চাপ দিন:",
+        "help_error_resp": "🛠️ লিঙ্কটি পাবলিক কি না তা নিশ্চিত করুন।",
+        "help_size_resp": "ℹ️ টেলিগ্রামে ৫০ MB-র বড় ভিডিও হলে বট নিজে থেকেই কোয়ালিটি ঠিক রেখে সাইজ কমিয়ে পাঠায়।",
         "choose_main": "📥 আপনি কী ডাউনলোড করতে চান? ক্যাটাগরি বেছে নিন:",
-        "choose_video": "🎥 আপনার পছন্দের ভিডিও মোড বেছে নিন:",
-        "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন (4K থেকে 144p):",
-        "choose_audio": "🎵 আপনার পছন্দের অডিও ফরম্যাট বেছে নিন:",
-        "choose_gif_tools": "🎞️ আপনার পছন্দের GIF বা স্পিড টুল বেছে নিন:",
-        "choose_thumb": "🖼️ আপনার পছন্দের ছবি বা ফ্রেম অপশন বেছে নিন:",
-        "choose_speed": "⏩ ভিডিওর প্লেব্যাক স্পিড বেছে নিন:",
-        "processing": "⚡ {quality} প্রস্তুত হচ্ছে, দয়া করে অপেক্ষা করুন...",
-        "compressing": "🗜️ ফাইল সাইজ ৫০ MB ছাড়িয়েছে, কোয়ালিটি ঠিক রেখে অপ্টিমাইজ করা হচ্ছে...",
+        "choose_video": "🎥 ভিডিও মোড বেছে নিন:",
+        "choose_custom_res": "🎯 নির্দিষ্ট রেজোলিউশন বেছে নিন:",
+        "choose_audio": "🎵 অডিও ফরম্যাট বেছে নিন:",
+        "choose_gif_tools": "🎞️ GIF বা ভিডিও স্পিড টুল বেছে নিন:",
+        "choose_thumb": "🖼️ ছবি বা ফ্রেম অপশন বেছে নিন:",
+        "choose_speed": "⏩ প্লেব্যাক স্পিড বেছে নিন:",
+        "processing": "⚡ {quality} প্রস্তুত হচ্ছে, অপেক্ষা করুন...",
+        "compressing": "🗜️ ফাইল সাইজ বড়, কোয়ালিটি অক্ষুণ্ণ রেখে ৫০ MB-র নিচে অপ্টিমাইজ হচ্ছে...",
         "uploading": "🚀 টেলিগ্রামে আপলোড হচ্ছে...",
-        "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? লিখে পাঠান (উদা: 10 বা 01:15):",
-        "gif_prompt": "🎞️️ GIF-এর শুরু ও শেষের সময় লিখে পাঠান (উদা: 5-10 বা 00:10-00:15, সর্বোচ্চ ১০ সেকেন্ড):",
-        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় লিখে পাঠান (উদা: 0-30 বা 00:20-00:50, সর্বোচ্চ ৬০ সেকেন্ড):",
-        "gif_limit_error": "⚠️ GIF তৈরির রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে (যেমন: 5-12)। আবার চেষ্টা করুন।",
-        "audio_limit_error": "⚠️ রিংটোনের রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে (যেমন: 0-30)। আবার চেষ্টা করুন।",
+        "custom_prompt": "⏳ ভিডিওর কোন সেকেন্ডের ফ্রেম চান? (উদা: 10 বা 01:15):",
+        "gif_prompt": "🎞️ GIF তৈরির শুরু ও শেষের সময় দিন (উদা: 5-10, সর্বোচ্চ ১০ সেকেন্ড):",
+        "audio_trim_prompt": "✂️ রিংটোনের শুরু ও শেষের সময় দিন (উদা: 0-30, সর্বোচ্চ ৬০ সেকেন্ড):",
+        "gif_limit_error": "⚠️ GIF রেঞ্জ সর্বোচ্চ ১০ সেকেন্ড হতে হবে।",
+        "audio_limit_error": "⚠️ রিংটোন রেঞ্জ সর্বোচ্চ ৬০ সেকেন্ড হতে হবে।",
         "custom_success": "✅ ফ্রেম ক্যাপচার সফল ({sec}s)",
         "mid_success": "✅ ভিডিওর মাঝখানের ফ্রেম ({sec}s)",
         "error_frame": "❌ ফ্রেম ক্যাপচার করা সম্ভব হয়নি।",
-        "error_expired": "❌ লিঙ্কের মেয়াদ শেষ হয়ে গেছে। লিঙ্কটি পুনরায় পাঠান।",
-        "error_youtube": "⚠️ ইউটিউব ডাউনলোডের জন্য আলাদা বট নির্ধারিত। এখানে অন্যান্য সোশ্যাল লিঙ্ক পাঠান।",
-        "error_compress": "⚠️ ভিডিওটি অতিরিক্ত বড় হওয়ায় ৫০ MB-র মধ্যে কম্প্রেস করা সম্ভব হয়নি। কম রেজোলিউশন (720p/480p) বেছে নিন।",
+        "error_expired": "❌ লিঙ্কের মেয়াদ শেষ হয়ে গেছে। আবার লিঙ্ক পাঠান।",
+        "error_youtube": "⚠️ ইউটিউব ছাড়া অন্যান্য প্ল্যাটফর্মের লিঙ্ক দিন।",
+        "error_compress": "⚠️ ভিডিওটি অতিরিক্ত বড়। কম রেজোলিউশন বেছে নিন।",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 কাস্টম রেজোলিউশন (4K, 2K, 1080p...)",
-        "btn_back": "🔙 Back (প্রধান মেনু)",
-        "btn_back_video": "🔙 Back (ভিডিও মেনু)",
+        "btn_back": "🔙 Back",
+        "btn_back_video": "🔙 Back (Video)",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
-        "highest": "🌟 Highest Download",
-        "normal": "🎬 Medium Download",
-        "lowest": "⚡ Lowest Download",
+        "highest": "🌟 Highest Quality",
+        "normal": "🎬 Medium Quality",
+        "lowest": "⚡ Lowest Quality",
         "fast": "🚀 Fast Mode (Quick)",
         "doc": "📁 Document Uncompressed",
         "voice": "🎙️ Voice Note (.ogg)",
-        "gif_auto": "🎞️ Auto GIF (১-ক্লিক)",
-        "gif_custom": "⏳ Custom GIF (টাইম ট্রিম)",
-        "ringtone": "✂️ Audio Trim / Ringtone",
+        "gif_auto": "🎞️ Auto GIF (1-Click)",
+        "gif_custom": "⏳ Custom GIF",
+        "ringtone": "✂️ Ringtone Maker",
         "thumb_hd": "🖼️ HD Cover Photo",
         "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
-        "all_photos": "📸 সব ছবি একসাথে নামান (All Photos)",
-        "multi_all": "📦 সব ছবি ও ভিডিও একসাথে (Album)",
-        "multi_first": "🖼️ শুধুমাত্র ১ম ছবি/ভিডিও (First One)"
+        "all_photos": "📸 All Photos (Album)",
+        "multi_all": "📦 সব ছবি ও ভিডিও (Album)",
+        "multi_first": "🖼️ শুধুমাত্র ১ম মিডিয়া"
     },
     "en": {
-        "welcome_gate": (
-            "👋 Welcome to Ultra Downloader Bot!\n"
-            "━━━━━━━━━━━━━━━━━━━━\n"
-            "To support this free bot, please follow our creator on Instagram.\n\n"
-            "If you don't use Instagram, simply tap Skip to continue!"
-        ),
         "guide": (
-            "🌟 Ultimate 4K Social Media Downloader 🌟\n"
+            "🌸 Ultimate 4K Social Media Downloader 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "📌 How to use:\n"
-            "Send any public video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
-            "🎥 Video Quality: Highest, Medium, Lowest, Fast, Document & Custom Resolutions (4K to 144p)\n"
-            "🖼️ Photos: Full-resolution album download for Instagram & TikTok carousels!\n"
-            "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer (0.5x, 1.5x, 2x)\n"
-            "🎵 Audio: 320k, 192k, 128k, Ringtone Trimmer & Voice Notes\n"
-            "🗜️ Smart Compression: Videos exceeding 50 MB are automatically optimized under 50 MB!"
+            "Send any video or photo post link from TikTok, Instagram, Facebook, X, Reddit, or Pinterest!\n\n"
+            "🎥 Video Quality: Highest, Medium, Lowest, Fast & Custom Resolutions (4K to 144p)\n"
+            "🖼️ Photos: Full-resolution album download for Instagram & TikTok!\n"
+            "🎞️ GIF & Speed Tools: Auto GIF, Custom Trimmed GIF & Speed Changer\n"
+            "🎵 Audio: MP3 (320k, 192k, 128k), Ringtone Maker & Voice Notes\n"
+            "🗜️ Smart Compression: Large files over 50 MB are automatically optimized!"
         ),
         "help_text": (
-            "📖 User Guide & Commands:\n\n"
-            "1️⃣ /quick : Toggle instant 720p quick download mode.\n"
+            "📖 Commands & Instructions:\n\n"
+            "1️⃣ /quick : Toggle 720p instant download mode.\n"
             "2️⃣ /lang : Change language (English / Bengali).\n"
-            "3️⃣ Custom Resolutions: Go to Video Options and tap 'Custom Resolutions' to choose 4K, 2K, 1080p, etc.\n"
-            "4️⃣ 50 MB Limit: Files over 50 MB are automatically compressed preserving high quality."
+            "3️⃣ Custom Resolution: Select 4K, 2K, 1080p inside Video Options."
         ),
-        "help_lang_resp": "🌐 To change your language, click below or type /lang:",
-        "help_error_resp": "🛠️ Ensure the post is public and not from a private account.",
-        "help_size_resp": "ℹ️ Telegram Bot API limits files to 50 MB max. Large videos are automatically compressed.",
-        "choose_main": "📥 What would you like to download? Choose a category:",
-        "choose_video": "🎥 Choose your desired video mode:",
-        "choose_custom_res": "🎯 Choose specific resolution (4K to 144p):",
-        "choose_audio": "🎵 Choose your audio format:",
+        "help_lang_resp": "🌐 Select your preferred language:",
+        "help_error_resp": "🛠️ Ensure the post is public and not private.",
+        "help_size_resp": "ℹ️ Files over 50 MB are automatically compressed to ensure smooth download.",
+        "choose_main": "📥 Choose what you want to download:",
+        "choose_video": "🎥 Choose video mode:",
+        "choose_custom_res": "🎯 Choose specific resolution:",
+        "choose_audio": "🎵 Choose audio format:",
         "choose_gif_tools": "🎞️ Choose GIF or video speed tools:",
-        "choose_thumb": "🖼️ Choose your photo, cover, or frame option:",
+        "choose_thumb": "🖼️ Choose photo or frame option:",
         "choose_speed": "⏩ Choose playback speed:",
         "processing": "⚡ Processing {quality}, please wait...",
-        "compressing": "🗜️ File exceeds 50 MB, optimizing under 50 MB without quality loss...",
+        "compressing": "🗜️ Optimizing file under 50 MB without quality loss...",
         "uploading": "🚀 Uploading to Telegram...",
-        "custom_prompt": "⏳ Reply with frame timestamp (e.g. 10 or 01:15):",
-        "gif_prompt": "🎞️ Reply with start and end time (e.g. 5-10 or 00:10-00:15, max 10s):",
-        "audio_trim_prompt": "✂️ Reply with start and end time (e.g. 0-30 or 00:20-00:50, max 60s):",
-        "gif_limit_error": "⚠️ GIF range must be 10 seconds or less. Please try again.",
-        "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less. Please try again.",
+        "custom_prompt": "⏳ Enter frame timestamp (e.g. 10 or 01:15):",
+        "gif_prompt": "🎞️ Enter start and end time (e.g. 5-10, max 10s):",
+        "audio_trim_prompt": "✂️ Enter start and end time (e.g. 0-30, max 60s):",
+        "gif_limit_error": "⚠️ GIF range must be 10 seconds or less.",
+        "audio_limit_error": "⚠️ Ringtone range must be 60 seconds or less.",
         "custom_success": "✅ Frame captured successfully ({sec}s)",
         "mid_success": "✅ Middle video frame ({sec}s)",
         "error_frame": "❌ Failed to extract frame.",
         "error_expired": "❌ Link expired. Please send the link again.",
-        "error_youtube": "⚠️ YouTube downloads are managed separately. Please send links from other platforms.",
-        "error_compress": "⚠️ File was too large to fit in 50 MB cleanly. Please select a lower resolution (720p/480p).",
+        "error_youtube": "⚠️ Please send links from platforms other than YouTube.",
+        "error_compress": "⚠️ File too large. Please select a lower resolution.",
         "btn_video": "🎥 Video Options",
         "btn_audio": "🎵 Audio & Ringtone",
         "btn_gif_tools": "🎞️ GIF & Video Tools",
         "btn_thumb": "🖼️ Photos & Thumbnails",
         "btn_speed": "⏩ Change Video Speed",
         "btn_custom_res": "🎯 Custom Resolutions (4K, 2K, 1080p...)",
-        "btn_back": "🔙 Back to Main Menu",
-        "btn_back_video": "🔙 Back to Video Menu",
+        "btn_back": "🔙 Back",
+        "btn_back_video": "🔙 Back (Video)",
         "btn_cancel": "❌ Cancel",
         "vid_4k": "👑 4K Ultra HD (2160p)",
         "vid_2k": "💎 2K Quad HD (1440p)",
-        "highest": "🌟 Highest Download",
-        "normal": "🎬 Medium Download",
-        "lowest": "⚡ Lowest Download",
+        "highest": "🌟 Highest Quality",
+        "normal": "🎬 Medium Quality",
+        "lowest": "⚡ Lowest Quality",
         "fast": "🚀 Fast Mode (Quick)",
         "doc": "📁 Document Uncompressed",
         "voice": "🎙️ Voice Note (.ogg)",
-        "gif_auto": "🎞️ Auto GIF (Instant)",
-        "gif_custom": "⏳ Custom GIF (Trim)",
-        "ringtone": "✂️ Audio Trim / Ringtone",
+        "gif_auto": "🎞️ Auto GIF (1-Click)",
+        "gif_custom": "⏳ Custom GIF",
+        "ringtone": "✂️ Ringtone Maker",
         "thumb_hd": "🖼️ HD Cover Photo",
         "thumb_sd": "🖼️ Standard Cover",
         "mid_frame": "⏱️ Mid Frame",
         "custom_frame": "⏳ Custom Frame",
-        "all_photos": "📸 Download All Photos (Album)",
-        "multi_all": "📦 Download All Photos/Videos (Album)",
-        "multi_first": "🖼️ Download First Media Only"
+        "all_photos": "📸 All Photos (Album)",
+        "multi_all": "📦 All Media (Album)",
+        "multi_first": "🖼️ First Media Only"
     }
 }
 
 def get_text(user_id, key, **kwargs):
-    lang = user_languages.get(user_id, "bn")
-    text = TEXTS.get(lang, TEXTS["bn"]).get(key, TEXTS["bn"].get(key, ""))
+    lang = user_languages.get(user_id, "en")
+    text = TEXTS.get(lang, TEXTS["en"]).get(key, TEXTS["en"].get(key, ""))
     return text.format(**kwargs)
 
 def parse_time_str(t_str):
@@ -454,178 +435,39 @@ def format_caption(title, author, platform, quality, size_mb=None, was_compresse
     caption += (
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n"
-        f"⚡ Downloaded via Ultra Social Bot"
+        f"⚡ Downloaded via Ultra Social Bot 🌸"
     )
     return caption
 
-def build_language_keyboard():
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
-            InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
-        ]
-    ])
-
-def build_welcome_keyboard():
-    return InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("🔗 Follow on Instagram", url=INSTAGRAM_PROFILE_URL)
-        ],
-        [
-            InlineKeyboardButton("✅ I Have Followed", callback_data="gate_followed"),
-            InlineKeyboardButton("⏭️ Skip", callback_data="gate_skip")
-        ]
-    ])
-
-def get_main_menu(user_id, has_multi=False):
-    keyboard = []
-    if has_multi:
-        keyboard.append([
-            InlineKeyboardButton(get_text(user_id, "multi_all"), callback_data="multi_all"),
-            InlineKeyboardButton(get_text(user_id, "multi_first"), callback_data="multi_first")
-        ])
-    keyboard.extend([
-        [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
-        [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
-        [InlineKeyboardButton(get_text(user_id, "btn_gif_tools"), callback_data="cat_gif_tools")],
-        [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")],
-        [InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")]
-    ])
-    return InlineKeyboardMarkup(keyboard)
-
-def get_video_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
-            InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
-            InlineKeyboardButton(get_text(user_id, "lowest"), callback_data="vid_lowest")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast"),
-            InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_custom_res"), callback_data="cat_custom_res")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
-def get_custom_res_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton(get_text(user_id, "vid_4k"), callback_data="vid_2160"),
-            InlineKeyboardButton(get_text(user_id, "vid_2k"), callback_data="vid_1440")
-        ],
-        [
-            InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
-            InlineKeyboardButton("📺 720p", callback_data="vid_720")
-        ],
-        [
-            InlineKeyboardButton("📱 480p", callback_data="vid_480"),
-            InlineKeyboardButton("📱 360p", callback_data="vid_360")
-        ],
-        [
-            InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
-            InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back_video"), callback_data="cat_video")
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
-def get_gif_tools_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton(get_text(user_id, "gif_auto"), callback_data="tool_gifauto"),
-            InlineKeyboardButton(get_text(user_id, "gif_custom"), callback_data="tool_gifcustom")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_speed"), callback_data="cat_speed")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
-def get_speed_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton("🐌 0.5x Slow", callback_data="spd_0.5"),
-            InlineKeyboardButton("⚡ 1.5x Fast", callback_data="spd_1.5"),
-            InlineKeyboardButton("🚀 2.0x Double", callback_data="spd_2.0")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_gif_tools")
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
-def get_audio_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton("🎵 MP3 320k", callback_data="aud_320"),
-            InlineKeyboardButton("🎶 MP3 192k", callback_data="aud_192"),
-            InlineKeyboardButton("📻 MP3 128k", callback_data="aud_128")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "ringtone"), callback_data="tool_audiotrim"),
-            InlineKeyboardButton(get_text(user_id, "voice"), callback_data="aud_voice")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)
-
-def get_thumb_menu(user_id, has_photos=False):
-    keyboard = []
-    if has_photos:
-        keyboard.append([InlineKeyboardButton(get_text(user_id, "all_photos"), callback_data="all_photos_dl")])
-    keyboard.extend([
-        [
-            InlineKeyboardButton(get_text(user_id, "thumb_hd"), callback_data="thumb_hd"),
-            InlineKeyboardButton(get_text(user_id, "thumb_sd"), callback_data="thumb_sd")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "mid_frame"), callback_data="frame_mid"),
-            InlineKeyboardButton(get_text(user_id, "custom_frame"), callback_data="frame_custom")
-        ],
-        [
-            InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
-        ]
-    ])
-    return InlineKeyboardMarkup(keyboard)
-
+# প্রথম /start প্রেস করলে এই সুন্দর মেসেজ আসবে
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if user_id not in user_languages:
-        user_languages[user_id] = "bn"
-
-    if user_id not in verified_users:
-        await update.message.reply_text(
-            get_text(user_id, "welcome_gate"),
-            reply_markup=build_welcome_keyboard()
-        )
-        return
-
-    await update.message.reply_text(
-        "🌐 Please select your language / আপনার ভাষা নির্বাচন করুন:",
-        reply_markup=build_language_keyboard()
+    welcome_msg = (
+        "🌸 ✨ Welcome to Ultra Social Downloader ✨ 🌸\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        "🤍 Download high-quality videos, photos, and music effortlessly from:\n"
+        "✦ TikTok (No Watermark)\n"
+        "✦ Instagram (Reels & Carousels)\n"
+        "✦ Facebook, X (Twitter), Pinterest & Reddit\n\n"
+        "🤍 Please support our creator by following on Instagram below! 🌸"
     )
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("🔗 Follow on Instagram 🤍", url=INSTAGRAM_PROFILE_URL)
+        ],
+        [
+            InlineKeyboardButton("✨ Continue / Skip 🤍", callback_data="welcome_next")
+        ]
+    ])
+    await update.message.reply_text(welcome_msg, reply_markup=keyboard)
 
 async def cmd_quick(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     current_state = user_quick_mode.get(user_id, False)
     user_quick_mode[user_id] = not current_state
-    state_str = "চালু (ON) ⚡" if not current_state else "বন্ধ (OFF) 🛑"
+    state_str = "ON ⚡" if not current_state else "OFF 🛑"
     await update.message.reply_text(
         f"⚡ Quick Download Mode: {state_str}\n"
-        "এটি চালু থাকলে লিঙ্ক দেওয়ার সাথে সাথে কোনো মেনু ছাড়াই সরাসরি 720p সেরা কোয়ালিটিতে ভিডিও ডাউনলোড হবে।"
+        "When ON, sending any link directly downloads 720p video without menus."
     )
 
 async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -633,31 +475,22 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(get_text(user_id, "help_text"))
 
 async def cmd_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🌐 Select Language / ভাষা বেছে নিন:",
-        reply_markup=build_language_keyboard()
-    )
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
+            InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
+        ]
+    ])
+    await update.message.reply_text("🌐 Select Language / ভাষা বেছে নিন:", reply_markup=keyboard)
 
+# সরাসরি লিঙ্ক দিলে সুপার ফাস্ট মেনু আসবে
 async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.strip()
     user_id = update.effective_user.id
     lower_text = text.lower()
 
-    now = time.time()
-    if user_id in user_last_action and now - user_last_action[user_id] < 1.5:
-        return
-    user_last_action[user_id] = now
-
     if user_id not in user_languages:
         user_languages[user_id] = "bn"
-
-    # গেটওয়ে আনভেরিফাইড হলে ওয়েলকাম কার্ড পাঠাবে
-    if user_id not in verified_users:
-        await update.message.reply_text(
-            get_text(user_id, "welcome_gate"),
-            reply_markup=build_welcome_keyboard()
-        )
-        return
 
     output_dir = "temp_downloads"
     os.makedirs(output_dir, exist_ok=True)
@@ -708,7 +541,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         title=f"{title[:35]} (Ringtone)",
                         performer=artist[:25],
                         duration=duration,
-                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                        caption=f"✂️ Ringtone: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -778,7 +611,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                        caption=f"🎞️ {title[:45]}\n⏱️ Range: {start_sec}s - {end_sec}s\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -820,7 +653,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with open(output_img, "rb") as f:
                 await update.message.reply_photo(
                     photo=f,
-                    caption=get_text(user_id, "custom_success", sec=sec) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                    caption=get_text(user_id, "custom_success", sec=sec) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -829,20 +662,10 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not text.startswith("http://") and not text.startswith("https://"):
-        if any(w in lower_text for w in ["language", "ভাষা", "bhasha", "change", "পরিবর্তন", "change language"]):
-            await update.message.reply_text(get_text(user_id, "help_lang_resp"), reply_markup=build_language_keyboard())
-            return
-        if any(w in lower_text for w in ["50mb", "50 mb", "size", "সাইজ", "বড় ফাইল", "limit"]):
-            await update.message.reply_text(get_text(user_id, "help_size_resp"))
-            return
-        if any(w in lower_text for w in ["problem", "error", "সমস্যা", "কাজ করে না", "fail", "not working"]):
-            await update.message.reply_text(get_text(user_id, "help_error_resp"))
-            return
-        if any(w in lower_text for w in ["help", "নির্দেশনা", "নিয়ম", "faq", "কীভাবে", "কিভাবে"]):
+        if any(w in lower_text for w in ["help", "নির্দেশনা", "নিয়ম", "কীভাবে"]):
             await update.message.reply_text(get_text(user_id, "help_text"))
             return
-
-        await update.message.reply_text("💡 সোশ্যাল মিডিয়ার যেকোনো ভিডিও বা ছবির লিঙ্ক পাঠান অথবা সাহায্য পেতে /help লিখুন।")
+        await update.message.reply_text("💡 সামাজিক মাধ্যমের যেকোনো ভিডিও বা ছবির লিঙ্ক পাঠান অথবা সাহায্য পেতে /help লিখুন।")
         return
 
     url = text
@@ -852,6 +675,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_urls[user_id] = url
 
+    # কুইক ডাউনলোড মোড চেক
     if user_quick_mode.get(user_id, False):
         status_msg = await update.message.reply_text("⚡ কুইক মোড সক্রিয়: 720p ভিডিও প্রস্তুত হচ্ছে...")
         unique_id = str(uuid.uuid4())[:6]
@@ -907,7 +731,20 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
             pass
 
     has_multi = "instagram.com" in url
-    await update.message.reply_text(get_text(user_id, "choose_main"), reply_markup=get_main_menu(user_id, has_multi))
+    keyboard = []
+    if has_multi:
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "multi_all"), callback_data="multi_all"),
+            InlineKeyboardButton(get_text(user_id, "multi_first"), callback_data="multi_first")
+        ])
+    keyboard.extend([
+        [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
+        [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
+        [InlineKeyboardButton(get_text(user_id, "btn_gif_tools"), callback_data="cat_gif_tools")],
+        [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")],
+        [InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")]
+    ])
+    await update.message.reply_text(get_text(user_id, "choose_main"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -916,17 +753,21 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     data = query.data
 
-    # গেটওয়ে আনলক হ্যান্ডলার
-    if data in ["gate_followed", "gate_skip"]:
-        verified_users.add(user_id)
-        if user_id not in user_languages:
-            user_languages[user_id] = "bn"
+    # ওয়েলকাম স্টেপ থেকে ভাষা সিলেক্ট পেজে যাওয়া
+    if data == "welcome_next":
+        lang_kb = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton("🇧🇩 বাংলা (Bengali)", callback_data="setlang_bn"),
+                InlineKeyboardButton("🇺🇸 English", callback_data="setlang_en")
+            ]
+        ])
         await query.edit_message_text(
-            "✅ আপনাকে ধন্যবাদ! বটটি সফলভাবে আনলক হয়েছে।\n\n"
-            "📥 এখন যেকোনো সোশ্যাল মিডিয়া লিঙ্ক চ্যাটে পাঠিয়ে দিন (TikTok, Instagram, Facebook, X, Pinterest ইত্যাদি)!"
+            "🌸 Choose Your Language / আপনার ভাষা নির্বাচন করুন: 🤍",
+            reply_markup=lang_kb
         )
         return
 
+    # ভাষা নির্ধারণ
     if data.startswith("setlang_"):
         lang_code = data.split("_")[1]
         user_languages[user_id] = lang_code
@@ -940,23 +781,117 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if data == "cat_main":
         url = user_urls.get(user_id, "")
-        await query.edit_message_text(get_text(user_id, "choose_main"), reply_markup=get_main_menu(user_id, "instagram.com" in url))
+        has_multi = "instagram.com" in url
+        keyboard = []
+        if has_multi:
+            keyboard.append([
+                InlineKeyboardButton(get_text(user_id, "multi_all"), callback_data="multi_all"),
+                InlineKeyboardButton(get_text(user_id, "multi_first"), callback_data="multi_first")
+            ])
+        keyboard.extend([
+            [InlineKeyboardButton(get_text(user_id, "btn_video"), callback_data="cat_video")],
+            [InlineKeyboardButton(get_text(user_id, "btn_audio"), callback_data="cat_audio")],
+            [InlineKeyboardButton(get_text(user_id, "btn_gif_tools"), callback_data="cat_gif_tools")],
+            [InlineKeyboardButton(get_text(user_id, "btn_thumb"), callback_data="cat_thumb")],
+            [InlineKeyboardButton(get_text(user_id, "btn_cancel"), callback_data="cat_cancel")]
+        ])
+        await query.edit_message_text(get_text(user_id, "choose_main"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_video":
-        await query.edit_message_text(get_text(user_id, "choose_video"), reply_markup=get_video_menu(user_id))
+        keyboard = [
+            [
+                InlineKeyboardButton(get_text(user_id, "highest"), callback_data="vid_highest"),
+                InlineKeyboardButton(get_text(user_id, "normal"), callback_data="vid_normal"),
+                InlineKeyboardButton(get_text(user_id, "lowest"), callback_data="vid_lowest")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "fast"), callback_data="vid_fast"),
+                InlineKeyboardButton(get_text(user_id, "doc"), callback_data="vid_doc")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_custom_res"), callback_data="cat_custom_res")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+            ]
+        ]
+        await query.edit_message_text(get_text(user_id, "choose_video"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_custom_res":
-        await query.edit_message_text(get_text(user_id, "choose_custom_res"), reply_markup=get_custom_res_menu(user_id))
+        keyboard = [
+            [
+                InlineKeyboardButton(get_text(user_id, "vid_4k"), callback_data="vid_2160"),
+                InlineKeyboardButton(get_text(user_id, "vid_2k"), callback_data="vid_1440")
+            ],
+            [
+                InlineKeyboardButton("📺 1080p", callback_data="vid_1080"),
+                InlineKeyboardButton("📺 720p", callback_data="vid_720")
+            ],
+            [
+                InlineKeyboardButton("📱 480p", callback_data="vid_480"),
+                InlineKeyboardButton("📱 360p", callback_data="vid_360")
+            ],
+            [
+                InlineKeyboardButton("⚡ 240p", callback_data="vid_240"),
+                InlineKeyboardButton("⚡ 144p", callback_data="vid_144")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back_video"), callback_data="cat_video")
+            ]
+        ]
+        await query.edit_message_text(get_text(user_id, "choose_custom_res"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_audio":
-        await query.edit_message_text(get_text(user_id, "choose_audio"), reply_markup=get_audio_menu(user_id))
+        keyboard = [
+            [
+                InlineKeyboardButton("🎵 MP3 320k", callback_data="aud_320"),
+                InlineKeyboardButton("🎶 MP3 192k", callback_data="aud_192"),
+                InlineKeyboardButton("📻 MP3 128k", callback_data="aud_128")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "ringtone"), callback_data="tool_audiotrim"),
+                InlineKeyboardButton(get_text(user_id, "voice"), callback_data="aud_voice")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+            ]
+        ]
+        await query.edit_message_text(get_text(user_id, "choose_audio"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_gif_tools":
-        await query.edit_message_text(get_text(user_id, "choose_gif_tools"), reply_markup=get_gif_tools_menu(user_id))
+        keyboard = [
+            [
+                InlineKeyboardButton(get_text(user_id, "gif_auto"), callback_data="tool_gifauto"),
+                InlineKeyboardButton(get_text(user_id, "gif_custom"), callback_data="tool_gifcustom")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_speed"), callback_data="cat_speed")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+            ]
+        ]
+        await query.edit_message_text(get_text(user_id, "choose_gif_tools"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_speed":
-        await query.edit_message_text(get_text(user_id, "choose_speed"), reply_markup=get_speed_menu(user_id))
+        keyboard = [
+            [
+                InlineKeyboardButton("🐌 0.5x Slow", callback_data="spd_0.5"),
+                InlineKeyboardButton("⚡ 1.5x Fast", callback_data="spd_1.5"),
+                InlineKeyboardButton("🚀 2.0x Double", callback_data="spd_2.0")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_gif_tools")
+            ]
+        ]
+        await query.edit_message_text(get_text(user_id, "choose_speed"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
+
     if data == "cat_thumb":
         url = user_urls.get(user_id, "")
         has_photos = False
@@ -964,7 +899,24 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             tk_data = get_tiktok_details(url)
             if tk_data and tk_data.get("images"):
                 has_photos = True
-        await query.edit_message_text(get_text(user_id, "choose_thumb"), reply_markup=get_thumb_menu(user_id, has_photos))
+
+        keyboard = []
+        if has_photos:
+            keyboard.append([InlineKeyboardButton(get_text(user_id, "all_photos"), callback_data="all_photos_dl")])
+        keyboard.extend([
+            [
+                InlineKeyboardButton(get_text(user_id, "thumb_hd"), callback_data="thumb_hd"),
+                InlineKeyboardButton(get_text(user_id, "thumb_sd"), callback_data="thumb_sd")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "mid_frame"), callback_data="frame_mid"),
+                InlineKeyboardButton(get_text(user_id, "custom_frame"), callback_data="frame_custom")
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "btn_back"), callback_data="cat_main")
+            ]
+        ])
+        await query.edit_message_text(get_text(user_id, "choose_thumb"), reply_markup=InlineKeyboardMarkup(keyboard))
         return
 
     url = user_urls.get(user_id)
@@ -1016,7 +968,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_animation(
                         chat_id=user_id,
                         animation=gf,
-                        caption=f"🎞️ {title[:45]} (Auto GIF)\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                        caption=f"🎞️ {title[:45]} (Auto GIF)\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                     )
                 await status_msg.delete()
             else:
@@ -1185,7 +1137,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=user_id,
                     photo=f,
-                    caption=get_text(user_id, "mid_success", sec=mid_point) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                    caption=get_text(user_id, "mid_success", sec=mid_point) + f"\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                 )
             await status_msg.delete()
             if os.path.exists(output_img): os.remove(output_img)
@@ -1278,7 +1230,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             await context.bot.send_voice(
                                 chat_id=user_id,
                                 voice=vf,
-                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                                caption=f"🎙️ {tk_data['title'][:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                             )
                         if os.path.exists(ogg_path): os.remove(ogg_path)
                     await status_msg.delete()
@@ -1453,7 +1405,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await context.bot.send_voice(
                         chat_id=user_id,
                         voice=vf,
-                        caption=f"🎙️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot"
+                        caption=f"🎙️ {video_title[:50]}\n👤 Creator: instagram.com/{INSTAGRAM_USERNAME}\n⚡ Ultra Social Bot 🌸"
                     )
                 if os.path.exists(ogg_path): os.remove(ogg_path)
                 await status_msg.delete()
